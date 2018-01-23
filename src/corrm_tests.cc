@@ -11,8 +11,8 @@ using cyclus::QueryResult;
 using cyclus::Cond;
 using cyclus::toolkit::MatQuery;
 
-namespace cycamore {
-namespace reactortests {
+namespace recycle {
+namespace corrmtests {
 
 Composition::Ptr c_uox() {
   cyclus::CompMap m;
@@ -55,7 +55,7 @@ Composition::Ptr c_water() {
 // Test that with a zero refuel_time and a zero capacity fresh fuel buffer
 // (the default), fuel can be ordered and the cycle started with no time step
 // delay.
-TEST(ReactorTests, JustInTimeOrdering) {
+TEST(CorrmTests, JustInTimeOrdering) {
   std::string config = 
      "  <fuel_inrecipes>  <val>lwr_fresh</val>  </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>lwr_spent</val>  </fuel_outrecipes>  "
@@ -70,7 +70,7 @@ TEST(ReactorTests, JustInTimeOrdering) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:corrm"), config, simdur);
   sim.AddSource("enriched_u").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
   sim.AddRecipe("lwr_spent", c_spentuox());
@@ -82,7 +82,7 @@ TEST(ReactorTests, JustInTimeOrdering) {
 
 // tests that the correct number of assemblies are popped from the core each
 // cycle.
-TEST(ReactorTests, BatchSizes) {
+TEST(CorrmTests, BatchSizes) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
@@ -96,7 +96,7 @@ TEST(ReactorTests, BatchSizes) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -109,7 +109,7 @@ TEST(ReactorTests, BatchSizes) {
 
 // tests that the refueling period between cycle end and start of the next
 // cycle is honored.
-TEST(ReactorTests, RefuelTimes) {
+TEST(CorrmTests, RefuelTimes) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
@@ -123,7 +123,7 @@ TEST(ReactorTests, RefuelTimes) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 49;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -139,7 +139,7 @@ TEST(ReactorTests, RefuelTimes) {
 // tests that new fuel is ordered immediately following cycle end - at the
 // start of the refueling period - not before and not after. - thie is subtly
 // different than RefuelTimes test and is not a duplicate of it.
-TEST(ReactorTests, OrderAtRefuelStart) {
+TEST(CorrmTests, OrderAtRefuelStart) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
@@ -153,7 +153,7 @@ TEST(ReactorTests, OrderAtRefuelStart) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 7;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -166,9 +166,9 @@ TEST(ReactorTests, OrderAtRefuelStart) {
   EXPECT_EQ(n_assem_want, qr.rows.size());
 }
 
-// tests that the reactor handles requesting multiple types of fuel correctly
+// tests that the Corrm handles requesting multiple types of fuel correctly
 // - with proper inventory constraint honoring, etc.
-TEST(ReactorTests, MultiFuelMix) {
+TEST(CorrmTests, MultiFuelMix) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      <val>mox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> <val>spentmox</val> </fuel_outrecipes>  "
@@ -183,12 +183,12 @@ TEST(ReactorTests, MultiFuelMix) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   // it is important that the sources have cumulative capacity greater than
-  // the reactor can take on a single time step - to test that inventory
+  // the Corrm can take on a single time step - to test that inventory
   // capacity constraints are being set properly.  It is also important that
-  // each source is smaller capacity thatn the reactor orders on each time
+  // each source is smaller capacity thatn the Corrm orders on each time
   // step to make it easy to compute+check the number of transactions.
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").capacity(2).Finalize();
   sim.AddSource("mox").capacity(2).Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -202,9 +202,9 @@ TEST(ReactorTests, MultiFuelMix) {
   EXPECT_EQ(3*simdur+3, qr.rows.size());
 }
 
-// tests that the reactor halts operation when it has no more room in its
+// tests that the Corrm halts operation when it has no more room in its
 // spent fuel inventory buffer.
-TEST(ReactorTests, FullSpentInventory) {
+TEST(CorrmTests, FullSpentInventory) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
@@ -219,7 +219,7 @@ TEST(ReactorTests, FullSpentInventory) {
      "  <n_assem_spent>3</n_assem_spent>  ";
 
   int simdur = 10;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -232,12 +232,12 @@ TEST(ReactorTests, FullSpentInventory) {
   EXPECT_EQ(n_assem_spent+1, qr.rows.size());
 }
 
-// tests that the reactor cycle is delayed as expected when it is unable to
+// tests that the Corrm cycle is delayed as expected when it is unable to
 // acquire fuel in time for the next cycle start.  This checks that after a
 // cycle is delayed past an original scheduled start time, as soon as enough fuel is
 // received, a new cycle pattern is established starting from the delayed
 // start time.
-TEST(ReactorTests, FuelShortage) {
+TEST(CorrmTests, FuelShortage) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
@@ -251,7 +251,7 @@ TEST(ReactorTests, FuelShortage) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").lifetime(1).Finalize(); // provide initial full batch
   sim.AddSource("uox").start(9).lifetime(1).capacity(2).Finalize(); // provide partial batch post cycle-end
   sim.AddSource("uox").start(15).Finalize(); // provide remainder of batch much later
@@ -286,7 +286,7 @@ TEST(ReactorTests, FuelShortage) {
 }
 
 // tests that discharged fuel is transmuted properly immediately at cycle end.
-TEST(ReactorTests, DischargedFuelTransmute) {
+TEST(CorrmTests, DischargedFuelTransmute) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
@@ -300,7 +300,7 @@ TEST(ReactorTests, DischargedFuelTransmute) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 7;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddSink("waste").Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -320,7 +320,7 @@ TEST(ReactorTests, DischargedFuelTransmute) {
 // tests that spent fuel is offerred on correct commods according to the
 // incommod it was received on - esp when dealing with multiple fuel commods
 // simultaneously.
-TEST(ReactorTests, SpentFuelProperCommodTracking) {
+TEST(CorrmTests, SpentFuelProperCommodTracking) {
   std::string config = 
      "  <fuel_inrecipes>  <val>uox</val>      <val>mox</val>      </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>spentuox</val> <val>spentmox</val> </fuel_outrecipes>  "
@@ -334,7 +334,7 @@ TEST(ReactorTests, SpentFuelProperCommodTracking) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   int simdur = 7;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("uox").capacity(1).Finalize();
   sim.AddSource("mox").capacity(2).Finalize();
   sim.AddSink("waste1").Finalize();
@@ -359,8 +359,8 @@ TEST(ReactorTests, SpentFuelProperCommodTracking) {
 // The user can optionally omit fuel preferences.  In the case where
 // preferences are adjusted, the ommitted preference vector must be populated
 // with default values - if it wasn't then preferences won't be adjusted
-// correctly and the reactor could segfault.  Check that this doesn't happen.
-TEST(ReactorTests, PrefChange) {
+// correctly and the Corrm could segfault.  Check that this doesn't happen.
+TEST(CorrmTests, PrefChange) {
   // it is important that the fuel_prefs not be present in the config below.
   std::string config = 
      "  <fuel_inrecipes>  <val>lwr_fresh</val>  </fuel_inrecipes>  "
@@ -379,7 +379,7 @@ TEST(ReactorTests, PrefChange) {
      "  <pref_change_values>  <val>-1</val>         </pref_change_values>";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("enriched_u").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
   sim.AddRecipe("lwr_spent", c_spentuox());
@@ -389,7 +389,7 @@ TEST(ReactorTests, PrefChange) {
   EXPECT_EQ(25, qr.rows.size()) << "failed to adjust preferences properly";
 }
 
-TEST(ReactorTests, RecipeChange) {
+TEST(CorrmTests, RecipeChange) {
   // it is important that the fuel_prefs not be present in the config below.
   std::string config = 
      "  <fuel_inrecipes>  <val>lwr_fresh</val>  </fuel_inrecipes>  "
@@ -409,7 +409,7 @@ TEST(ReactorTests, RecipeChange) {
      "  <recipe_change_out>     <val>lwr_spent</val>  <val>water</val>      </recipe_change_out>";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, simdur);
   sim.AddSource("enriched_u").Finalize();
   sim.AddSink("waste").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
@@ -461,7 +461,7 @@ TEST(ReactorTests, RecipeChange) {
   EXPECT_TRUE(0 < mq.mass(id("H1")));
 }
 
-TEST(ReactorTests, Retire) {
+TEST(CorrmTests, Retire) {
   std::string config = 
      "  <fuel_inrecipes>  <val>lwr_fresh</val>  </fuel_inrecipes>  "
      "  <fuel_outrecipes> <val>lwr_spent</val>  </fuel_outrecipes>  "
@@ -481,7 +481,7 @@ TEST(ReactorTests, Retire) {
   int life = 36;
   int cycle_time = 7;
   int refuel_time = 0;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, dur, life);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Corrm"), config, dur, life);
   sim.AddSource("enriched_u").Finalize();
   sim.AddSink("waste").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
@@ -519,6 +519,6 @@ TEST(ReactorTests, Retire) {
       << "failed to generate power for the correct number of time steps";
 }
 
-} // namespace reactortests
-} // namespace cycamore
+} // namespace corrmtests
+} // namespace recycle
 

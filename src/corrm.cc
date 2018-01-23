@@ -1,4 +1,4 @@
-#include "reactor.h"
+#include "corrm.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -8,9 +8,9 @@ using cyclus::KeyError;
 using cyclus::ValueError;
 using cyclus::Request;
 
-namespace cycamore {
+namespace recycle {
 
-Reactor::Reactor(cyclus::Context* ctx)
+Corrm::Corrm(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
       n_assem_batch(0),
       assem_size(0),
@@ -21,37 +21,42 @@ Reactor::Reactor(cyclus::Context* ctx)
       refuel_time(0),
       cycle_step(0),
       power_cap(0),
+
+      
+
+
+      
       power_name("power"),
       discharged(false) { }
 
-#pragma cyclus def clone cycamore::Reactor
+#pragma cyclus def clone recycle::Corrm
 
-#pragma cyclus def schema cycamore::Reactor
+#pragma cyclus def schema recycle::Corrm
 
-#pragma cyclus def annotations cycamore::Reactor
+#pragma cyclus def annotations recycle::Corrm
 
-#pragma cyclus def infiletodb cycamore::Reactor
+#pragma cyclus def infiletodb recycle::Corrm
 
-#pragma cyclus def snapshot cycamore::Reactor
+#pragma cyclus def snapshot recycle::Corrm
 
-#pragma cyclus def snapshotinv cycamore::Reactor
+#pragma cyclus def snapshotinv recycle::Corrm
 
-#pragma cyclus def initinv cycamore::Reactor
+#pragma cyclus def initinv recycle::Corrm
 
-void Reactor::InitFrom(Reactor* m) {
-  #pragma cyclus impl initfromcopy cycamore::Reactor
+void Corrm::InitFrom(Corrm* m) {
+  #pragma cyclus impl initfromcopy recycle::Corrm
   cyclus::toolkit::CommodityProducer::Copy(m);
 }
 
-void Reactor::InitFrom(cyclus::QueryableBackend* b) {
-  #pragma cyclus impl initfromdb cycamore::Reactor
+void Corrm::InitFrom(cyclus::QueryableBackend* b) {
+  #pragma cyclus impl initfromdb recycle::Corrm
 
   namespace tk = cyclus::toolkit;
   tk::CommodityProducer::Add(tk::Commodity(power_name),
                              tk::CommodInfo(power_cap, power_cap));
 }
 
-void Reactor::EnterNotify() {
+void Corrm::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
   // If the user ommitted fuel_prefs, we set it to zeros for each fuel
@@ -94,13 +99,13 @@ void Reactor::EnterNotify() {
   }
 }
 
-bool Reactor::CheckDecommissionCondition() {
+bool Corrm::CheckDecommissionCondition() {
   return core.count() == 0 && spent.count() == 0;
 }
 
-void Reactor::Tick() {
+void Corrm::Tick() {
   // The following code must go in the Tick so they fire on the time step
-  // following the cycle_step update - allowing for the all reactor events to
+  // following the cycle_step update - allowing for the all Corrm events to
   // occur and be recorded on the "beginning" of a time step.  Another reason
   // they
   // can't go at the beginnin of the Tock is so that resource exchange has a
@@ -109,7 +114,7 @@ void Reactor::Tick() {
   if (retired()) {
     Record("RETIRED", "");
 
-    // record the last time series entry if the reactor was operating at the
+    // record the last time series entry if the Corrm was operating at the
     // time of retirement.
     if (exit_time() == context()->time()) {
       if (cycle_step > 0 && cycle_step <= cycle_time &&
@@ -185,7 +190,7 @@ void Reactor::Tick() {
   }
 }
 
-std::set<cyclus::RequestPortfolio<Material>::Ptr> Reactor::GetMatlRequests() {
+std::set<cyclus::RequestPortfolio<Material>::Ptr> Corrm::GetMatlRequests() {
   using cyclus::RequestPortfolio;
 
   std::set<RequestPortfolio<Material>::Ptr> ports;
@@ -196,7 +201,7 @@ std::set<cyclus::RequestPortfolio<Material>::Ptr> Reactor::GetMatlRequests() {
   int n_assem_order = n_assem_core - core.count() + n_assem_fresh - fresh.count();
 
   if (exit_time() != -1) {
-    // the +1 accounts for the fact that the reactor is alive and gets to
+    // the +1 accounts for the fact that the Corrm is alive and gets to
     // operate during its exit_time time step.
     int t_left = exit_time() - context()->time() + 1;
     int t_left_cycle = cycle_time + refuel_time - cycle_step;
@@ -231,7 +236,7 @@ std::set<cyclus::RequestPortfolio<Material>::Ptr> Reactor::GetMatlRequests() {
   return ports;
 }
 
-void Reactor::GetMatlTrades(
+void Corrm::GetMatlTrades(
     const std::vector<cyclus::Trade<Material> >& trades,
     std::vector<std::pair<cyclus::Trade<Material>, Material::Ptr> >&
         responses) {
@@ -248,7 +253,7 @@ void Reactor::GetMatlTrades(
   PushSpent(mats);  // return leftovers back to spent buffer
 }
 
-void Reactor::AcceptMatlTrades(const std::vector<
+void Corrm::AcceptMatlTrades(const std::vector<
     std::pair<cyclus::Trade<Material>, Material::Ptr> >& responses) {
   std::vector<std::pair<cyclus::Trade<cyclus::Material>,
                         cyclus::Material::Ptr> >::const_iterator trade;
@@ -273,7 +278,7 @@ void Reactor::AcceptMatlTrades(const std::vector<
   }
 }
 
-std::set<cyclus::BidPortfolio<Material>::Ptr> Reactor::GetMatlBids(
+std::set<cyclus::BidPortfolio<Material>::Ptr> Corrm::GetMatlBids(
     cyclus::CommodMap<Material>::type& commod_requests) {
   using cyclus::BidPortfolio;
 
@@ -330,7 +335,7 @@ std::set<cyclus::BidPortfolio<Material>::Ptr> Reactor::GetMatlBids(
   return ports;
 }
 
-void Reactor::Tock() {
+void Corrm::Tock() {
   if (retired()) {
     return;
   }
@@ -358,9 +363,9 @@ void Reactor::Tock() {
   }
 }
 
-void Reactor::Transmute() { Transmute(n_assem_batch); }
+void Corrm::Transmute() { Transmute(n_assem_batch); }
 
-void Reactor::Transmute(int n_assem) {
+void Corrm::Transmute(int n_assem) {
   MatVec old = core.PopN(std::min(n_assem, core.count()));
   core.Push(old);
   if (core.count() > old.size()) {
@@ -377,7 +382,7 @@ void Reactor::Transmute(int n_assem) {
   }
 }
 
-std::map<std::string, MatVec> Reactor::PeekSpent() {
+std::map<std::string, MatVec> Corrm::PeekSpent() {
   std::map<std::string, MatVec> mapped;
   MatVec mats = spent.PopN(spent.count());
   spent.Push(mats);
@@ -388,7 +393,7 @@ std::map<std::string, MatVec> Reactor::PeekSpent() {
   return mapped;
 }
 
-bool Reactor::Discharge() {
+bool Corrm::Discharge() {
   int npop = std::min(n_assem_batch, core.count());
   if (n_assem_spent - spent.count() < npop) {
     Record("DISCHARGE", "failed");
@@ -403,7 +408,7 @@ bool Reactor::Discharge() {
   return true;
 }
 
-void Reactor::Load() {
+void Corrm::Load() {
   int n = std::min(n_assem_core - core.count(), fresh.count());
   if (n == 0) {
     return;
@@ -415,39 +420,39 @@ void Reactor::Load() {
   core.Push(fresh.PopN(n));
 }
 
-std::string Reactor::fuel_incommod(Material::Ptr m) {
+std::string Corrm::fuel_incommod(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_incommods.size()) {
-    throw KeyError("cycamore::Reactor - no incommod for material object");
+    throw KeyError("recycle::Corrm - no incommod for material object");
   }
   return fuel_incommods[i];
 }
 
-std::string Reactor::fuel_outcommod(Material::Ptr m) {
+std::string Corrm::fuel_outcommod(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_outcommods.size()) {
-    throw KeyError("cycamore::Reactor - no outcommod for material object");
+    throw KeyError("recycle::Corrm - no outcommod for material object");
   }
   return fuel_outcommods[i];
 }
 
-std::string Reactor::fuel_inrecipe(Material::Ptr m) {
+std::string Corrm::fuel_inrecipe(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_inrecipes.size()) {
-    throw KeyError("cycamore::Reactor - no inrecipe for material object");
+    throw KeyError("recycle::Corrm - no inrecipe for material object");
   }
   return fuel_inrecipes[i];
 }
 
-std::string Reactor::fuel_outrecipe(Material::Ptr m) {
+std::string Corrm::fuel_outrecipe(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_outrecipes.size()) {
-    throw KeyError("cycamore::Reactor - no outrecipe for material object");
+    throw KeyError("recycle::Corrm - no outrecipe for material object");
   }
   return fuel_outrecipes[i];
 }
 
-double Reactor::fuel_pref(Material::Ptr m) {
+double Corrm::fuel_pref(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_prefs.size()) {
     return 0;
@@ -455,7 +460,7 @@ double Reactor::fuel_pref(Material::Ptr m) {
   return fuel_prefs[i];
 }
 
-void Reactor::index_res(cyclus::Resource::Ptr m, std::string incommod) {
+void Corrm::index_res(cyclus::Resource::Ptr m, std::string incommod) {
   for (int i = 0; i < fuel_incommods.size(); i++) {
     if (fuel_incommods[i] == incommod) {
       res_indexes[m->obj_id()] = i;
@@ -463,10 +468,10 @@ void Reactor::index_res(cyclus::Resource::Ptr m, std::string incommod) {
     }
   }
   throw ValueError(
-      "cycamore::Reactor - received unsupported incommod material");
+      "recycle::Corrm - received unsupported incommod material");
 }
 
-std::map<std::string, MatVec> Reactor::PopSpent() {
+std::map<std::string, MatVec> Corrm::PopSpent() {
   MatVec mats = spent.PopN(spent.count());
   std::map<std::string, MatVec> mapped;
   for (int i = 0; i < mats.size(); i++) {
@@ -483,7 +488,7 @@ std::map<std::string, MatVec> Reactor::PopSpent() {
   return mapped;
 }
 
-void Reactor::PushSpent(std::map<std::string, MatVec> leftover) {
+void Corrm::PushSpent(std::map<std::string, MatVec> leftover) {
   std::map<std::string, MatVec>::iterator it;
   for (it = leftover.begin(); it != leftover.end(); ++it) {
     // undo reverse in PopSpent to make sure oldest assemblies come out first
@@ -492,9 +497,9 @@ void Reactor::PushSpent(std::map<std::string, MatVec> leftover) {
   }
 }
 
-void Reactor::Record(std::string name, std::string val) {
+void Corrm::Record(std::string name, std::string val) {
   context()
-      ->NewDatum("ReactorEvents")
+      ->NewDatum("CorrmEvents")
       ->AddVal("AgentId", id())
       ->AddVal("Time", context()->time())
       ->AddVal("Event", name)
@@ -502,8 +507,8 @@ void Reactor::Record(std::string name, std::string val) {
       ->Record();
 }
 
-extern "C" cyclus::Agent* ConstructReactor(cyclus::Context* ctx) {
-  return new Reactor(ctx);
+extern "C" cyclus::Agent* ConstructCorrm(cyclus::Context* ctx) {
+  return new Corrm(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle

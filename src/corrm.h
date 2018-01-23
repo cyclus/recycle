@@ -1,115 +1,56 @@
-#ifndef CYCAMORE_SRC_REACTOR_H_
-#define CYCAMORE_SRC_REACTOR_H_
+#ifndef RECYCLE_SRC_CORRM_H_
+#define RECYCLE_SRC_CORRM_H_
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
-/// Reactor is a simple, general reactor based on static compositional
-/// transformations to model fuel burnup.  The user specifies a set of input
-/// fuels and corresponding burnt compositions that fuel is transformed to when
-/// it is discharged from the core.  No incremental transmutation takes place.
-/// Rather, at the end of an operational cycle, the batch being discharged from
-/// the core is instantaneously transmuted from its original fresh fuel
-/// composition into its spent fuel form.
-///
-/// Each fuel is identified by a specific input commodity and has an associated
-/// input recipe (nuclide composition), output recipe, output commidity, and
-/// preference.  The preference identifies which input fuels are preferred when
-/// requesting.  Changes in these preferences can be specified as a function of
-/// time using the pref_change variables.  Changes in the input-output recipe
-/// compositions can also be specified as a function of time using the
-/// recipe_change variables.
-///
-/// The reactor treats fuel as individual assemblies that are never split,
-/// combined or otherwise treated in any non-discrete way.  Fuel is requested
-/// in full-or-nothing assembly sized quanta.  If real-world assembly modeling
-/// is unnecessary, parameters can be adjusted (e.g. n_assem_core, assem_size,
-/// n_assem_batch).  At the end of every cycle, a full batch is discharged from
-/// the core consisting of n_assem_batch assemblies of assem_size kg. The
-/// reactor also has a specifiable refueling time period following the end of
-/// each cycle at the end of which it will resume operation on the next cycle
-/// *if* it has enough fuel for a full core; otherwise it waits until it has
-/// enough fresh fuel assemblies.
-///
-/// In addition to its core, the reactor has an on-hand fresh fuel inventory
-/// and a spent fuel inventory whose capacities are specified by n_assem_fresh
-/// and n_assem_spent respectively.  Each time step the reactor will attempt to
-/// acquire enough fresh fuel to fill its fresh fuel inventory (and its core if
-/// the core isn't currently full).  If the fresh fuel inventory has zero
-/// capacity, fuel will be ordered just-in-time after the end of each
-/// operational cycle before the next begins.  If the spent fuel inventory
-/// becomes full, the reactor will halt operation at the end of the next cycle
-/// until there is more room.  Each time step, the reactor will try to trade
-/// away as much of its spent fuel inventory as possible.
-///
-/// When the reactor reaches the end of its lifetime, it will discharge all
-/// material from its core and trade away all its spent fuel as quickly as
-/// possible.  Full decommissioning will be delayed until all spent fuel is
-/// gone.  If the reactor has a full core when it is decommissioned (i.e. is
-/// mid-cycle) when the reactor is decommissioned, half (rounded up to nearest
-/// int) of its assemblies are transmuted to their respective burnt
-/// compositions.
 
-class Reactor : public cyclus::Facility,
+/// CORRM is the Continuous Online Reprocessing Reactor Module for CYCLUS.
+/// It is created by first creating a skeleton reactor module that does
+/// depletion calculation given various parameters,
+/// and accepts fuel and does online reprocessing.
+/// Then various depletion calculations can be created
+/// by creating a Reduced-Order-Module from RAVEN
+/// through a SERPENT interface.
+/// 
+
+/// Due to the restrictions with generating a reduced order model,
+/// the geometry or the design of the reactor model is fixed.
+/// However, the developmental plan is to create more ROMs with
+/// other geometries and core designs. The first one to be done is
+/// the Molten Salt Breeder Reactor by Robertson.
+
+
+
+
+class Corrm : public cyclus::Facility,
   public cyclus::toolkit::CommodityProducer {
 #pragma cyclus note { \
-"niche": "reactor", \
+"niche": "corrm", \
 "doc": \
-  "Reactor is a simple, general reactor based on static compositional" \
-  " transformations to model fuel burnup.  The user specifies a set of input" \
-  " fuels and corresponding burnt compositions that fuel is transformed to when" \
-  " it is discharged from the core.  No incremental transmutation takes place." \
-  " Rather, at the end of an operational cycle, the batch being discharged from" \
-  " the core is instantaneously transmuted from its original fresh fuel" \
-  " composition into its spent fuel form." \
-  "\n\n" \
-  "Each fuel is identified by a specific input commodity and has an associated" \
-  " input recipe (nuclide composition), output recipe, output commidity, and" \
-  " preference.  The preference identifies which input fuels are preferred when" \
-  " requesting.  Changes in these preferences can be specified as a function of" \
-  " time using the pref_change variables.  Changes in the input-output recipe" \
-  " compositions can also be specified as a function of time using the" \
-  " recipe_change variables." \
-  "\n\n" \
-  "The reactor treats fuel as individual assemblies that are never split," \
-  " combined or otherwise treated in any non-discrete way.  Fuel is requested" \
-  " in full-or-nothing assembly sized quanta.  If real-world assembly modeling" \
-  " is unnecessary, parameters can be adjusted (e.g. n_assem_core, assem_size," \
-  " n_assem_batch).  At the end of every cycle, a full batch is discharged from" \
-  " the core consisting of n_assem_batch assemblies of assem_size kg. The" \
-  " reactor also has a specifiable refueling time period following the end of" \
-  " each cycle at the end of which it will resume operation on the next cycle" \
-  " *if* it has enough fuel for a full core; otherwise it waits until it has" \
-  " enough fresh fuel assemblies." \
-  "\n\n" \
-  "In addition to its core, the reactor has an on-hand fresh fuel inventory" \
-  " and a spent fuel inventory whose capacities are specified by n_assem_fresh" \
-  " and n_assem_spent respectively.  Each time step the reactor will attempt to" \
-  " acquire enough fresh fuel to fill its fresh fuel inventory (and its core if" \
-  " the core isn't currently full).  If the fresh fuel inventory has zero" \
-  " capacity, fuel will be ordered just-in-time after the end of each" \
-  " operational cycle before the next begins.  If the spent fuel inventory" \
-  " becomes full, the reactor will halt operation at the end of the next cycle" \
-  " until there is more room.  Each time step, the reactor will try to trade" \
-  " away as much of its spent fuel inventory as possible." \
-  "\n\n" \
-  "When the reactor reaches the end of its lifetime, it will discharge all" \
-  " material from its core and trade away all its spent fuel as quickly as" \
-  " possible.  Full decommissioning will be delayed until all spent fuel is" \
-  " gone.  If the reactor has a full core when it is decommissioned (i.e. is" \
-  " mid-cycle) when the reactor is decommissioned, half (rounded up to nearest" \
-  " int) of its assemblies are transmuted to their respective burnt" \
-  " compositions." \
+  " CORRM is the Continuous Online Reprocessing Reactor Module for CYCLUS."\
+  " It is created by first creating a skeleton reactor module that does"\
+  " depletion calculation given various parameters,"\
+  " and accepts fuel and does online reprocessing."\
+  " Then various depletion calculations can be created" \
+  " by creating a Reduced-Order-Module from RAVEN"\
+  " through a SERPENT interface."\
+  "\n\n "\
+  " Due to the restrictions with generating a reduced order model," \
+  " the geometry or the design of the reactor model is fixed."\
+  " However, the developmental plan is to create more ROMs with"\
+  " other geometries and core designs. The first one to be done is"\
+  " the Molten Salt Breeder Reactor by Robertson."\
   "", \
 }
 
  public:
-  Reactor(cyclus::Context* ctx);
-  virtual ~Reactor(){};
+  Corrm(cyclus::Context* ctx);
+  virtual ~Corrm(){};
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   virtual void Tick();
   virtual void Tock();
@@ -399,6 +340,6 @@ class Reactor : public cyclus::Facility,
   std::set<std::string> uniq_outcommods_;
 };
 
-} // namespace cycamore
+} // namespace recycle
 
-#endif  // CYCAMORE_SRC_REACTOR_H_
+#endif  // RECYCLE_SRC_CORRM_H_
