@@ -62,9 +62,6 @@ void Reactor::EnterNotify() {
     }
   }
 
-  // calculate depletion frequency per timestep
-  dep_freq = fllor(context()->dt() / )
-
   // input consistency checking:
   int n = recipe_change_times.size();
   std::stringstream ss;
@@ -115,10 +112,8 @@ void Reactor::Tick() {
     // record the last time series entry if the reactor was operating at the
     // time of retirement.
     if (exit_time() == context()->time()) {
-      if (cycle_step > 0 && cycle_step < cycle_time && 
+      if (cycle_step > 0 && cycle_step <= cycle_time && 
           core.count() == n_assem_core) {
-        cyclus::toolkit::RecordTimeSeries<cyclus::toolkit::POWER>(this, power_cap);
-      }  else if (refuel_time == 0 && core.count() == n_assem_core)  {
         cyclus::toolkit::RecordTimeSeries<cyclus::toolkit::POWER>(this, power_cap);
       } else {
         cyclus::toolkit::RecordTimeSeries<cyclus::toolkit::POWER>(this, 0);
