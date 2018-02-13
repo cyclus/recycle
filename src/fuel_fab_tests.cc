@@ -12,7 +12,7 @@ using cyclus::QueryResult;
 using cyclus::Cond;
 using cyclus::toolkit::MatQuery;
 
-namespace cycamore {
+namespace recycle {
 namespace fuelfabtests {
 
 Composition::Ptr c_uox() {
@@ -200,7 +200,7 @@ TEST(FuelFabTests, FissRecipe) {
      ;
 
   int simdur = 1;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("stream1").Finalize();
   sim.AddRecipe("spentuox", c_pustream());
   sim.AddRecipe("natu", c_natu());
@@ -234,7 +234,7 @@ TEST(FuelFabTests, MultipleFissStreams) {
      ;
 
   int simdur = 1;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("stream1").recipe("spentuox").capacity(1).Finalize();
   sim.AddSource("stream2").recipe("spentuox").capacity(1).Finalize();
   sim.AddSource("stream3").recipe("spentuox").capacity(1).Finalize();
@@ -276,7 +276,7 @@ TEST(FuelFabTests, FissStreamPrefs) {
      ;
 
   int simdur = 1;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("stream1").recipe("spentuox").capacity(1).Finalize();
   sim.AddSource("stream2").recipe("spentuox").capacity(1).Finalize();
   sim.AddSource("stream3").recipe("spentuox").capacity(1).Finalize();
@@ -321,7 +321,7 @@ TEST(FuelFabTests, ZeroThroughput) {
      ;
 
   int simdur = 10;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("uox").capacity(1).Finalize();
   sim.AddSource("spentuox").capacity(1).Finalize();
   sim.AddSource("natu").capacity(1).Finalize();
@@ -354,7 +354,7 @@ TEST(FuelFabTests, FillAllInventories) {
      ;
 
   int simdur = 10;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("uox").capacity(1).Finalize();
   sim.AddSource("spentuox").capacity(1).Finalize();
   sim.AddSource("natu").capacity(1).Finalize();
@@ -399,7 +399,7 @@ TEST(FuelFabTests, ProvideStraightFiss_WithZeroFill) {
      "<throughput>100</throughput>"
      ;
   int simdur = 6;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("anything").Finalize();
   sim.AddSink("recyclefuel").recipe("spentuox").capacity(100).Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -429,7 +429,7 @@ TEST(FuelFabTests, ProvideStraightFill_ZeroFiss) {
      "<throughput>100</throughput>"
      ;
   int simdur = 6;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("anything").Finalize();
   sim.AddSink("recyclefuel").recipe("natu").capacity(100).Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -463,7 +463,7 @@ TEST(FuelFabTests, ThroughputLimit) {
   double throughput = 3;
 
   int simdur = 5;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("anything").lifetime(1).Finalize();
   sim.AddSink("recyclefuel").recipe("uox").capacity(2*throughput).Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -507,7 +507,7 @@ TEST(FuelFabTests, CorrectMixing) {
      "<throughput>100</throughput>"
      ;
   int simdur = 3;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").Finalize();
   sim.AddSource("natu").Finalize();
   sim.AddSink("recyclefuel").recipe("uox").capacity(10).lifetime(2).Finalize();
@@ -569,7 +569,7 @@ TEST(FuelFabTests, FillConstrained) {
   fill_frac = AtomToMassFrac(fill_frac, c_natu(), c_pustream());
   double max_provide = fillinv / fill_frac;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").lifetime(1).Finalize();
   sim.AddSource("natu").lifetime(1).Finalize();
   sim.AddSink("recyclefuel").recipe("uox").capacity(2 * max_provide).Finalize();
@@ -615,7 +615,7 @@ TEST(FuelFabTests, FissConstrained) {
   fill_frac = AtomToMassFrac(fill_frac, c_natu(), c_pustream());
   double max_provide = fissinv / fiss_frac;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").lifetime(1).Finalize();
   sim.AddSource("natu").lifetime(1).Finalize();
   sim.AddSink("recyclefuel").recipe("uox").capacity(2 * max_provide).Finalize();
@@ -654,7 +654,7 @@ TEST(FuelFabTests, SwapTopup) {
   int simdur = 3;
   double sink_cap = 10;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").Finalize();
   sim.AddSource("pustreambad").Finalize();
   sim.AddSource("natu").Finalize();
@@ -704,7 +704,7 @@ TEST(FuelFabTests, SwapTopup_ZeroFill) {
   int simdur = 3;
   double sink_cap = 10;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").Finalize();
   sim.AddSource("pustreambad").Finalize();
   sim.AddSource("natu").Finalize();
@@ -770,7 +770,7 @@ TEST(FuelFabTests, SwapTopup_TopupConstrained) {
   topup_frac = AtomToMassFrac(topup_frac, c_pustream(), c_pustreambad());
   double max_provide = topupinv / topup_frac;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").Finalize();
   sim.AddSource("pustreambad").Finalize();
   sim.AddSource("natu").Finalize();
@@ -825,7 +825,7 @@ TEST(FuelFabTests, SwapTopup_FissConstrained) {
   topup_frac = AtomToMassFrac(topup_frac, c_pustream(), c_pustreambad());
   double max_provide = fissinv / fiss_frac;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("pustream").Finalize();
   sim.AddSource("pustreambad").Finalize();
   sim.AddSource("natu").Finalize();
@@ -877,7 +877,7 @@ TEST(FuelFabTests, HomogenousBuffers) {
   Composition::Ptr c = Composition::CreateFromMass(m);
 
   int simdur = 5;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:FuelFab"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:FuelFab"), config, simdur);
   sim.AddSource("stream1").start(0).lifetime(1).capacity(.01).recipe("special").Finalize();
   sim.AddSource("stream1").start(1).lifetime(1).capacity(3.98).recipe("natu").Finalize();
   sim.AddSource("natu").lifetime(1).Finalize();
@@ -891,6 +891,6 @@ TEST(FuelFabTests, HomogenousBuffers) {
 }
 
 } // namespace fuelfabtests
-} // namespace cycamore
+} // namespace recycle
 
 

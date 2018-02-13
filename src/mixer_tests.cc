@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 
-namespace cycamore {
+namespace recycle {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -364,7 +364,7 @@ TEST(MixerTests, MultipleFissStreams) {
       "<outputbuf_size>0</outputbuf_size>"
       "<throughput>0</throughput>";
   int simdur = 1;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Mixer"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Mixer"), config, simdur);
   sim.AddSource("stream1").recipe("unatstream").capacity(1).Finalize();
   sim.AddSource("stream2").recipe("uoxstream").capacity(1).Finalize();
   sim.AddSource("stream3").recipe("pustream").capacity(1).Finalize();
@@ -438,7 +438,7 @@ TEST(MixerTests, CompleteMixingProcess) {
       "<outputbuf_size>10</outputbuf_size>"
       "<throughput>1</throughput>";
   int simdur = 2;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Mixer"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Mixer"), config, simdur);
   sim.AddSource("stream1").recipe("unatstream").capacity(1).Finalize();
   sim.AddSource("stream2").recipe("uoxstream").capacity(1).Finalize();
   sim.AddSource("stream3").recipe("pustream").capacity(1).Finalize();
@@ -459,4 +459,4 @@ TEST(MixerTests, CompleteMixingProcess) {
   EXPECT_DOUBLE_EQ(1., m->quantity());
 }
 
-}  // namespace cycamore
+}  // namespace recycle

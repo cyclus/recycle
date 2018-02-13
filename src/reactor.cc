@@ -8,7 +8,7 @@ using cyclus::KeyError;
 using cyclus::ValueError;
 using cyclus::Request;
 
-namespace cycamore {
+namespace recycle {
 
 Reactor::Reactor(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
@@ -24,27 +24,27 @@ Reactor::Reactor(cyclus::Context* ctx)
       power_name("power"),
       discharged(false) { }
 
-#pragma cyclus def clone cycamore::Reactor
+#pragma cyclus def clone recycle::Reactor
 
-#pragma cyclus def schema cycamore::Reactor
+#pragma cyclus def schema recycle::Reactor
 
-#pragma cyclus def annotations cycamore::Reactor
+#pragma cyclus def annotations recycle::Reactor
 
-#pragma cyclus def infiletodb cycamore::Reactor
+#pragma cyclus def infiletodb recycle::Reactor
 
-#pragma cyclus def snapshot cycamore::Reactor
+#pragma cyclus def snapshot recycle::Reactor
 
-#pragma cyclus def snapshotinv cycamore::Reactor
+#pragma cyclus def snapshotinv recycle::Reactor
 
-#pragma cyclus def initinv cycamore::Reactor
+#pragma cyclus def initinv recycle::Reactor
 
 void Reactor::InitFrom(Reactor* m) {
-  #pragma cyclus impl initfromcopy cycamore::Reactor
+  #pragma cyclus impl initfromcopy recycle::Reactor
   cyclus::toolkit::CommodityProducer::Copy(m);
 }
 
 void Reactor::InitFrom(cyclus::QueryableBackend* b) {
-  #pragma cyclus impl initfromdb cycamore::Reactor
+  #pragma cyclus impl initfromdb recycle::Reactor
 
   namespace tk = cyclus::toolkit;
   tk::CommodityProducer::Add(tk::Commodity(power_name),
@@ -55,7 +55,7 @@ void Reactor::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
   // If the user ommitted fuel_prefs, we set it to zeros for each fuel
-  // type.  Without this segfaults could occur - yuck.
+  // type.  Without this segmentation faults could occur - yuck.
   if (fuel_prefs.size() == 0) {
     for (int i = 0; i < fuel_outcommods.size(); i++) {
       fuel_prefs.push_back(cyclus::kDefaultPref);
@@ -112,7 +112,7 @@ void Reactor::Tick() {
     // record the last time series entry if the reactor was operating at the
     // time of retirement.
     if (exit_time() == context()->time()) {
-      if (cycle_step > 0 && cycle_step <= cycle_time &&
+      if (cycle_step > 0 && cycle_step <= cycle_time && 
           core.count() == n_assem_core) {
         cyclus::toolkit::RecordTimeSeries<cyclus::toolkit::POWER>(this, power_cap);
       } else {
@@ -418,7 +418,7 @@ void Reactor::Load() {
 std::string Reactor::fuel_incommod(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_incommods.size()) {
-    throw KeyError("cycamore::Reactor - no incommod for material object");
+    throw KeyError("recycle::Reactor - no incommod for material object");
   }
   return fuel_incommods[i];
 }
@@ -426,7 +426,7 @@ std::string Reactor::fuel_incommod(Material::Ptr m) {
 std::string Reactor::fuel_outcommod(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_outcommods.size()) {
-    throw KeyError("cycamore::Reactor - no outcommod for material object");
+    throw KeyError("recycle::Reactor - no outcommod for material object");
   }
   return fuel_outcommods[i];
 }
@@ -434,7 +434,7 @@ std::string Reactor::fuel_outcommod(Material::Ptr m) {
 std::string Reactor::fuel_inrecipe(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_inrecipes.size()) {
-    throw KeyError("cycamore::Reactor - no inrecipe for material object");
+    throw KeyError("recycle::Reactor - no inrecipe for material object");
   }
   return fuel_inrecipes[i];
 }
@@ -442,7 +442,7 @@ std::string Reactor::fuel_inrecipe(Material::Ptr m) {
 std::string Reactor::fuel_outrecipe(Material::Ptr m) {
   int i = res_indexes[m->obj_id()];
   if (i >= fuel_outrecipes.size()) {
-    throw KeyError("cycamore::Reactor - no outrecipe for material object");
+    throw KeyError("recycle::Reactor - no outrecipe for material object");
   }
   return fuel_outrecipes[i];
 }
@@ -463,7 +463,7 @@ void Reactor::index_res(cyclus::Resource::Ptr m, std::string incommod) {
     }
   }
   throw ValueError(
-      "cycamore::Reactor - received unsupported incommod material");
+      "recycle::Reactor - received unsupported incommod material");
 }
 
 std::map<std::string, MatVec> Reactor::PopSpent() {
@@ -506,4 +506,4 @@ extern "C" cyclus::Agent* ConstructReactor(cyclus::Context* ctx) {
   return new Reactor(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle

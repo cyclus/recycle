@@ -11,7 +11,7 @@ using cyclus::QueryResult;
 using cyclus::Cond;
 using cyclus::toolkit::MatQuery;
 
-namespace cycamore {
+namespace recycle {
 namespace reactortests {
 
 Composition::Ptr c_uox() {
@@ -70,7 +70,7 @@ TEST(ReactorTests, JustInTimeOrdering) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("enriched_u").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
   sim.AddRecipe("lwr_spent", c_spentuox());
@@ -96,7 +96,7 @@ TEST(ReactorTests, BatchSizes) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -123,7 +123,7 @@ TEST(ReactorTests, RefuelTimes) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 49;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -134,6 +134,78 @@ TEST(ReactorTests, RefuelTimes) {
   int refuelt = 3;
   int n_assem_want = simdur/(cyclet+refuelt)+1; // +1 for initial core
   EXPECT_EQ(n_assem_want, qr.rows.size());
+}
+
+
+// tests that a reactor decommissions on time without producing
+// power at the end of its lifetime.
+TEST(ReactorTests, DecomTimes) {
+  std::string config = 
+     "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
+     "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
+     "  <fuel_incommods>  <val>uox</val>      </fuel_incommods>  "
+     "  <fuel_outcommods> <val>waste</val>    </fuel_outcommods>  "
+     ""
+     "  <cycle_time>2</cycle_time>  "
+     "  <refuel_time>2</refuel_time>  "
+     "  <assem_size>1</assem_size>  "
+     "  <n_assem_core>3</n_assem_core>  "
+     "  <power_cap>1000</power_cap>  "
+     "  <n_assem_batch>1</n_assem_batch>  ";
+
+  int simdur = 12;
+  int lifetime = 7;
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur, lifetime);
+  sim.AddSource("uox").Finalize();
+  sim.AddRecipe("uox", c_uox());
+  sim.AddRecipe("spentuox", c_spentuox());
+  int id = sim.Run();
+
+  // operating for 2+2 months and shutdown for 2+1
+  int on_time = 4;
+  std::vector<Cond> conds;
+  conds.push_back(Cond("Value", "==", 1000));
+  QueryResult qr = sim.db().Query("TimeSeriesPower", &conds);
+  EXPECT_EQ(on_time, qr.rows.size());
+
+  int off_time = 3;
+  conds.clear();
+  conds.push_back(Cond("Value", "==", 0));
+  qr = sim.db().Query("TimeSeriesPower", &conds);
+  EXPECT_EQ(off_time, qr.rows.size());
+}
+
+
+// Tests if a reactor produces power at the time of its decommission
+// given a refuel_time of zero.
+TEST(ReactorTests, DecomZeroRefuel) {
+  std::string config = 
+     "  <fuel_inrecipes>  <val>uox</val>      </fuel_inrecipes>  "
+     "  <fuel_outrecipes> <val>spentuox</val> </fuel_outrecipes>  "
+     "  <fuel_incommods>  <val>uox</val>      </fuel_incommods>  "
+     "  <fuel_outcommods> <val>waste</val>    </fuel_outcommods>  "
+     ""
+     "  <cycle_time>2</cycle_time>  "
+     "  <refuel_time>0</refuel_time>  "
+     "  <assem_size>1</assem_size>  "
+     "  <n_assem_core>3</n_assem_core>  "
+     "  <power_cap>1000</power_cap>  "
+     "  <n_assem_batch>1</n_assem_batch>  ";
+
+  int simdur = 8;
+  int lifetime = 6;
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur, lifetime);
+  sim.AddSource("uox").Finalize();
+  sim.AddRecipe("uox", c_uox());
+  sim.AddRecipe("spentuox", c_spentuox());
+  int id = sim.Run();
+
+  // operating for 2+2 months and shutdown for 2+1
+  int on_time = 6;
+  std::vector<Cond> conds;
+  conds.push_back(Cond("Value", "==", 1000));
+  QueryResult qr = sim.db().Query("TimeSeriesPower", &conds);
+  EXPECT_EQ(on_time, qr.rows.size());
 }
 
 // tests that new fuel is ordered immediately following cycle end - at the
@@ -153,7 +225,7 @@ TEST(ReactorTests, OrderAtRefuelStart) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 7;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -188,7 +260,7 @@ TEST(ReactorTests, MultiFuelMix) {
   // each source is smaller capacity thatn the reactor orders on each time
   // step to make it easy to compute+check the number of transactions.
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").capacity(2).Finalize();
   sim.AddSource("mox").capacity(2).Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -219,7 +291,7 @@ TEST(ReactorTests, FullSpentInventory) {
      "  <n_assem_spent>3</n_assem_spent>  ";
 
   int simdur = 10;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddRecipe("uox", c_uox());
   sim.AddRecipe("spentuox", c_spentuox());
@@ -251,7 +323,7 @@ TEST(ReactorTests, FuelShortage) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").lifetime(1).Finalize(); // provide initial full batch
   sim.AddSource("uox").start(9).lifetime(1).capacity(2).Finalize(); // provide partial batch post cycle-end
   sim.AddSource("uox").start(15).Finalize(); // provide remainder of batch much later
@@ -300,7 +372,7 @@ TEST(ReactorTests, DischargedFuelTransmute) {
      "  <n_assem_batch>1</n_assem_batch>  ";
 
   int simdur = 7;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").Finalize();
   sim.AddSink("waste").Finalize();
   sim.AddRecipe("uox", c_uox());
@@ -334,7 +406,7 @@ TEST(ReactorTests, SpentFuelProperCommodTracking) {
      "  <n_assem_batch>3</n_assem_batch>  ";
 
   int simdur = 7;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("uox").capacity(1).Finalize();
   sim.AddSource("mox").capacity(2).Finalize();
   sim.AddSink("waste1").Finalize();
@@ -379,7 +451,7 @@ TEST(ReactorTests, PrefChange) {
      "  <pref_change_values>  <val>-1</val>         </pref_change_values>";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("enriched_u").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
   sim.AddRecipe("lwr_spent", c_spentuox());
@@ -409,7 +481,7 @@ TEST(ReactorTests, RecipeChange) {
      "  <recipe_change_out>     <val>lwr_spent</val>  <val>water</val>      </recipe_change_out>";
 
   int simdur = 50;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, simdur);
   sim.AddSource("enriched_u").Finalize();
   sim.AddSink("waste").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
@@ -481,7 +553,7 @@ TEST(ReactorTests, Retire) {
   int life = 36;
   int cycle_time = 7;
   int refuel_time = 0;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Reactor"), config, dur, life);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Reactor"), config, dur, life);
   sim.AddSource("enriched_u").Finalize();
   sim.AddSink("waste").Finalize();
   sim.AddRecipe("lwr_fresh", c_uox());
@@ -520,5 +592,5 @@ TEST(ReactorTests, Retire) {
 }
 
 } // namespace reactortests
-} // namespace cycamore
+} // namespace recycle
 

@@ -1,22 +1,22 @@
-#ifndef CYCAMORE_SRC_GROWTH_REGION_H_
-#define CYCAMORE_SRC_GROWTH_REGION_H_
+#ifndef RECYCLE_SRC_GROWTH_REGION_H_
+#define RECYCLE_SRC_GROWTH_REGION_H_
 
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
 // forward declarations
-namespace cycamore {
+namespace recycle {
 class GrowthRegion;
-}  // namespace cycamore
+}  // namespace recycle
 
 // forward includes
 #include "growth_region_tests.h"
 
-namespace cycamore {
+namespace recycle {
 
 /// A container of (time, (demand type, demand parameters))
 typedef std::vector<
@@ -35,7 +35,9 @@ typedef std::vector<
 /// multiple commodities being demanded.
 ///
 /// @warning The growth region is experimental
-class GrowthRegion : public cyclus::Region {
+class GrowthRegion 
+    : public cyclus::Region,
+      public cyclus::toolkit::CommodityProducerManager {
   friend class GrowthRegionTests;
  public:
   /// The default constructor for the GrowthRegion
@@ -44,7 +46,7 @@ class GrowthRegion : public cyclus::Region {
   /// The default destructor for the GrowthRegion
   virtual ~GrowthRegion();
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   #pragma cyclus
 
@@ -58,6 +60,8 @@ class GrowthRegion : public cyclus::Region {
   /// @param time is the time to perform the tick
   virtual void Tick();
 
+  virtual void Tock();
+
   /// enter the simulation and register any children present
   virtual void EnterNotify();
 
@@ -67,8 +71,8 @@ class GrowthRegion : public cyclus::Region {
   inline cyclus::toolkit::SupplyDemandManager* sdmanager() {
     return &sdmanager_;
   }
-
- protected:
+  
+ protected:  
   #pragma cyclus var { \
     "alias": ["growth", "commod", \
               ["piecewise_function",                                    \
@@ -80,7 +84,7 @@ class GrowthRegion : public cyclus::Region {
     "doc": "Nameplate capacity demand functions." \
     "\n\n"                                       \
     "Each demand type must be for a commodity for which capacity can be built "\
-    "(e.g., 'power' from cycamore::Reactors). Any archetype that implements the "\
+    "(e.g., 'power' from recycle::Reactors). Any archetype that implements the "\
     "cyclus::toolkit::CommodityProducer interface can interact with the "\
     "GrowthRegion in the manner."                                       \
     "\n\n"                                       \
@@ -102,15 +106,13 @@ class GrowthRegion : public cyclus::Region {
     "respective documentation pages.",                                  \
   }
   std::map<std::string, std::vector<std::pair<int, std::pair<std::string, std::string> > > > commodity_demand; // must match Demand typedef
-
-#if CYCLUS_HAS_COIN
+  
   /// manager for building things
   cyclus::toolkit::BuildingManager buildmanager_;
-#endif
 
   /// manager for Supply and demand
   cyclus::toolkit::SupplyDemandManager sdmanager_;
-
+  
   /// register a child
   void Register_(cyclus::Agent* agent);
 
@@ -121,12 +123,18 @@ class GrowthRegion : public cyclus::Region {
   /// facilities be built
   void AddCommodityDemand_(std::string commod, Demand& demand);
 
+  /// Recursively calls the function Register_ on all descendants of this GrowthRegion agent
+  void Recursive_Register(cyclus::Agent* a);
+
+  void Recursive_Unregister(cyclus::Agent* a);
+
   /// orders builds given a commodity and an unmet demand for production
   /// capacity of that commodity
   /// @param commodity the commodity being demanded
   /// @param unmetdemand the unmet demand
   void OrderBuilds(cyclus::toolkit::Commodity& commodity, double unmetdemand);
 };
-}  // namespace cycamore
 
-#endif  // CYCAMORE_SRC_GROWTH_REGION_H_
+}  // namespace recycle
+
+#endif  // RECYCLE_SRC_GROWTH_REGION_H_

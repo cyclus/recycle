@@ -18,7 +18,7 @@ using cyclus::toolkit::MatQuery;
 using pyne::nucname::id;
 using cyclus::Material;
 
-namespace cycamore {
+namespace recycle {
   
 Composition::Ptr c_nou235() {
   cyclus::CompMap m;
@@ -65,7 +65,7 @@ TEST_F(EnrichmentTest, RequestQty) {
 
   int simdur = 1;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("natu1", c_natu1());
   
   sim.AddSource("natu")
@@ -105,7 +105,7 @@ TEST_F(EnrichmentTest, CheckSWUConstraint) {
   int simdur = 1;
   
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
    
   sim.AddRecipe("natu1", c_natu1());
   sim.AddRecipe("heu", c_heu());
@@ -143,7 +143,7 @@ TEST_F(EnrichmentTest, CheckCapConstraint) {
   int simdur = 1;
 
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
 
 
   sim.AddRecipe("natu1", c_natu1());
@@ -181,7 +181,7 @@ TEST_F(EnrichmentTest, RequestEnrich) {
 
   int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("natu1", c_natu1());
   sim.AddRecipe("leu", c_leu());
   sim.AddRecipe("heu", c_heu());
@@ -236,7 +236,7 @@ TEST_F(EnrichmentTest, TradeTails) {
   // time 1-source to EF, 2-Enrich, add to tails, 3-tails avail. for trade
   int simdur = 3;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("natu1", c_natu1());
   sim.AddRecipe("leu", c_leu());
   
@@ -274,7 +274,7 @@ TEST_F(EnrichmentTest, TradeTails) {
   // time 1-source to EF, 2-Enrich, add to tails, 3-tails avail. for trade
   int simdur = 3;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("natu1", c_natu1());
   sim.AddRecipe("leu", c_leu());
   
@@ -330,7 +330,7 @@ TEST_F(EnrichmentTest, BidPrefs) {
 
   int simdur = 1;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("natu1", c_natu1());
   sim.AddRecipe("natu2", c_natu2());
 
@@ -382,7 +382,7 @@ TEST_F(EnrichmentTest, BidPrefs) {
 
   int simdur = 1;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("natu1", c_natu1());
   sim.AddRecipe("natu2", c_natu2());
 
@@ -420,7 +420,7 @@ TEST_F(EnrichmentTest, ZeroU235) {
 
   int simdur = 1;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Enrichment"), config, simdur);
+		      (":recycle:Enrichment"), config, simdur);
   sim.AddRecipe("no_u235", c_nou235());
   sim.AddRecipe("natu1", c_natu1());
 
@@ -724,11 +724,11 @@ TEST_F(EnrichmentTest, Response) {
   EXPECT_EQ(responses.size(), 2);
 }
   
-}  // namespace cycamore
+}  // namespace recycle
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 cyclus::Agent* EnrichmentConstructor(cyclus::Context* ctx) {
-  return new cycamore::Enrichment(ctx);
+  return new recycle::Enrichment(ctx);
 }
 
 // required to get functionality in cyclus agent unit tests library

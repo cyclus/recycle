@@ -9,7 +9,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace cycamore {
+namespace recycle {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Enrichment::Enrichment(cyclus::Context* ctx)
@@ -462,4 +462,4 @@ extern "C" cyclus::Agent* ConstructEnrichment(cyclus::Context* ctx) {
   return new Enrichment(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle
