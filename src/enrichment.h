@@ -1,5 +1,5 @@
-#ifndef RECYLCLE_SRC_ENRICHMENT_H_
-#define RECYLCLE_SRC_ENRICHMENT_H_
+#ifndef RECYCLE_SRC_ENRICHMENT_H_
+#define RECYCLE_SRC_ENRICHMENT_H_
 
 #include <string>
 
