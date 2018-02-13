@@ -12,7 +12,7 @@ using cyclus::QueryResult;
 using cyclus::Cond;
 using cyclus::toolkit::MatQuery;
 
-namespace cycamore {
+namespace recycle {
 
 TEST(SeparationsTests, SepMaterial) {
   CompMap comp;
@@ -86,7 +86,7 @@ TEST(SeparationsTests, SeparationEfficiency) {
   ;
   
   
-  cyclus::MockSim sim1(cyclus::AgentSpec(":cycamore:Separations"), config, simdur);
+  cyclus::MockSim sim1(cyclus::AgentSpec(":recycle:Separations"), config, simdur);
   
   EXPECT_NO_THROW(sim1.Run()) << "Cumulative separation efficiency smaler than 1 is throwing an error but should not.";
   
@@ -132,7 +132,7 @@ TEST(SeparationsTests, SeparationEfficiency) {
       ;
   
   
-  cyclus::MockSim sim2(cyclus::AgentSpec(":cycamore:Separations"), config, simdur);
+  cyclus::MockSim sim2(cyclus::AgentSpec(":recycle:Separations"), config, simdur);
   
   EXPECT_NO_THROW(sim2.Run()) << "Cumulative separation efficiency of 1 is throwing an error but should not.";
 }
@@ -162,7 +162,7 @@ TEST(SeparationsTests, SeparationEfficiencyThrowing) {
       "<feed_commods> <val>feed</val> </feed_commods>"
       ;
 
-  cyclus::MockSim sim1(cyclus::AgentSpec(":cycamore:Separations"), config, simdur);
+  cyclus::MockSim sim1(cyclus::AgentSpec(":recycle:Separations"), config, simdur);
   
   EXPECT_THROW(sim1.Run(), cyclus::ValueError) << "Direct separation efficiency greater than 1 is not throwing an error but should.";
   
@@ -197,7 +197,7 @@ TEST(SeparationsTests, SeparationEfficiencyThrowing) {
     "<feed_commods> <val>feed</val> </feed_commods>"
     ;
   
-  cyclus::MockSim sim2(cyclus::AgentSpec(":cycamore:Separations"), config, simdur);
+  cyclus::MockSim sim2(cyclus::AgentSpec(":recycle:Separations"), config, simdur);
   
   EXPECT_THROW(sim2.Run(), cyclus::ValueError) << "Single cumulative separation efficiency greater than 1 is not throwing an error but should.";
 // Check if a cumulative separation efficiency greater than 1 for multiple nuclides throw an error as expected.
@@ -231,7 +231,7 @@ TEST(SeparationsTests, SeparationEfficiencyThrowing) {
       "<feed_commods> <val>feed</val> </feed_commods>"
       ;
   
-  cyclus::MockSim sim3(cyclus::AgentSpec(":cycamore:Separations"), config, simdur);
+  cyclus::MockSim sim3(cyclus::AgentSpec(":recycle:Separations"), config, simdur);
   
   EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative separation efficiencies greater than 1 are not throwing an error but should.";
 }
@@ -265,7 +265,7 @@ TEST(SeparationsTests, SepMixElemAndNuclide) {
   Composition::Ptr c = Composition::CreateFromMass(m);
 
   int simdur = 2;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Separations"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Separations"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
   sim.AddSink("stream1").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
@@ -309,7 +309,7 @@ TEST(SeparationsTests, Retire) {
   int simdur = 5;
   int life = 2;
 
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:Separations"),
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Separations"),
 		      config, simdur, life);
   sim.AddSource("feed").recipe("recipe1").Finalize();
   sim.AddSink("stream1").capacity(100).Finalize();
@@ -340,5 +340,5 @@ TEST(SeparationsTests, Retire) {
   EXPECT_EQ(3.0, qr.rows.size())
       << "failed to discharge all material before decomissioning";
  }  
-} // namespace cycamore
+} // namespace recycle
 

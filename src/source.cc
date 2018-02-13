@@ -5,7 +5,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace cycamore {
+namespace recycle {
 
 Source::Source(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
@@ -15,12 +15,12 @@ Source::Source(cyclus::Context* ctx)
 Source::~Source() {}
 
 void Source::InitFrom(Source* m) {
-  #pragma cyclus impl initfromcopy cycamore::Source
+  #pragma cyclus impl initfromcopy recycle::Source
   cyclus::toolkit::CommodityProducer::Copy(m);
 }
 
 void Source::InitFrom(cyclus::QueryableBackend* b) {
-  #pragma cyclus impl initfromdb cycamore::Source
+  #pragma cyclus impl initfromdb recycle::Source
   namespace tk = cyclus::toolkit;
   tk::CommodityProducer::Add(tk::Commodity(outcommod),
                              tk::CommodInfo(throughput, throughput));
@@ -114,4 +114,4 @@ extern "C" cyclus::Agent* ConstructSource(cyclus::Context* ctx) {
   return new Source(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle

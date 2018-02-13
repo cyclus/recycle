@@ -6,7 +6,7 @@
 
 #include "sink.h"
 
-namespace cycamore {
+namespace recycle {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Sink::Sink(cyclus::Context* ctx)
@@ -18,23 +18,23 @@ Sink::Sink(cyclus::Context* ctx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Sink::~Sink() {}
 
-#pragma cyclus def schema cycamore::Sink
+#pragma cyclus def schema recycle::Sink
 
-#pragma cyclus def annotations cycamore::Sink
+#pragma cyclus def annotations recycle::Sink
 
-#pragma cyclus def infiletodb cycamore::Sink
+#pragma cyclus def infiletodb recycle::Sink
 
-#pragma cyclus def snapshot cycamore::Sink
+#pragma cyclus def snapshot recycle::Sink
 
-#pragma cyclus def snapshotinv cycamore::Sink
+#pragma cyclus def snapshotinv recycle::Sink
 
-#pragma cyclus def initinv cycamore::Sink
+#pragma cyclus def initinv recycle::Sink
 
-#pragma cyclus def clone cycamore::Sink
+#pragma cyclus def clone recycle::Sink
 
-#pragma cyclus def initfromdb cycamore::Sink
+#pragma cyclus def initfromdb recycle::Sink
 
-#pragma cyclus def initfromcopy cycamore::Sink
+#pragma cyclus def initfromcopy recycle::Sink
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sink::EnterNotify() {
@@ -195,4 +195,4 @@ extern "C" cyclus::Agent* ConstructSink(cyclus::Context* ctx) {
   return new Sink(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle

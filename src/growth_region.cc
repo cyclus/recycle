@@ -1,21 +1,16 @@
 // Implements the GrowthRegion class
 #include "growth_region.h"
 
-namespace cycamore {
+namespace recycle {
 
-GrowthRegion::GrowthRegion(cyclus::Context* ctx) : cyclus::Region(ctx) {
-#if !CYCLUS_HAS_COIN
-  throw cyclus::Error("Growth Region requires that Cyclus & Cycamore be compiled "
-                      "with COIN support.");
-#endif
-}
+GrowthRegion::GrowthRegion(cyclus::Context* ctx) : cyclus::Region(ctx) { }
 
 GrowthRegion::~GrowthRegion() {}
 
 void GrowthRegion::AddCommodityDemand_(std::string commod,
                                        Demand& demand) {
-
-
+  
+  
   cyclus::toolkit::PiecewiseFunctionFactory pff;
   cyclus::toolkit::BasicFunctionFactory bff;
   bool continuous = false;
@@ -37,13 +32,7 @@ void GrowthRegion::AddCommodityDemand_(std::string commod,
 
 void GrowthRegion::EnterNotify() {
   cyclus::Region::EnterNotify();
-  std::set<cyclus::Agent*>::iterator ait;
-  for (ait = cyclus::Agent::children().begin();
-       ait != cyclus::Agent::children().end();
-       ++ait) {
-    Agent* a = *ait;
-    Register_(a);
-  }
+  Register_(this);
 
   std::map<std::string, Demand>::iterator it;
   for (it = commodity_demand.begin(); it != commodity_demand.end(); ++it) {
@@ -57,17 +46,27 @@ void GrowthRegion::DecomNotify(Agent* a) {
   Unregister_(a);
 }
 
+
+
 void GrowthRegion::Register_(cyclus::Agent* agent) {
   using cyclus::toolkit::CommodityProducerManager;
+  using cyclus::toolkit::CommodityProducer;
   using cyclus::toolkit::Builder;
-#if CYCLUS_HAS_COIN
-  CommodityProducerManager* cpm_cast =
-      dynamic_cast<CommodityProducerManager*>(agent);
-  if (cpm_cast != NULL) {
-    LOG(cyclus::LEV_INFO3, "greg") << "Registering agent "
+
+  CommodityProducerManager* cpm_cast = dynamic_cast<CommodityProducerManager*>(agent);
+  if (cpm_cast != NULL){
+    LOG(cyclus::LEV_INFO3, "mani") << "Registering agent "
                                    << agent->prototype() << agent->id()
-                                   << " as a commodity producer manager.";
+                                   << " as a commodity producer Manager.";
     sdmanager_.RegisterProducerManager(cpm_cast);
+  }
+
+  CommodityProducer* cp_cast = dynamic_cast<CommodityProducer*>(agent);
+  if (cp_cast != NULL){
+    LOG(cyclus::LEV_INFO3, "mani") << "Registering agent "
+                                   << agent->prototype() << agent->id()
+                                   << " as a commodity producer.";
+    CommodityProducerManager::Register(cp_cast);
   }
 
   Builder* b_cast = dynamic_cast<Builder*>(agent);
@@ -77,31 +76,78 @@ void GrowthRegion::Register_(cyclus::Agent* agent) {
                                    << " as a builder.";
     buildmanager_.Register(b_cast);
   }
-#else
-  throw cyclus::Error("Growth Region requires that Cyclus & Cycamore be compiled "
-                      "with COIN support.");
-#endif
 }
 
 void GrowthRegion::Unregister_(cyclus::Agent* agent) {
   using cyclus::toolkit::CommodityProducerManager;
+  using cyclus::toolkit::CommodityProducer;
   using cyclus::toolkit::Builder;
-#if CYCLUS_HAS_COIN
-  CommodityProducerManager* cpm_cast =
-    dynamic_cast<CommodityProducerManager*>(agent);
-  if (cpm_cast != NULL)
+
+  CommodityProducerManager* cpm_cast = dynamic_cast<CommodityProducerManager*>(agent);
+  if (cpm_cast != NULL){
     sdmanager_.UnregisterProducerManager(cpm_cast);
+  }
+
+  CommodityProducer* cp_cast = dynamic_cast<CommodityProducer*>(agent);
+  if (cp_cast != NULL){
+    CommodityProducerManager::Unregister(cp_cast);
+  }
 
   Builder* b_cast = dynamic_cast<Builder*>(agent);
   if (b_cast != NULL)
     buildmanager_.Unregister(b_cast);
-#else
-  throw cyclus::Error("Growth Region requires that Cyclus & Cycamore be compiled "
-                      "with COIN support.");
-#endif
+}
+
+void GrowthRegion::Tock(){
+  Recursive_Unregister(this);
+}
+
+
+
+void GrowthRegion::Recursive_Unregister(cyclus::Agent* a){
+  // Unregisters the descendants of this GrowthRegion recursively.
+  std::set<cyclus::Agent*>::iterator ait;
+  if  (a->children().begin() == a->children().end()){
+    return;
+  }
+  else{
+    for (ait = a->children().begin();
+         ait != a->children().end();
+         ++ait){
+      Agent* child = *ait;
+      if (child->exit_time() == context()->time()){
+        std::cout << "Agent exiting now will be unregistered: " << child->prototype() << std::endl;
+        Unregister_(child);
+      }
+      Recursive_Unregister(child);
+    }
+  }
+}
+
+void GrowthRegion::Recursive_Register(cyclus::Agent* a){
+  // Registers the descendants of this GrowthRegion recursively.
+  std::set<cyclus::Agent*>::iterator ait;
+  if  (a->children().begin() == a->children().end()){
+    return;
+  }
+  else{
+    for (ait = a->children().begin();
+         ait != a->children().end();
+         ++ait){
+      Agent* child = *ait;
+      if (child->enter_time() == context()->time()){
+        std::cout << "Agent entering now will be registered: " << child->prototype() << std::endl;
+        Register_(child);
+      }
+      Recursive_Register(child);
+    }
+  }
 }
 
 void GrowthRegion::Tick() {
+  // registers agents in the region as commodity supplier
+  Recursive_Register(this);
+
   double demand, supply, unmetdemand;
   cyclus::toolkit::Commodity commod;
   int time = context()->time();
@@ -119,7 +165,7 @@ void GrowthRegion::Tick() {
     LOG(cyclus::LEV_INFO3, "greg") << "  * demand = " << demand;
     LOG(cyclus::LEV_INFO3, "greg") << "  * supply = " << supply;
     LOG(cyclus::LEV_INFO3, "greg") << "  * unmet demand = " << unmetdemand;
-
+    
     if (unmetdemand > 0) {
       OrderBuilds(commod, unmetdemand);
     }
@@ -129,7 +175,6 @@ void GrowthRegion::Tick() {
 
 void GrowthRegion::OrderBuilds(cyclus::toolkit::Commodity& commodity,
                                double unmetdemand) {
-#if CYCLUS_HAS_COIN
   using std::vector;
   vector<cyclus::toolkit::BuildOrder> orders =
     buildmanager_.MakeBuildDecision(commodity, unmetdemand);
@@ -163,14 +208,10 @@ void GrowthRegion::OrderBuilds(cyclus::toolkit::Commodity& commodity,
       context()->SchedBuild(instcast, agentcast->prototype());
     }
   }
-#else
-  throw cyclus::Error("Growth Region requires that Cyclus & Cycamore be compiled "
-                      "with COIN support.");
-#endif
 }
 
 extern "C" cyclus::Agent* ConstructGrowthRegion(cyclus::Context* ctx) {
   return new GrowthRegion(ctx);
-}
+  }
 
-}  // namespace cycamore
+} // namespace recycle

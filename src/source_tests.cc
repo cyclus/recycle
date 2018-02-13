@@ -8,10 +8,10 @@
 #include "resource_helpers.h"
 #include "test_context.h"
 
-namespace cycamore {
+namespace recycle {
 
 void SourceTest::SetUp() {
-  src_facility = new cycamore::Source(tc.get());
+  src_facility = new recycle::Source(tc.get());
   trader = tc.trader();
   InitParameters();
   SetUpSource();
@@ -38,7 +38,7 @@ void SourceTest::SetUpSource() {
 
 TEST_F(SourceTest, Clone) {
   cyclus::Context* ctx = tc.get();
-  cycamore::Source* cloned_fac = dynamic_cast<cycamore::Source*>
+  recycle::Source* cloned_fac = dynamic_cast<recycle::Source*>
                                          (src_facility->Clone());
 
   EXPECT_EQ(outcommod(src_facility),  outcommod(cloned_fac));
@@ -139,10 +139,10 @@ SourceTest::GetContext(int nreqs, std::string commod) {
   return ec;
 }
 
-} // namespace cycamore
+} // namespace recycle
 
 cyclus::Agent* SourceConstructor(cyclus::Context* ctx) {
-  return new cycamore::Source(ctx);
+  return new recycle::Source(ctx);
 }
 
 // required to get functionality in cyclus agent unit tests library

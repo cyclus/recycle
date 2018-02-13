@@ -1,5 +1,5 @@
-#ifndef CYCAMORE_SRC_MANAGER_INST_TESTS_H_
-#define CYCAMORE_SRC_MANAGER_INST_TESTS_H_
+#ifndef RECYCLE_SRC_MANAGER_INST_TESTS_H_
+#define RECYCLE_SRC_MANAGER_INST_TESTS_H_
 
 #include <gtest/gtest.h>
 
@@ -45,7 +45,7 @@ class ManagerInstTests : public ::testing::Test {
   virtual void TearDown();
 
  protected:
-  cycamore::ManagerInst* src_inst;
+  recycle::ManagerInst* src_inst;
   TestProducer* producer;
 
   cyclus::toolkit::Commodity commodity;
@@ -55,4 +55,4 @@ class ManagerInstTests : public ::testing::Test {
   cyclus::Recorder rec_;
 };
 
-#endif  // CYCAMORE_SRC_MANAGER_INST_TESTS_H_
+#endif  // RECYCLE_SRC_MANAGER_INST_TESTS_H_

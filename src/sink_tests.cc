@@ -10,7 +10,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SinkTest::SetUp() {
-  src_facility = new cycamore::Sink(tc_.get());
+  src_facility = new recycle::Sink(tc_.get());
   trader = tc_.trader();
   InitParameters();
   SetUpSink();
@@ -59,8 +59,8 @@ TEST_F(SinkTest, InitialState) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TEST_F(SinkTest, Clone) {
-  using cycamore::Sink;
-  Sink* cloned_fac = dynamic_cast<cycamore::Sink*>
+  using recycle::Sink;
+  Sink* cloned_fac = dynamic_cast<recycle::Sink*>
                              (src_facility->Clone());
 
   EXPECT_DOUBLE_EQ(0.0, cloned_fac->InventorySize());
@@ -96,7 +96,7 @@ TEST_F(SinkTest, DISABLED_XMLInit) {
   cyclus::XMLParser p;
   p.Init(ss);
   cyclus::InfileTree engine(p);
-  cycamore::Sink fac(tc_.get());
+  recycle::Sink fac(tc_.get());
 
   // EXPECT_NO_THROW(fac.InitFrom(&engine););
   std::string arr[] = {commod1_, commod2_};
@@ -201,7 +201,7 @@ TEST_F(SinkTest, InRecipe){
   ctx.AddRecipe("some_u",c) ;
 
   // create a sink facility to interact with the DRE
-  cycamore::Sink* snk = new cycamore::Sink(&ctx);
+  recycle::Sink* snk = new recycle::Sink(&ctx);
   snk->AddCommodity("some_u");
   snk->EnterNotify();
   
@@ -237,7 +237,7 @@ TEST_F(SinkTest, BidPrefs) {
 
   int simdur = 1;
   cyclus::MockSim sim(cyclus::AgentSpec
-		      (":cycamore:Sink"), config, simdur);
+		      (":recycle:Sink"), config, simdur);
 
   sim.AddSource("commods_1")
     .capacity(1)
@@ -271,7 +271,7 @@ TEST_F(SinkTest, Print) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 cyclus::Agent* SinkConstructor(cyclus::Context* ctx) {
-  return new cycamore::Sink(ctx);
+  return new recycle::Sink(ctx);
 }
 
 // required to get functionality in cyclus agent unit tests library

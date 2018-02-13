@@ -1,11 +1,11 @@
-#ifndef CYCAMORE_SRC_MIXER_H_
-#define CYCAMORE_SRC_MIXER_H_
+#ifndef RECYCLE_SRC_MIXER_H_
+#define RECYCLE_SRC_MIXER_H_
 
 #include <string>
-#include "cycamore_version.h"
+#include "recycle_version.h"
 #include "cyclus.h"
 
-namespace cycamore {
+namespace recycle {
 
 /// Mixer mixes N streams with fixed, static, user-specified
 /// ratios into a single output stream. The Mixer has N input inventories:
@@ -111,6 +111,6 @@ class Mixer : public cyclus::Facility {
   cyclus::toolkit::MatlSellPolicy sell_policy;
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_MIXER_H_
+#endif  // RECYCLE_SRC_MIXER_H_

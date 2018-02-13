@@ -1,13 +1,13 @@
-#ifndef CYCAMORE_SRC_SOURCE_H_
-#define CYCAMORE_SRC_SOURCE_H_
+#ifndef RECYCLE_SRC_SOURCE_H_
+#define RECYCLE_SRC_SOURCE_H_
 
 #include <set>
 #include <vector>
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 class Context;
 
@@ -29,7 +29,7 @@ class Source : public cyclus::Facility,
 
   virtual ~Source();
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   #pragma cyclus note { \
     "doc": "This facility acts as a source of material with a fixed throughput (per\n" \
@@ -117,6 +117,6 @@ class Source : public cyclus::Facility,
 
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_SOURCE_H_
+#endif  // RECYCLE_SRC_SOURCE_H_
