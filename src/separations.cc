@@ -9,7 +9,7 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
-namespace cycamore {
+namespace recycle {
 
 Separations::Separations(cyclus::Context* ctx) : cyclus::Facility(ctx) {}
 
@@ -347,4 +347,4 @@ extern "C" cyclus::Agent* ConstructSeparations(cyclus::Context* ctx) {
   return new Separations(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle

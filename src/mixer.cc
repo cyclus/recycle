@@ -2,7 +2,7 @@
 
 #include "mixer.h"
 
-namespace cycamore {
+namespace recycle {
 
 Mixer::Mixer(cyclus::Context* ctx) : cyclus::Facility(ctx), throughput(0) {
   cyclus::Warn<cyclus::EXPERIMENTAL_WARNING>(
@@ -174,7 +174,7 @@ void Mixer::AcceptMatlTrades(
       }
     }
     if (!assigned) {
-      throw cyclus::ValueError("cycamore::Mixer was overmatched on requests");
+      throw cyclus::ValueError("recycle::Mixer was overmatched on requests");
     }
   }
 

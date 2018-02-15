@@ -1,14 +1,14 @@
-#ifndef CYCAMORE_SRC_DEPLOY_INST_H_
-#define CYCAMORE_SRC_DEPLOY_INST_H_
+#ifndef RECYCLE_SRC_DEPLOY_INST_H_
+#define RECYCLE_SRC_DEPLOY_INST_H_
 
 #include <utility>
 #include <set>
 #include <map>
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 typedef std::map<int, std::vector<std::string> > BuildSched;
 
@@ -19,7 +19,9 @@ typedef std::map<int, std::vector<std::string> > BuildSched;
 // lifetimes.  The same prototype can be specified multiple times with any
 // combination of the same or different build times, build number, and
 // lifetimes.
-class DeployInst : public cyclus::Institution {
+class DeployInst : 
+    public cyclus::Institution,
+    public cyclus::toolkit::CommodityProducerManager {
   #pragma cyclus note { \
     "doc": \
       "Builds and manages agents (facilities) according to a manually" \
@@ -36,13 +38,16 @@ class DeployInst : public cyclus::Institution {
 
   virtual ~DeployInst();
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   #pragma cyclus
 
   virtual void Build(cyclus::Agent* parent);
 
   virtual void EnterNotify();
+
+ private:
+  void Register_(Agent* a);
 
  protected:
   #pragma cyclus var { \
@@ -83,6 +88,6 @@ class DeployInst : public cyclus::Institution {
   std::vector<int> lifetimes;
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_DEPLOY_INST_H_
+#endif  // RECYCLE_SRC_DEPLOY_INST_H_

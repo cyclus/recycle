@@ -1,11 +1,11 @@
-#ifndef CYCAMORE_SRC_FUEL_FAB_H_
-#define CYCAMORE_SRC_FUEL_FAB_H_
+#ifndef RECYCLE_SRC_FUEL_FAB_H_
+#define RECYCLE_SRC_FUEL_FAB_H_
 
 #include <string>
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 /// FuelFab takes in 2 streams of material and mixes them in ratios in order to
 /// supply material that matches some neutronics properties of reqeusted
@@ -107,7 +107,7 @@ class FuelFab : public cyclus::Facility {
   FuelFab(cyclus::Context* ctx);
   virtual ~FuelFab(){};
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
 #pragma cyclus
 
@@ -258,7 +258,7 @@ double LowFrac(double w_low, double w_tgt, double w_high, double eps = 1e-6);
 double HighFrac(double w_low, double w_tgt, double w_high, double eps = 1e-6);
 double AtomToMassFrac(double atomfrac, cyclus::Composition::Ptr c1, cyclus::Composition::Ptr c2);
 
-} // namespace cycamore
+} // namespace recycle
 
 
-#endif  // CYCAMORE_SRC_FUEL_FAB_H_
+#endif  // RECYCLE_SRC_FUEL_FAB_H_

@@ -1,5 +1,5 @@
-#ifndef CYCAMORE_SRC_SINK_H_
-#define CYCAMORE_SRC_SINK_H_
+#ifndef RECYCLE_SRC_SINK_H_
+#define RECYCLE_SRC_SINK_H_
 
 #include <algorithm>
 #include <string>
@@ -7,9 +7,9 @@
 #include <vector>
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 class Context;
 
@@ -24,7 +24,7 @@ class Sink : public cyclus::Facility  {
 
   virtual ~Sink();
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   #pragma cyclus note { \
     "doc": \
@@ -153,6 +153,6 @@ class Sink : public cyclus::Facility  {
   cyclus::toolkit::ResBuf<cyclus::Resource> inventory;
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_SINK_H_
+#endif  // RECYCLE_SRC_SINK_H_

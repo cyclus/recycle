@@ -1,7 +1,7 @@
 // Implements the DeployInst class
 #include "deploy_inst.h"
 
-namespace cycamore {
+namespace recycle {
 
 DeployInst::DeployInst(cyclus::Context* ctx) : cyclus::Institution(ctx) {}
 
@@ -44,6 +44,7 @@ void DeployInst::Build(cyclus::Agent* parent) {
 
 void DeployInst::EnterNotify() {
   cyclus::Institution::EnterNotify();
+
   int n = prototypes.size();
   if (build_times.size() != n) {
     std::stringstream ss;
@@ -63,8 +64,26 @@ void DeployInst::EnterNotify() {
   }
 }
 
+
+
+void DeployInst::Register_(Agent* a) {
+  using cyclus::toolkit::CommodityProducer;
+  using cyclus::toolkit::CommodityProducerManager;
+
+  CommodityProducer* cp_cast = dynamic_cast<CommodityProducer*>(a);
+  if (cp_cast != NULL) {
+    LOG(cyclus::LEV_INFO3, "mani") << "Registering agent "
+                                   << a->prototype() << a->id()
+                                   << " as a commodity producer.";
+    CommodityProducerManager::Register(cp_cast);
+      }
+  else{std::cout << "cp cast returned null  yall" << std::endl;}
+
+}
+
+
 extern "C" cyclus::Agent* ConstructDeployInst(cyclus::Context* ctx) {
   return new DeployInst(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle

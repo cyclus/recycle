@@ -1,10 +1,10 @@
-#ifndef CYCAMORE_SRC_SEPARATIONS_H_
-#define CYCAMORE_SRC_SEPARATIONS_H_
+#ifndef RECYCLE_SRC_SEPARATIONS_H_
+#define RECYCLE_SRC_SEPARATIONS_H_
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 /// SepMaterial returns a material object that represents the composition and
 /// quantity resulting from the separation of material from mat using the given
@@ -62,7 +62,7 @@ class Separations : public cyclus::Facility {
   Separations(cyclus::Context* ctx);
   virtual ~Separations(){};
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   virtual void Tick();
   virtual void Tock();
@@ -205,6 +205,6 @@ class Separations : public cyclus::Facility {
   std::map<std::string, cyclus::toolkit::ResBuf<cyclus::Material> > streambufs;
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_SEPARATIONS_H_
+#endif  // RECYCLE_SRC_SEPARATIONS_H_

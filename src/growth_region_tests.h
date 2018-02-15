@@ -1,7 +1,5 @@
-#ifndef CYCAMORE_SRC_GROWTH_REGION_TESTS_H_
-#define CYCAMORE_SRC_GROWTH_REGION_TESTS_H_
-#include "platform.h"
-#if CYCLUS_HAS_COIN
+#ifndef RECYCLE_SRC_GROWTH_REGION_TESTS_H_
+#define RECYCLE_SRC_GROWTH_REGION_TESTS_H_
 
 #include <gtest/gtest.h>
 
@@ -15,7 +13,7 @@
 #include "agent_tests.h"
 
 
-namespace cycamore {
+namespace recycle {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class GrowthRegionTests : public ::testing::Test {
@@ -23,7 +21,7 @@ class GrowthRegionTests : public ::testing::Test {
   cyclus::Context* ctx;
   cyclus::Timer ti;
   cyclus::Recorder rec;
-  cycamore::GrowthRegion* region;
+  recycle::GrowthRegion* region;
   std::string commodity_name, demand_type, demand_params, demand_start;
 
   virtual void SetUp();
@@ -31,6 +29,6 @@ class GrowthRegionTests : public ::testing::Test {
   bool ManagesCommodity(cyclus::toolkit::Commodity& commodity);
 };
 
-}  // namespace cycamore
-#endif  // CYCLUS_HAS_COIN
-#endif  // CYCAMORE_SRC_GROWTH_REGION_TESTS_H_
+}  // namespace recycle
+
+#endif  // RECYCLE_SRC_GROWTH_REGION_TESTS_H_

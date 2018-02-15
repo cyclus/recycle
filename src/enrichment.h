@@ -1,12 +1,12 @@
-#ifndef CYCAMORE_SRC_ENRICHMENT_H_
-#define CYCAMORE_SRC_ENRICHMENT_H_
+#ifndef RECYCLE_SRC_ENRICHMENT_H_
+#define RECYCLE_SRC_ENRICHMENT_H_
 
 #include <string>
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 /// @class SWUConverter
 ///
@@ -52,7 +52,7 @@ class NatUConverter : public cyclus::Converter<cyclus::Material> {
     tails_(tails) {}
   virtual ~NatUConverter() {}
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   /// @brief provides a conversion for the amount of natural Uranium required
   virtual double convert(
@@ -158,7 +158,7 @@ class Enrichment : public cyclus::Facility {
   ///     Destructor for the Enrichment class
   virtual ~Enrichment();
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   #pragma cyclus
 
@@ -379,6 +379,6 @@ class Enrichment : public cyclus::Facility {
   // ---
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif // CYCAMORE_SRC_ENRICHMENT_FACILITY_H_
+#endif // RECYCLE_SRC_ENRICHMENT_FACILITY_H_

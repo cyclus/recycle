@@ -9,7 +9,7 @@ TestProducer::~TestProducer() {}
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ManagerInstTests::SetUp() {
   ctx_ = new cyclus::Context(&ti_, &rec_);
-  src_inst = new cycamore::ManagerInst(ctx_);
+  src_inst = new recycle::ManagerInst(ctx_);
   producer = new TestProducer(ctx_);
   commodity = cyclus::toolkit::Commodity("commod");
   capacity = 5;
@@ -26,7 +26,7 @@ void ManagerInstTests::TearDown() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 cyclus::Agent* ManagerInstitutionConstructor(cyclus::Context* ctx) {
-  return new cycamore::ManagerInst(ctx);
+  return new recycle::ManagerInst(ctx);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

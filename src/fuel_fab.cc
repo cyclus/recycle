@@ -10,7 +10,7 @@ using pyne::simple_xs;
   std::cout << std::setprecision(17) << __FILE__ << ":" << __LINE__ \
             << ": " #X " = " << X << "\n"
 
-namespace cycamore {
+namespace recycle {
 
 class FissConverter : public cyclus::Converter<cyclus::Material> {
  public:
@@ -250,7 +250,7 @@ void FuelFab::AcceptMatlTrades(
     } else if (req_inventories_[req] == "fiss") {
       fiss.Push(m);
     } else {
-      throw cyclus::ValueError("cycamore::FuelFab was overmatched on requests");
+      throw cyclus::ValueError("recycle::FuelFab was overmatched on requests");
     }
   }
 
@@ -725,4 +725,4 @@ bool ValidWeights(double w_low, double w_target, double w_high) {
   return w_low <= w_target && w_target <= w_high;
 }
 
-}  // namespace cycamore
+}  // namespace recycle

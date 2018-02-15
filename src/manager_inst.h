@@ -1,10 +1,10 @@
-#ifndef CYCAMORE_SRC_MANAGER_INST_H_
-#define CYCAMORE_SRC_MANAGER_INST_H_
+#ifndef RECYCLE_SRC_MANAGER_INST_H_
+#define RECYCLE_SRC_MANAGER_INST_H_
 
 #include "cyclus.h"
-#include "cycamore_version.h"
+#include "recycle_version.h"
 
-namespace cycamore {
+namespace recycle {
 
 /// @class ManagerInst
 /// @section introduction Introduction
@@ -21,7 +21,7 @@ class ManagerInst
   /// Default destructor
   virtual ~ManagerInst();
 
-  virtual std::string version() { return CYCAMORE_VERSION; }
+  virtual std::string version() { return RECYCLE_VERSION; }
 
   #pragma cyclus
 
@@ -32,24 +32,12 @@ class ManagerInst
   /// enter the simulation and register any children present
   virtual void EnterNotify();
 
-  /// register a new child
-  virtual void BuildNotify(Agent* m);
-
-  /// unregister a child
-  virtual void DecomNotify(Agent* m);
-
   /// write information about a commodity producer to a stream
   /// @param producer the producer
   void WriteProducerInformation(cyclus::toolkit::CommodityProducer*
                                 producer);
 
  private:
-  /// register a child
-  void Register_(cyclus::Agent* agent);
-
-  /// unregister a child
-  void Unregister_(cyclus::Agent* agent);
-
   #pragma cyclus var { \
     "tooltip": "producer facility prototypes",                          \
     "uilabel": "Producer Prototype List",                               \
@@ -61,6 +49,6 @@ class ManagerInst
   std::vector<std::string> prototypes;
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_MANAGER_INST_H_
+#endif  // RECYCLE_SRC_MANAGER_INST_H_

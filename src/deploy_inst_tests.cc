@@ -18,7 +18,7 @@ TEST(DeployInstTests, ProtoNames) {
      ;
 
   int simdur = 5;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:DeployInst"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:DeployInst"), config, simdur);
   sim.DummyProto("foobar");
   int id = sim.Run();
 
@@ -37,7 +37,7 @@ TEST(DeployInstTests, BuildTimes) {
      ;
 
   int simdur = 5;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:DeployInst"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:DeployInst"), config, simdur);
   sim.DummyProto("foobar");
   int id = sim.Run();
 
@@ -65,7 +65,7 @@ TEST(DeployInstTests, FiniteLifetimes) {
      ;
 
   int simdur = 5;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:DeployInst"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:DeployInst"), config, simdur);
   sim.DummyProto("foobar");
   int id = sim.Run();
 
@@ -118,7 +118,7 @@ TEST(DeployInstTests, NoDupProtos) {
      ;
 
   int simdur = 5;
-  cyclus::MockSim sim(cyclus::AgentSpec(":cycamore:DeployInst"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:DeployInst"), config, simdur);
   sim.DummyProto("foobar");
   int id = sim.Run();
 
@@ -140,7 +140,7 @@ TEST(DeployInstTests, NoDupProtos) {
 
 // required to get functionality in cyclus agent unit tests library
 cyclus::Agent* DeployInstitutionConstructor(cyclus::Context* ctx) {
-  return new cycamore::DeployInst(ctx);
+  return new recycle::DeployInst(ctx);
 }
 
 #ifndef CYCLUS_AGENT_TESTS_CONNECTED

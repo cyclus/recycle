@@ -1,14 +1,13 @@
 #include <sstream>
 
 #include "growth_region_tests.h"
-#if CYCLUS_HAS_COIN
 
-namespace cycamore {
+namespace recycle {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GrowthRegionTests::SetUp() {
   ctx = new cyclus::Context(&ti, &rec);
-  region = new cycamore::GrowthRegion(ctx);
+  region = new recycle::GrowthRegion(ctx);
   commodity_name = "commod";
   demand_type = "linear";
   demand_params = "5 5";
@@ -34,11 +33,11 @@ TEST_F(GrowthRegionTests, init) {
   EXPECT_TRUE(ManagesCommodity(commodity));
 }
 
-}  // namespace cycamore
+}  // namespace recycle
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 cyclus::Agent* GrowthRegionConstructor(cyclus::Context* ctx) {
-  return new cycamore::GrowthRegion(ctx);
+  return new recycle::GrowthRegion(ctx);
 }
 
 // required to get functionality in cyclus agent unit tests library
@@ -53,4 +52,3 @@ INSTANTIATE_TEST_CASE_P(GrowthRegion, RegionTests,
                         Values(&GrowthRegionConstructor));
 INSTANTIATE_TEST_CASE_P(GrowthRegion, AgentTests,
                         Values(&GrowthRegionConstructor));
-#endif  // CYCLUS_HAS_COIN

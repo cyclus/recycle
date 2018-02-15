@@ -404,7 +404,7 @@ TEST_F(StorageTest, BehaviorTest){
 
   int simdur = 3;
 
-  cyclus::MockSim sim(cyclus::AgentSpec (":cycamore:Storage"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec (":recycle:Storage"), config, simdur);
 
   sim.AddSource("spent_fuel").Finalize();
   sim.AddSink("dry_spent").Finalize();
@@ -433,7 +433,7 @@ TEST_F(StorageTest, MultipleCommods){
 
   int simdur = 2;
 
-  cyclus::MockSim sim(cyclus::AgentSpec (":cycamore:Storage"), config, simdur);
+  cyclus::MockSim sim(cyclus::AgentSpec (":recycle:Storage"), config, simdur);
 
   sim.AddSource("spent_fuel").capacity(5).Finalize();
   sim.AddSource("spent_fuel2").capacity(5).Finalize();

@@ -1,5 +1,5 @@
-#ifndef CYCAMORE_SRC_ENRICHMENT_TESTS_
-#define CYCAMORE_SRC_ENRICHMENT_TESTS_
+#ifndef RECYCLE_SRC_ENRICHMENT_TESTS_
+#define RECYCLE_SRC_ENRICHMENT_TESTS_
 
 #include <gtest/gtest.h>
 
@@ -12,7 +12,7 @@
 
 #include "enrichment.h"
 
-namespace cycamore {
+namespace recycle {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class EnrichmentTest : public ::testing::Test {
@@ -47,6 +47,6 @@ class EnrichmentTest : public ::testing::Test {
       GetContext(int nreqs, int nvalid);
 };
 
-}  // namespace cycamore
+}  // namespace recycle
 
-#endif  // CYCAMORE_SRC_ENRICHMENT_FACILITY_TESTS_
+#endif  // RECYCLE_SRC_ENRICHMENT_FACILITY_TESTS_
