@@ -9,19 +9,19 @@
 
   <archetypes>
     <spec>
-      <lib>recyle</lib>
+      <lib>recycle</lib>
       <name>Source</name>
     </spec>
     <spec>
-      <lib>recyle</lib>
+      <lib>recycle</lib>
       <name>Sink</name>
     </spec>
     <spec>
-      <lib>recyle</lib>
+      <lib>recycle</lib>
       <name>GrowthRegion</name>
     </spec>
     <spec>
-      <lib>recyle</lib>
+      <lib>recycle</lib>
       <name>ManagerInst</name>
     </spec>
   </archetypes>

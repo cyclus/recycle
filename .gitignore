@@ -11,6 +11,6 @@ rs.cred
 *.dat
 tests/run_inputs.py
 cyclus.sqlite
-recyle_version.h
+recycle_version.h
 *.sqlite
 src/version.cc.in
