@@ -51,7 +51,7 @@ public:
   #pragma cyclus var { \
 	"doc": "Volume of the subprocess container", \
 	"tooltip": "Volume of the subprocess", \
-	"units": "m^3", \
+	"units": "m3", \
 	"uilabel": "Volume" \
   }
   double volume;

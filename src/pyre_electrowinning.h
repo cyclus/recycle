@@ -49,12 +49,12 @@ public:
   std::vector<std::string> feed_commods;
 
   #pragma cyclus var { \
-	"doc": "Volume of the subprocess container", \
-	"tooltip": "Volume of the subprocess", \
-	"units": "m^3", \
-	"uilabel": "Volume" \
+    "doc": "Current through the winning subprocess", \
+    "tooltip": "Current through the winning subprocess", \
+    "units": "mA", \
+    "uilabel": "Current" \
   }
-  double volume;
+  double current;
 
   #pragma cyclus var { \
 	"doc": "Amount of time spent in subprocess", \
@@ -73,12 +73,12 @@ public:
   double flow_rate;
 
   #pragma cyclus var { \
-    "doc": "Temperature of the subprocess", \
-    "tooltip": "Temperature of the subprocess", \
-    "units": "K", \
-    "uilabel": "Temperature" \
+    "doc": "Porosity of the anode shroud material", \
+    "tooltip": "Anode porosity", \
+    "units": "", \
+    "uilabel": "Current" \
   }
-  double temperature;
+  double porosity;
 
   }
   	

@@ -49,36 +49,52 @@ public:
   std::vector<std::string> feed_commods;
 
   #pragma cyclus var { \
-	"doc": "Volume of the subprocess container", \
-	"tooltip": "Volume of the subprocess", \
-	"units": "m^3", \
-	"uilabel": "Volume" \
+	  "doc": "Volume of the subprocess container", \
+	  "tooltip": "Volume of the subprocess", \
+	  "units": "m3", \
+	  "uilabel": "Volume" \
   }
   double volume;
 
   #pragma cyclus var { \
-	"doc": "Amount of time spent in subprocess", \
-	"tooltip": "Amount of time spent in subprocess", \
-	"units": "hours", \
-	"uilabel": "Reprocess Time" \
+	  "doc": "Amount of time spent in subprocess", \
+	  "tooltip": "Amount of time spent in subprocess", \
+	  "units": "hours", \
+	  "uilabel": "Reprocess Time" \
   }
   int reprocess_time;
 
   #pragma cyclus var { \
-	"doc": "Flow rate of material through the voloxidation process.", \
-	"uilabel": "Flow Rate", \
-	"default": 100, \
-	"units": "kgs-1", \
+    "doc": "Batch size of the subprocess", \
+    "tooltip": "Batch size of the subprocess", \
+    "units": "kg", \
+    "uilabel": "Batch Size" \
   }
-  double flow_rate;
+  double batch_size;
 
   #pragma cyclus var { \
-    "doc": "Temperature of the subprocess", \
-    "tooltip": "Temperature of the subprocess", \
-    "units": "K", \
-    "uilabel": "Temperature" \
+    "doc": "Weight percent of lithium oxide added as catalyst", \
+    "tooltip": "Weight percent of lithium oxide", \
+    "units": "percent", \
+    "uilabel": "Lithium Oxide" \
   }
-  double temperature;
+  double lithium_oxide;
+
+  #pragma cyclus var { \
+    "doc": "Current through the reduction subprocess", \
+    "tooltip": "Current through the reduction subprocess", \
+    "units": "mA", \
+    "uilabel": "Current" \
+  }
+  double current;
+
+  #pragma cyclus var { \
+    "doc": "Porosity of the anode shroud material", \
+    "tooltip": "Anode porosity", \
+    "units": "", \
+    "uilabel": "Current" \
+  }
+  double porosity;
 
   }
   	

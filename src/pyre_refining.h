@@ -49,28 +49,54 @@ public:
   std::vector<std::string> feed_commods;
 
   #pragma cyclus var { \
-	"doc": "Volume of the subprocess container", \
-	"tooltip": "Volume of the subprocess", \
-	"units": "m^3", \
-	"uilabel": "Volume" \
+    "doc": "Volume of the subprocess container", \
+    "tooltip": "Volume of the subprocess", \
+    "units": "m3", \
+    "uilabel": "Volume" \
   }
   double volume;
 
   #pragma cyclus var { \
-	"doc": "Amount of time spent in subprocess", \
-	"tooltip": "Amount of time spent in subprocess", \
-	"units": "hours", \
-	"uilabel": "Reprocess Time" \
+    "doc": "Amount of time spent in subprocess", \
+    "tooltip": "Amount of time spent in subprocess", \
+    "units": "hours", \
+    "uilabel": "Reprocess Time" \
   }
   int reprocess_time;
 
   #pragma cyclus var { \
-	"doc": "Flow rate of material through the voloxidation process.", \
-	"uilabel": "Flow Rate", \
-	"default": 100, \
-	"units": "kgs-1", \
+    "doc": "Anode rotation speed", \
+    "default": 0, \
+    "tooltip": "Anode rotation", \
+    "units": "rpm", \
+    "uilabel": "Rotation Speed" \
   }
-  double flow_rate;
+  double rotation;
+
+  #pragma cyclus var { \
+    "doc": "Center Stirrer Speed", \
+    "default": 0, \
+    "tooltip": "Stirrer Speed", \
+    "units": "rpm", \
+    "uilabel": "Stirrer Speed" \
+  }
+  double stirrer;
+
+  #pragma cyclus var { \
+    "doc": "Weight percent of lithium oxide added as catalyst", \
+    "tooltip": "Weight percent of lithium oxide", \
+    "units": "percent", \
+    "uilabel": "Lithium Oxide" \
+  }
+  double lithium_oxide;
+
+  #pragma cyclus var { \
+    "doc": "Pressure in the electrorefining process", \
+    "tooltip": "Pressure in the electrorefining process", \
+    "units": "mTorr", \
+    "uilabel": "Refiner Pressure" \
+  }
+  double pressure;
 
   #pragma cyclus var { \
     "doc": "Temperature of the subprocess", \
@@ -79,6 +105,7 @@ public:
     "uilabel": "Temperature" \
   }
   double temperature;
+
 
   }
   	

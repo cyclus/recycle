@@ -142,7 +142,7 @@ class Pyre
   #pragma cyclus var { \
 	"doc": "Volume of the subprocess container", \
 	"tooltip": "Volume of the subprocess", \
-	"units": "m^3", \
+	"units": "m3", \
 	"uilabel": "Volume" \
   }
   double volume;
@@ -214,7 +214,7 @@ class Pyre
     "default": 1e299, \
     "uitype": "range", \
     "range": [0.0, 1e299], \
-    "units": "kg/(time step)", \
+    "units": "kgday-1", \
   }
   double throughput;
 
