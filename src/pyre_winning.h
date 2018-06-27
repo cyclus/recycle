@@ -1,15 +1,15 @@
-#ifndef RECYCLE_SRC_PYRE_REDUCTION_H_
-#define RECYCLE_SRC_PYRE_REDUCTION_H_
+#ifndef RECYCLE_SRC_PYRE_WINNING_H_
+#define RECYCLE_SRC_PYRE_WINNING_H_
 
 #include "cyclus.h"
 #include "recycle_version.h"
 
 namespace recycle {
 
-cyclus::Material::Ptr ReductionSepMaterial(std::map<int, double> effs,
+cyclus::Material::Ptr WinningSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
 
-class Reduction
+class Winning
   : public cyclus::Facility {
 #pragma cyclus note { \
   "niche": "voloxidation", \
@@ -19,8 +19,8 @@ class Reduction
   "and yellowcake product is sent to reduction." \
 }
 public:
-  Reduction(cyclus::Context* ctx);
-  virtual ~Reduction(){};
+  Winning(cyclus::Context* ctx);
+  virtual ~Winning(){};
 
   virtual std::string version() { return RECYCLE_VERSION; }
 
@@ -37,9 +37,9 @@ public:
 
   virtual cyclus::Inventories SnapshotInv();
   virtual void InitInv(cyclus::Inventories& inv);
-  
+
   }
   	
 } // namespace recycle
 
-#endif // RECYCLE_SRC_PYRE_REDUCTION_H_
+#endif // RECYCLE_SRC_PYRE_WINNING_H_
