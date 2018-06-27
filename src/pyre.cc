@@ -1,4 +1,8 @@
 #include "pyre.h"
+#include "pyre_volox.h"
+#include "pyre_reduction.h"
+#include "pyre_refining.h"
+#include "pyre_winning.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -116,7 +120,7 @@ void Pyre::Tick() {
   for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = SepMaterial(info.second, mat);
+    stagedsep[name] = VoloxSepMaterial(info.second, mat); // insert subclasses here
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
@@ -148,36 +152,6 @@ void Pyre::Tick() {
   }
 }
 
-// Note that this returns an untracked material that should just be used for
-// its composition and qty - not in any real inventories, etc.
-Material::Ptr SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
-  CompMap cm = mat->comp()->mass();
-  cyclus::compmath::Normalize(&cm, mat->quantity());
-  double tot_qty = 0;
-  CompMap sepcomp;
-
-  CompMap::iterator it;
-  for (it = cm.begin(); it != cm.end(); ++it) {
-    int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
-    double eff = 0;
-    if (effs.count(nuc) > 0) {
-      eff = effs[nuc];
-    } else if (effs.count(elem) > 0) {
-      eff = effs[elem];
-    } else {
-      continue;
-    }
-
-    double qty = it->second;
-    double sepqty = qty * eff;
-    sepcomp[nuc] = sepqty;
-    tot_qty += sepqty;
-  }
-
-  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
-  return Material::CreateUntracked(tot_qty, c);
-};
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>
 Pyre::GetMatlRequests() {
