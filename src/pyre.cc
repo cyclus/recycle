@@ -117,10 +117,40 @@ void Pyre::Tick() {
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
-  for (it = streams_.begin(); it != streams_.end(); ++it) {
+  for (it = streams_.begin(); it != streams_(2); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = VoloxSepMaterial(info.second, mat); // insert subclasses here
+    stagedsep[name] = VoloxSepMaterial(info.second, mat);
+    double frac = streambufs[name].space() / stagedsep[name]->quantity();
+    if (frac < maxfrac) {
+      maxfrac = frac;
+    }
+  }
+
+  for (it = streams_(2); it != streams_(4); ++it) {
+    Stream info = it->second;
+    std::string name = it->first;
+    stagedsep[name] = ReductionSepMaterial(info.second, mat); //mat is what is returned from each sub-process
+    double frac = streambufs[name].space() / stagedsep[name]->quantity();
+    if (frac < maxfrac) {
+      maxfrac = frac;
+    }
+  }
+
+  for (it = streams_(4); it != streams_(6); ++it) {
+    Stream info = it->second;
+    std::string name = it->first;
+    stagedsep[name] = RefiningSepMaterial(info.second, mat);
+    double frac = streambufs[name].space() / stagedsep[name]->quantity();
+    if (frac < maxfrac) {
+      maxfrac = frac;
+    }
+  }
+
+  for (it = streams_(6); it != streams_.end(); ++it) {
+    Stream info = it->second;
+    std::string name = it->first;
+    stagedsep[name] = WinningSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
