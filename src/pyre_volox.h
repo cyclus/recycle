@@ -6,6 +6,9 @@
 
 namespace recycle {
 
+/// @param feed feed snf
+/// @param stream the separation efficiency of voloxidation
+/// @return composition composition of the resulting product and waste
 cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
 

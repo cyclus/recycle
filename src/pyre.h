@@ -16,10 +16,11 @@ namespace recycle {
 cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
                                   cyclus::Material::Ptr mat);
 
-/// Separations processes feed material into one or more streams containing
-/// specific elements and/or nuclides.  It uses mass-based efficiencies.
+/// Pyre processes feed material into multiple waste streams according to their
+/// respective sub-process. Separation uses mass-based efficiencies.
 ///
-/// User defined separations streams are specified as groups of
+/// Streams are predefined, but isotopic efficiencies and stream name
+/// can be specified by the user. Streams are specified as groups of
 /// component-efficiency pairs where 'component' means either a particular
 /// element or a particular nuclide.  Each component's paired efficiency
 /// represents the mass fraction of that component in the feed that is
@@ -40,10 +41,11 @@ class Pyre
 #pragma cyclus note { \
   "niche": "separations", \
   "doc": \
-    "Separations processes feed material into one or more streams containing" \
-    " specific elements and/or nuclides.  It uses mass-based efficiencies." \
+    "Pyre processes feed material into multiple waste streams according to their" \
+    " respective sub-process. Separation uses mass-based efficiencies." \
     "\n\n" \
-    "User defined separations streams are specified as groups of" \
+    "Streams are predefined, but isotopic efficiencies and stream name" \
+    " can be specified by the user. Streams are specified as groups of" \
     " component-efficiency pairs where 'component' means either a particular" \
     " element or a particular nuclide.  Each component's paired efficiency" \
     " represents the mass fraction of that component in the feed that is" \
@@ -134,7 +136,8 @@ class Pyre
   #pragma cyclus var { \
 	"doc": "Amount of time spent in subprocess", \
 	"tooltip": "Amount of time spent in subprocess", \
-	"units": "months", \
+	"units": "hours", \
+  "range": [1,4], \
 	"uilabel": "Reprocess Time" \
   }
   int reprocess_time;
@@ -152,6 +155,7 @@ class Pyre
 	"tooltip": "Weight percent of lithium oxide", \
 	"units": "percent", \
 	"uilabel": "Lithium Oxide" \
+  "range": [1,3], \
   }
   double lithium_oxide;
 
@@ -191,6 +195,7 @@ class Pyre
   	"doc": "Current through the subprocess", \
   	"tooltip": "Current through the subprocess", \
   	"units": "mA", \
+    "range": [100, 500], \
   	"uilabel": "Current" \
   }
   double current;

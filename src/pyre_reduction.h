@@ -6,17 +6,20 @@
 
 namespace recycle {
 
+/// @param feed feed yellowcake from voloxidation
+/// @param stream the separation efficiency for reduction streams
+/// @return composition composition of the separated material sent to refining
 cyclus::Material::Ptr ReductionSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
 
 class Reduction
   : public cyclus::Facility {
 #pragma cyclus note { \
-  "niche": "voloxidation", \
+  "niche": "electroreduction", \
   "doc": \
-  "Voloxidation processes out actinides and noble gasses in the" \
-  "pyroprocessing process. Waste from this stage is sent to storage" \
-  "and yellowcake product is sent to reduction." \
+  "Reduction primarily separates Cesium and Strontium waste from " \
+  "the yellowcake feed. Waste from this procees is sent to storage " \
+  "and the metal fuel and salt mixture is sent to the refining stage." \
 }
 public:
   Reduction(cyclus::Context* ctx);
