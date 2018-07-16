@@ -3,9 +3,9 @@
 using namespace std;
 // a and b are placeholders (will not build - these will be numbers when finalized)
 Efficiency::VoloxEff(temperature, reprocess_time, flowrate) {
-	thermal = a * temperature + b;
+	thermal = (8.8333 * 10^(-7)*temperature^3 - 0.001755*temperature^2+1.166*temperature-159.6) / 100;
 	temporal = 0.2903 * ln(reprocess_time*3600) - 1.696;
-	rate = a * flowrate + b;
+	rate = 0.12435 * ln(flowrate) + 0.7985;
 	volox_eff = thermal * temporal * rate;
 }
 
@@ -29,6 +29,6 @@ Efficiency::WinningEff(porosity, currnet, reprocess_time, flowrate) {
 	eff1 = a * porosity + b;
 	eff2 = -0.1477 * ln(current) + 0.6767;
 	temporal = 0.2903 * ln(reprocess_time*3600) - 1.696;
-	eff4 = a * flowrate + b;
+	eff4 = 0.12435 * ln(flowrate) + 0.7985;
 	winning_eff = eff1 * eff2 * eff3 * eff4;
 }

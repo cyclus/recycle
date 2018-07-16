@@ -137,7 +137,7 @@ class Pyre
 	"doc": "Amount of time spent in subprocess", \
 	"tooltip": "Amount of time spent in subprocess", \
 	"units": "hours", \
-  "range": [1,4], \
+  "range": [1,3], \
 	"uilabel": "Reprocess Time" \
   }
   int reprocess_time;
@@ -171,6 +171,7 @@ class Pyre
 	"doc": "Pressure in the electrorefining process", \
 	"tooltip": "Pressure in the electrorefining process", \
 	"units": "mTorr", \
+  "range": [100, 760], \
 	"uilabel": "Refiner Pressure" \
   }
   double pressure;
@@ -178,7 +179,8 @@ class Pyre
   #pragma cyclus var { \
     "doc": "Temperature of the subprocess", \
     "tooltip": "Temperature of the subprocess", \
-    "units": "K", \
+    "units": "C", \
+    "range": [500, 1000], \
     "uilabel": "Temperature" \
   }
   double temperature;
@@ -187,6 +189,7 @@ class Pyre
   	"doc": "Refiner stirrer speed", \
   	"tooltip": "Refiner stirrer speed", \
   	"units": "rpm", \
+    "range": [0, 100], \
   	"uilabel": "Stirrer Speed" \
   }
   double stirrer_speed;
