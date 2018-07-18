@@ -1,10 +1,10 @@
 package:
-  name: recyle
+  name: recycle
   version: 0.0
 
 # Only use fn and url for polyphemus compatability
 source:
-  fn: recyle-src.tar.gz # ["TRAVIS" not in environ] 
+  fn: recycle-src.tar.gz # ["TRAVIS" not in environ] 
   url: https://github.com/cyclus/recyle/archive/develop.tar.gz # ["TRAVIS" not in environ]
   path: ..  # ["TRAVIS" in environ]
 
