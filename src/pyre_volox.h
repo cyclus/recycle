@@ -11,4 +11,5 @@ cyclus::Material::Ptr VoloxSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
 
 
+
 #endif // RECYCLE_SRC_PYRE_VOLOX_H_

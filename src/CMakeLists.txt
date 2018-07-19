@@ -6,11 +6,11 @@ CONFIGURE_FILE(recycle_version.h.in "${CMAKE_CURRENT_SOURCE_DIR}/recycle_version
 SET(CYCLUS_CUSTOM_HEADERS "recycle_version.h")
 
 USE_CYCLUS("recycle" "pyre")
+USE_CYCLUS("recycle" "efficiency")
 USE_CYCLUS("recycle" "pyre_volox")
 USE_CYCLUS("recycle" "pyre_reduction")
 USE_CYCLUS("recycle" "pyre_refining")
 USE_CYCLUS("recycle" "pyre_winning")
-USe_CYCLUS("recycle" "efficiency")
 
 INSTALL_CYCLUS_MODULE("recycle" "" "NONE")
 

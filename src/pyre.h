@@ -2,7 +2,6 @@
 #define RECYCLE_SRC_PYRE_H_
 
 #include "cyclus.h"
-#include "pyre_volox.h"
 #include "recycle_version.h"
 
 namespace recycle {
@@ -105,7 +104,7 @@ class Pyre
   virtual cyclus::Inventories SnapshotInv();
   virtual void InitInv(cyclus::Inventories& inv);
 
- private:
+ public:
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \
@@ -138,10 +137,11 @@ class Pyre
 	"doc": "Amount of time spent in subprocess", \
 	"tooltip": "Amount of time spent in subprocess", \
 	"units": "hours", \
+  "uitype": "range", \
   "range": [1,3], \
 	"uilabel": "Reprocess Time" \
   }
-  int reprocess_time;
+  double reprocess_time;
 
   #pragma cyclus var { \
 	"doc": "Volume of the subprocess container", \
@@ -155,6 +155,7 @@ class Pyre
 	"doc": "Weight percent of lithium oxide added as catalyst", \
 	"tooltip": "Weight percent of lithium oxide", \
 	"units": "percent", \
+  "uitype": "range", \
 	"uilabel": "Lithium Oxide", \
   "range": [1,3] \
   }
@@ -172,6 +173,7 @@ class Pyre
 	"doc": "Pressure in the electrorefining process", \
 	"tooltip": "Pressure in the electrorefining process", \
 	"units": "mTorr", \
+  "uitype": "range", \
   "range": [100, 760], \
 	"uilabel": "Refiner Pressure" \
   }
@@ -181,6 +183,7 @@ class Pyre
     "doc": "Temperature of the subprocess", \
     "tooltip": "Temperature of the subprocess", \
     "units": "C", \
+    "uitype": "range", \
     "range": [500, 1000], \
     "uilabel": "Temperature" \
   }
@@ -190,6 +193,7 @@ class Pyre
   	"doc": "Refiner stirrer speed", \
   	"tooltip": "Refiner stirrer speed", \
   	"units": "rpm", \
+    "uitype": "range", \
     "range": [0, 100], \
   	"uilabel": "Rotation" \
   }
@@ -199,6 +203,7 @@ class Pyre
   	"doc": "Current through the subprocess", \
   	"tooltip": "Current through the subprocess", \
   	"units": "mA", \
+    "uitype": "range", \
     "range": [100, 500], \
   	"uilabel": "Current" \
   }
