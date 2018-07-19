@@ -2,6 +2,7 @@
 #define RECYCLE_SRC_PYRE_H_
 
 #include "cyclus.h"
+#include "pyre_volox.h"
 #include "recycle_version.h"
 
 namespace recycle {
@@ -154,8 +155,8 @@ class Pyre
 	"doc": "Weight percent of lithium oxide added as catalyst", \
 	"tooltip": "Weight percent of lithium oxide", \
 	"units": "percent", \
-	"uilabel": "Lithium Oxide" \
-  "range": [1,3], \
+	"uilabel": "Lithium Oxide", \
+  "range": [1,3] \
   }
   double lithium_oxide;
 
@@ -190,9 +191,9 @@ class Pyre
   	"tooltip": "Refiner stirrer speed", \
   	"units": "rpm", \
     "range": [0, 100], \
-  	"uilabel": "Stirrer Speed" \
+  	"uilabel": "Rotation" \
   }
-  double stirrer_speed;
+  double rotation;
 
   #pragma cyclus var { \
   	"doc": "Current through the subprocess", \

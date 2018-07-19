@@ -17,3 +17,5 @@ double Efficiency::RefineEff(temperature, pressure, rotation, volume)
 /// @return efficiency total efficiency throughout electrowinning
 double Efficiency::WinningEff(porosity, current, reprocess_time, flowrate)
 };
+
+#endif //

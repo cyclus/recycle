@@ -140,7 +140,7 @@ void Pyre::Tick() {
   for (it = streams_(4); it != streams_(6); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = RefiningSepMaterial(info.second, mat);
+    stagedsep[name] = RefineSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
