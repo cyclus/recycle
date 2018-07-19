@@ -117,7 +117,7 @@ void Pyre::Tick() {
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
-  for (it = streams_.begin(); it != streams_(2); ++it) {
+  for (it = streams_.begin(); it != streams_.begin()++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = VoloxSepMaterial(info.second, mat);
@@ -127,7 +127,7 @@ void Pyre::Tick() {
     }
   }
 
-  for (it = streams_(2); it != streams_(4); ++it) {
+  for (it = streams_.begin()++; it != streams_.begin()++++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = ReductionSepMaterial(info.second, mat); //mat is what is returned from each sub-process
@@ -137,7 +137,7 @@ void Pyre::Tick() {
     }
   }
 
-  for (it = streams_(4); it != streams_(6); ++it) {
+  for (it = streams_.begin()++++; it != streams_.begin()++++++++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = RefineSepMaterial(info.second, mat);
@@ -147,7 +147,7 @@ void Pyre::Tick() {
     }
   }
 
-  for (it = streams_(6); it != streams_.end(); ++it) {
+  for (it = streams_.begin()++++++++; it != streams_.begin()++++++++++++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = WinningSepMaterial(info.second, mat);
