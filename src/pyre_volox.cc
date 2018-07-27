@@ -1,3 +1,4 @@
+#include "pyre.h"
 #include "pyre_volox.h"
 #include "efficiency.h"
 
@@ -9,7 +10,6 @@ using cyclus::KeyError;
 using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
-
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
@@ -31,9 +31,11 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
     } else {
       continue;
     }
+    
+    volox_eff = Efficiency::VoloxEff(temperature, reprocess_time, flowrate);
 
     double qty = it->second;
-    double sepqty = qty * eff;
+    double sepqty = qty * eff * volox_eff;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }

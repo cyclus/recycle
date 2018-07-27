@@ -104,7 +104,7 @@ class Pyre
   virtual cyclus::Inventories SnapshotInv();
   virtual void InitInv(cyclus::Inventories& inv);
 
- public:
+ private:
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \
@@ -132,6 +132,164 @@ class Pyre
     "default": "", \
   }
   std::string feed_recipe;
+
+  //Voloxidation Parameters
+
+  #pragma cyclus var { \
+  "doc": "The temperature of the Voloxidation process", \
+  "tooltip": "Voloxidation Temperature", \
+  "units": "C", \
+  "uitype": "range", \
+  "range": [500,1000], \
+  "uilabel": "Volox Temp", \
+  }
+  double volox_temp;
+
+  #pragma cyclus var { \
+  "doc": "Time spent in the Voloxidation process", \
+  "tooltip": "Voloxidation process time", \
+  "units": "hrs", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Volox Time", \
+  }
+  double volox_time;
+
+  #pragma cyclus var { \
+  "doc": "Material flowrate through Voloxidation", \
+  "tooltip": "Voloxidation Flowrate", \
+  "units": "cms-1", \
+  "uitype": "range", \
+  "range": [0,4.5], \
+  "uilabel": , \
+  }
+  double volox_flowrate;
+
+  #pragma cyclus var { \
+  "doc": "Volume of the voloxidation chamber", \
+  "tooltip": "Voloxidation Volume", \
+  "units": "m3", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Volox Volume", \
+  }
+  double volox_volume;
+
+  //Electroreduction Parameters
+
+  #pragma cyclus var { \
+  "doc": "Current in the Reduction process", \
+  "tooltip": "Electroreduction Current", \
+  "units": "A", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Reduction Current", \
+  }
+  double reduct_current;
+
+  #pragma cyclus var { \
+  "doc": ", \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double reduct_li2o;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double reduct_volume;
+
+  //Electrorefining Parameters
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double refine_temp;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double refine_press;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double refine_rotation;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double refine_batch_size;
+
+  //Electrowinning Parameters
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double winning_current;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double winning_time;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double winning_flowrate;
+
+  #pragma cyclus var { \
+  "doc": , \
+  "tooltip": , \
+  "units": , \
+  "uitype": , \
+  "range": , \
+  "uilabel": , \
+  }
+  double winning_volume;
 
   #pragma cyclus var { \
 	"doc": "Amount of time spent in subprocess", \
