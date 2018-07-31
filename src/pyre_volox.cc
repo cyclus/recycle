@@ -11,6 +11,8 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
+Volox::Volox(){};
+
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
 Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
@@ -32,7 +34,7 @@ Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr 
       continue;
     }
 
-    volox_eff = e->volox_eff;
+    volox_eff = e.volox_eff;
 
     double qty = it->second;
     double sepqty = qty * eff * volox_eff;

@@ -4,10 +4,7 @@
 #include "pyre.h"
 
 
-
-
-
-class Efficiency:public Pyre {
+class Efficiency {
 
 
 public:
@@ -32,20 +29,21 @@ public:
 	double rotation;
 	
 	Efficiency();
-	Efficiency(double temperature, double reprocess_time, double flowrate,
-		double current, double lithium_oxide, double pressure, double rotation);
+	Efficiency(double volox_temp, double volox_time, double volox_flowrate, double reduct_current, 
+		double reduct_li2o, double refine_temp, double refine_press, double refine_rotation, 
+		double winning_current, double winning_time, double winning_flowrate);
 
 	/// @return efficiency total efficiency throughout voloxidation
-	static double VoloxEff(double temperature, double reprocess_time, double flowrate);
+	static double VoloxEff(double volox_temp, double volox_time, double volox_flowrate);
 
 	/// @return efficiency total efficiency throughout electroreduction
-	static double ReductEff(double current, double lithium_oxide);
+	static double ReductEff(double reduct_current, double reduct_lithium_oxide);
 
 	/// @return efficiency total efficiency throughout electrorefining
-	static double RefineEff(double temperature, double pressure, double rotation);
+	static double RefineEff(double refine_temp, double refine_press, double refine_rotation);
 
 	/// @return efficiency total efficiency throughout electrowinning
-	static double WinningEff(double current, double reprocess_time, double flowrate);
+	static double WinningEff(double winning_current, double winning_time, double winning_flowrate);
 };
 
 

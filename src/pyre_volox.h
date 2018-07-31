@@ -7,6 +7,7 @@
 
 class Volox {
 public:
+	Volox::Volox(Efficiency& e);
 /// @param feed feed snf
 /// @param stream the separation efficiency of voloxidation
 /// @return composition composition of the resulting product and waste

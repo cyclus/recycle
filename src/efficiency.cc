@@ -5,7 +5,7 @@
 #include <math.h>
 
 Efficiency::Efficiency() {
-	double temperature = 500; //default temperature
+	double temperature = temperature; //default temperature
 	double reprocess_time = 1; //default of 1 hour
 	double flowrate = 0.4;
 	double current = 1; //default of 1 Amp
@@ -17,7 +17,7 @@ Efficiency::Efficiency() {
 static double Efficiency::VoloxEff(double temperature, double reprocess_time, double flowrate) {
 	double thermal = (8.8333E-7*pow(temperature,3) - 0.001755*(temperature,2)+1.166*temperature-159.6) / 100;
 	double temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
-	rate = 0.12435 * log(flowrate) + 0.7985;
+	double rate = 0.12435 * log(flowrate) + 0.7985;
 	double volox_eff = thermal * temporal * rate;
 	return volox_eff;
 }

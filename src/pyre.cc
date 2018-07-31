@@ -1,4 +1,5 @@
 #include "pyre.h"
+#include "efficiency.h"
 #include "pyre_volox.h"
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
@@ -114,13 +115,13 @@ void Pyre::Tick() {
   Material::Ptr mat = feed.Pop(pop_qty, cyclus::eps_rsrc());
   double orig_qty = mat->quantity();
 
-  Efficiency* e;
-  e = Efficiency(volox_temp, volox_time, volox_rate, reduct_current, 
+  Efficiency e;
+  e = Efficiency(volox_temp, volox_time, volox_flowrate, reduct_current, 
     reduct_li2o,refine_temp, refine_press, refine_rotation, winning_current, 
-    winning_time, winning_rate);
+    winning_time, winning_flowrate);
 
-  Volox* v;
-  v = Volox( Efficiency& e );
+  Volox v;
+  v = Volox( e& );
 
   StreamSet::iterator it;
   double maxfrac = 1;
@@ -128,7 +129,7 @@ void Pyre::Tick() {
   for (it = streams_.begin(); it != streams_.begin()++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = v.VoloxSepMaterial(info.second, mat);
+    stagedsep[name] = v->VoloxSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;

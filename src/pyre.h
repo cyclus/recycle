@@ -161,7 +161,7 @@ class Pyre
   "units": "cms-1", \
   "uitype": "range", \
   "range": [0,4.5], \
-  "uilabel": , \
+  "uilabel": "Volox Flowrate", \
   }
   double volox_flowrate;
 
