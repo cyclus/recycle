@@ -138,7 +138,7 @@ void Pyre::Tick() {
   Reduct* red;
   red = Reduct( Efficiency& e );
 
-  for (it = streams_.begin()++; it != streams_.begin()++++; ++it) {
+  for (it = std::next(streams_.begin(),2); it != std::next(streams_.begin(),4); ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = red.ReductionSepMaterial(info.second, mat); 
@@ -151,7 +151,7 @@ void Pyre::Tick() {
   Refine* ref;
   ref = Refine( Efficiency& e );
 
-  for (it = streams_.begin()++++; it != streams_.begin()++++++++; ++it) {
+  for (it = std::next(streams_.begin(),4); it != std::next(streams_.begin(),6); ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = ref.RefineSepMaterial(info.second, mat);
@@ -164,7 +164,7 @@ void Pyre::Tick() {
   Winning* win;
   win = Winning( Efficiency& e );
 
-  for (it = streams_.begin()++++++++; it != streams_.begin()++++++++++++; ++it) {
+  for (it = std::next(streams_.begin(),6); it != std::next(streams_.begin(),8); ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = win.WinningSepMaterial(info.second, mat);
