@@ -13,7 +13,7 @@ using cyclus::CompMap;
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
-Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
@@ -31,8 +31,8 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
     } else {
       continue;
     }
-    
-    volox_eff = Efficiency::VoloxEff(temperature, reprocess_time, flowrate);
+
+    volox_eff = e->volox_eff;
 
     double qty = it->second;
     double sepqty = qty * eff * volox_eff;
@@ -43,3 +43,4 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
 };
+

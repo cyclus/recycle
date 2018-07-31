@@ -39,7 +39,7 @@ class Pyre
   : public cyclus::Facility,
     public cyclus::toolkit::Position {
 #pragma cyclus note { \
-  "niche": "separations", \
+  "niche": "pyre", \
   "doc": \
     "Pyre processes feed material into multiple waste streams according to their" \
     " respective sub-process. Separation uses mass-based efficiencies." \
@@ -188,184 +188,108 @@ class Pyre
   double reduct_current;
 
   #pragma cyclus var { \
-  "doc": ", \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Weight Percent of Lithium Oxide in Reduction process", \
+  "tooltip": "Lithium Oxide Weight Percent", \
+  "units": "wt%", \
+  "uitype": "range", \
+  "range": [1,3], \
+  "uilabel": "Reduction Li2O wt%", \
   }
   double reduct_li2o;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Volume of the Electroreduction Chamber", \
+  "tooltip": "Electroreduction Volume", \
+  "units": "m3", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Reduction Volume", \
   }
   double reduct_volume;
 
   //Electrorefining Parameters
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Temperature of the Electrorefining process", \
+  "tooltip": "Electrorefining Temperature", \
+  "units": "C", \
+  "uitype": "range", \
+  "range": [500,1000], \
+  "uilabel": "Refining Temperature", \
   }
   double refine_temp;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Pressure of the Electrorefining process", \
+  "tooltip": "Electrorefining Pressure", \
+  "units": "mTorr", \
+  "uitype": "range", \
+  "range": [100,760], \
+  "uilabel": "Refining Pressure", \
   }
   double refine_press;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Anode Rotation rate in the Electrorefiner", \
+  "tooltip": "Rotation speed", \
+  "units": "rpm", \
+  "uitype": "range", \
+  "range": [0,100], \
+  "uilabel": "Rotation speed", \
   }
   double refine_rotation;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Batch Size of the Electrorefining process", \
+  "tooltip": "Batch Size", \
+  "units": "kg", \
+  "uitype": "range", \
+  "range": [10,40], \
+  "uilabel": "Refiner Batch Size", \
   }
   double refine_batch_size;
 
   //Electrowinning Parameters
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Current in the Electrowinning process", \
+  "tooltip": "Electrowinning Current", \
+  "units": "A", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Electrowinning Current", \
   }
   double winning_current;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Time spent in the Electrowinning process", \
+  "tooltip": "Electrowinning Time", \
+  "units": "hr", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Electrowinning Time", \
   }
   double winning_time;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Flowrate through the Electrowinning process", \
+  "tooltip": "Flowrate in Electrowinning", \
+  "units": "cms-1", \
+  "uitype": "range", \
+  "range": [0,4.5], \
+  "uilabel": "Electrowinning Flowrate", \
   }
   double winning_flowrate;
 
   #pragma cyclus var { \
-  "doc": , \
-  "tooltip": , \
-  "units": , \
-  "uitype": , \
-  "range": , \
-  "uilabel": , \
+  "doc": "Volume of the Electrowinning process", \
+  "tooltip": "Electrowinning Volume", \
+  "units": "m3", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Electrowinning Volume", \
   }
   double winning_volume;
-
-  #pragma cyclus var { \
-	"doc": "Amount of time spent in subprocess", \
-	"tooltip": "Amount of time spent in subprocess", \
-	"units": "hours", \
-  "uitype": "range", \
-  "range": [1,3], \
-	"uilabel": "Reprocess Time" \
-  }
-  double reprocess_time;
-
-  #pragma cyclus var { \
-	"doc": "Volume of the subprocess container", \
-	"tooltip": "Volume of the subprocess", \
-	"units": "m3", \
-	"uilabel": "Volume" \
-  }
-  double volume;
-
-  #pragma cyclus var { \
-	"doc": "Weight percent of lithium oxide added as catalyst", \
-	"tooltip": "Weight percent of lithium oxide", \
-	"units": "percent", \
-  "uitype": "range", \
-	"uilabel": "Lithium Oxide", \
-  "range": [1,3] \
-  }
-  double lithium_oxide;
-
-  #pragma cyclus var { \
-	"doc": "Batch size of the subprocess", \
-	"tooltip": "Batch size of the subprocess", \
-	"units": "kg", \
-	"uilabel": "Batch Size" \
-  }
-  double batch_size;
-
-  #pragma cyclus var { \
-	"doc": "Pressure in the electrorefining process", \
-	"tooltip": "Pressure in the electrorefining process", \
-	"units": "mTorr", \
-  "uitype": "range", \
-  "range": [100, 760], \
-	"uilabel": "Refiner Pressure" \
-  }
-  double pressure;
-
-  #pragma cyclus var { \
-    "doc": "Temperature of the subprocess", \
-    "tooltip": "Temperature of the subprocess", \
-    "units": "C", \
-    "uitype": "range", \
-    "range": [500, 1000], \
-    "uilabel": "Temperature" \
-  }
-  double temperature;
-
-  #pragma cyclus var { \
-  	"doc": "Refiner stirrer speed", \
-  	"tooltip": "Refiner stirrer speed", \
-  	"units": "rpm", \
-    "uitype": "range", \
-    "range": [0, 100], \
-  	"uilabel": "Rotation" \
-  }
-  double rotation;
-
-  #pragma cyclus var { \
-  	"doc": "Current through the subprocess", \
-  	"tooltip": "Current through the subprocess", \
-  	"units": "mA", \
-    "uitype": "range", \
-    "range": [100, 500], \
-  	"uilabel": "Current" \
-  }
-  double current;
 
   #pragma cyclus var { \
     "doc" : "Maximum amount of feed material to keep on hand.", \

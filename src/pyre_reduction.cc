@@ -13,7 +13,7 @@ using cyclus::CompMap;
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
-Material::Ptr ReductionSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+Material::Ptr Reduct::ReductionSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
@@ -32,8 +32,10 @@ Material::Ptr ReductionSepMaterial(std::map<int, double> effs, Material::Ptr mat
       continue;
     }
 
+    reduct_eff = e->reduct_eff;
+
     double qty = it->second;
-    double sepqty = qty * eff;
+    double sepqty = qty * eff * reduct_eff;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }

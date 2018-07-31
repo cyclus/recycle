@@ -32,8 +32,10 @@ Material::Ptr WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) 
       continue;
     }
 
+    winning_eff = e->winning_eff;
+
     double qty = it->second;
-    double sepqty = qty * eff;
+    double sepqty = qty * eff * winning_eff;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }

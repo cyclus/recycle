@@ -114,43 +114,60 @@ void Pyre::Tick() {
   Material::Ptr mat = feed.Pop(pop_qty, cyclus::eps_rsrc());
   double orig_qty = mat->quantity();
 
+  Efficiency* e;
+  e = Efficiency(volox_temp, volox_time, volox_rate, reduct_current, 
+    reduct_li2o,refine_temp, refine_press, refine_rotation, winning_current, 
+    winning_time, winning_rate);
+
+  Volox* v;
+  v = Volox( Efficiency& e );
+
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
   for (it = streams_.begin(); it != streams_.begin()++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = VoloxSepMaterial(info.second, mat);
+    stagedsep[name] = v.VoloxSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
   }
+
+  Reduct* red;
+  red = Reduct( Efficiency& e );
 
   for (it = streams_.begin()++; it != streams_.begin()++++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = ReductionSepMaterial(info.second, mat); //mat is what is returned from each sub-process
+    stagedsep[name] = red.ReductionSepMaterial(info.second, mat); 
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
   }
+
+  Refine* ref;
+  ref = Refine( Efficiency& e );
 
   for (it = streams_.begin()++++; it != streams_.begin()++++++++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = RefineSepMaterial(info.second, mat);
+    stagedsep[name] = ref.RefineSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
   }
 
+  Winning* win;
+  win = Winning( Efficiency& e );
+
   for (it = streams_.begin()++++++++; it != streams_.begin()++++++++++++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = WinningSepMaterial(info.second, mat);
+    stagedsep[name] = win.WinningSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
