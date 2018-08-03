@@ -9,16 +9,23 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
+Winning::Winning() {
+  double current = 4;
+  double reprocess_time = 1;
+  double flowrate = 3;
+  double volume = 10;
+}
+
 Winning::Winning(winning_current, winning_time, winning_flowrate, winning_volume) {
-  currrent = winning_current;
-  reprocess_time = winning_time;
-  flowrate = winning_flowrate;
-  volume = winning_volume;
+  double currrent = winning_current;
+  double reprocess_time = winning_time;
+  double flowrate = winning_flowrate;
+  double volume = winning_volume;
 }
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
-Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+Material::Ptr WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
@@ -38,7 +45,7 @@ Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::
     }
 
     double qty = it->second;
-    double sepqty = qty * eff * winning_eff;
+    double sepqty = qty * eff * Winning::Efficiency(current,reprocess_time,flowrate);
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }
@@ -47,15 +54,15 @@ Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::
   return Material::CreateUntracked(tot_qty, c);
 };
 
-Winning::Separation(current,reprocess_time,flowrate) {
-  coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) - 2.273*pow(current,2) + 11.2046*current - 19.7493;
-  temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
-  rate = 0.12435 * log(flowrate) + 0.7985;
-  winning_eff = coulombic_eff * thermal * rate;
+double Efficiency(current,reprocess_time,flowrate) {
+  double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) - 2.273*pow(current,2) + 11.2046*current - 19.7493;
+  double temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
+  double rate = 0.12435 * log(flowrate) + 0.7985;
+  double winning_eff = coulombic_eff * thermal * rate;
   return winning_eff;
 };
 
-Winning::Throughput(reprocess_time,volume) {
-  winning_through = volume / reprocess_time;
+double Throughput(reprocess_time,volume) {
+  double winning_through = volume / reprocess_time;
   return winning_through;
 };

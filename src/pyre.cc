@@ -3,6 +3,7 @@
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
 #include "pyre_winning.h"
+#include <vector>
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -22,8 +23,8 @@ Pyre::Pyre(cyclus::Context* ctx)
       coordinates(latitude, longitude) {
         v = Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
         rd = Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
-        rf = Refine(refine_temp,refine_press,refine_rotation,refine_batch_size);
-        w = Winning(winning_current,winning_time,winning_flowrate);
+        rf = Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
+        w = Winning(winning_current,winning_time,winning_flowrate,winning_volume);
         _throughput = throughput;
       }
 
@@ -67,7 +68,10 @@ void Pyre::EnterNotify() {
   StreamSet::iterator it;
   std::map<int, double>::iterator it2;
 
+  vector <string> stream_name;
+
   for (it = streams_.begin(); it != streams_.end(); ++it) {
+    stream_name.push_back(it->first);
     std::string name = it->first;
     Stream stream = it->second;
     double cap = stream.first;
@@ -120,51 +124,23 @@ void Pyre::Tick() {
   Material::Ptr mat = feed.Pop(pop_qty, cyclus::eps_rsrc());
   double orig_qty = mat->quantity();
 
-  Efficiency e;
-  e = Efficiency(volox_temp, volox_time, volox_flowrate, reduct_current, 
-    reduct_li2o,refine_temp, refine_press, refine_rotation, winning_current, 
-    winning_time, winning_flowrate);
-
-  Volox v;
-  v = Volox( e& );
-
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
+
+  for (int i = 1; i < stream_name.size(); i++) {
+    if (i < 3) {subprocess = "Volox";}
+    else if (i < 5) {subprocess = "Reduct";}
+    else if (i < 7) {subprocess = "Refine";}
+    else {subprocess = "Winning";}
+
+    stagedsep[stream_name] = Separate(stream_name[i],subprocess);
+  }
+
   for (it = streams_.begin(); it != streams_.begin()++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
     stagedsep[name] = v->VoloxSepMaterial(info.second, mat);
-    double frac = streambufs[name].space() / stagedsep[name]->quantity();
-    if (frac < maxfrac) {
-      maxfrac = frac;
-    }
-  }
-
-  for (it = std::next(streams_.begin(),2); it != std::next(streams_.begin(),4); ++it) {
-    Stream info = it->second;
-    std::string name = it->first;
-    stagedsep[name] = red.ReductionSepMaterial(info.second, mat); 
-    double frac = streambufs[name].space() / stagedsep[name]->quantity();
-    if (frac < maxfrac) {
-      maxfrac = frac;
-    }
-  }
-
-  for (it = std::next(streams_.begin(),4); it != std::next(streams_.begin(),6); ++it) {
-    Stream info = it->second;
-    std::string name = it->first;
-    stagedsep[name] = ref.RefineSepMaterial(info.second, mat);
-    double frac = streambufs[name].space() / stagedsep[name]->quantity();
-    if (frac < maxfrac) {
-      maxfrac = frac;
-    }
-  }
-
-  for (it = std::next(streams_.begin(),6); it != std::next(streams_.begin(),8); ++it) {
-    Stream info = it->second;
-    std::string name = it->first;
-    stagedsep[name] = win.WinningSepMaterial(info.second, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
@@ -194,6 +170,25 @@ void Pyre::Tick() {
       leftover.Push(mat);
     }
   }
+}
+
+Pyre::Separate(std::string stream_name,std::string subprocess) {
+  Stream info = streams_.at(stream_name)
+  std::string name = stream_name;
+  if (subprocess = "Volox") {
+    stagedsep[name] = v->VoloxSepMaterial(info.second, mat);
+  } else if (subprocess = "Reduct") {
+    stagedsep[name] = rd->ReductSepMaterial(info.second, mat);
+  } else if (subprocess = "Refine") {
+    stagedsep[name] = rf->RefineSepMaterial(info.second, mat);
+  } else if (subprocess = "Winning") {
+    stagedsep[name] = w->WinningSepMaterial(info.second, mat);
+  }
+  double frac = streambufs[name].space() / stagedsep[name]->quantity();
+  if (frac < maxfrac) {
+    maxfrac = frac;
+  }
+  return stagedsep[name];
 }
 
 

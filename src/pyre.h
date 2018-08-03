@@ -35,6 +35,11 @@ cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
 /// reduce its stocks by trading and hits this limit for any of its output
 /// streams, further processing/separations of feed material will halt until
 /// room is again available in the output streams.
+class Volox;
+class Reduct;
+class Refine;
+class Winning;
+
 class Pyre 
   : public cyclus::Facility,
     public cyclus::toolkit::Position {
@@ -109,6 +114,7 @@ class Pyre
   Reduct* rd;
   Refine* rf;
   Winning* w;
+ public:
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \
@@ -208,6 +214,16 @@ class Pyre
   double reduct_volume;
 
   #pragma cyclus var { \
+  "doc": "Time spent in the Reduction process", \
+  "tooltip": "Reduction process time", \
+  "units": "hrs", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Reduct Time", \
+  }
+  double reduct_time;
+
+  #pragma cyclus var { \
   "doc": "Temperature of the Electrorefining process", \
   "tooltip": "Electrorefining Temperature", \
   "units": "C", \
@@ -246,6 +262,16 @@ class Pyre
   "uilabel": "Refiner Batch Size", \
   }
   double refine_batch_size;
+
+  #pragma cyclus var { \
+  "doc": "Time spent in the Refining process", \
+  "tooltip": "Refining process time", \
+  "units": "hrs", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Refine Time", \
+  }
+  double refine_time;
 
   #pragma cyclus var { \
   "doc": "Current in the Electrowinning process", \
