@@ -105,6 +105,10 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
+  Volox* v;
+  Reduct* rd;
+  Refine* rf;
+  Winning* w;
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \
@@ -132,8 +136,6 @@ class Pyre
     "default": "", \
   }
   std::string feed_recipe;
-
-  //Voloxidation Parameters
 
   #pragma cyclus var { \
   "doc": "The temperature of the Voloxidation process", \
@@ -175,8 +177,6 @@ class Pyre
   }
   double volox_volume;
 
-  //Electroreduction Parameters
-
   #pragma cyclus var { \
   "doc": "Current in the Reduction process", \
   "tooltip": "Electroreduction Current", \
@@ -206,8 +206,6 @@ class Pyre
   "uilabel": "Reduction Volume", \
   }
   double reduct_volume;
-
-  //Electrorefining Parameters
 
   #pragma cyclus var { \
   "doc": "Temperature of the Electrorefining process", \
@@ -248,8 +246,6 @@ class Pyre
   "uilabel": "Refiner Batch Size", \
   }
   double refine_batch_size;
-
-  //Electrowinning Parameters
 
   #pragma cyclus var { \
   "doc": "Current in the Electrowinning process", \

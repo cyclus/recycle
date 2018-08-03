@@ -10,7 +10,12 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
-Volox::Volox(){};
+Volox::Volox(volox_temp,volox_time,volox_flowrate,volox_volume){
+  temp = volox_temp;
+  reprocess_time = volox_time;
+  flowrate = volox_flowrate;
+  volume = volox_volume;
+};
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
@@ -43,16 +48,16 @@ Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr 
   return Material::CreateUntracked(tot_qty, c);
 };
 
-Volox::Efficiency(volox_temp, volox_time, volox_flowrate) {
-  double thermal = (8.8333E-7*pow(volox_temp,3) - 0.001755*(volox_temp,2)+1.166*volox_temp-159.6) / 100;
-  double temporal = 0.2903 * log(volox_time*3600) - 1.696;
-  double rate = 0.12435 * log(volox_flowrate) + 0.7985;
+Volox::Efficiency(temp, reprocess_time, flowrate) {
+  double thermal = (8.8333E-7*pow(temp,3) - 0.001755*(temp,2)+1.166*temp-159.6) / 100;
+  double temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
+  double rate = 0.12435 * log(flowrate) + 0.7985;
   double volox_eff = thermal * temporal * rate;
   return volox_eff;
 };
 
 Volox::Throughput(volox_flowrate, volox_time, volox_volume) {
   // placeholder calculation
-  volox_through = volox_volume / volox_flowrate*volox_time;
+  volox_through = volume / flowrate*reprocess_time;
   return volox_through;
 };

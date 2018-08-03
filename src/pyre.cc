@@ -1,5 +1,4 @@
 #include "pyre.h"
-#include "efficiency.h"
 #include "pyre_volox.h"
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
@@ -20,7 +19,13 @@ Pyre::Pyre(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
       latitude(0.0),
       longitude(0.0),
-      coordinates(latitude, longitude) {}
+      coordinates(latitude, longitude) {
+        v = Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
+        rd = Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
+        rf = Refine(refine_temp,refine_press,refine_rotation,refine_batch_size);
+        w = Winning(winning_current,winning_time,winning_flowrate);
+        _throughput = throughput;
+      }
 
 cyclus::Inventories Pyre::SnapshotInv() {
   cyclus::Inventories invs;
@@ -136,9 +141,6 @@ void Pyre::Tick() {
     }
   }
 
-  Reduct* red;
-  red = Reduct( Efficiency& e );
-
   for (it = std::next(streams_.begin(),2); it != std::next(streams_.begin(),4); ++it) {
     Stream info = it->second;
     std::string name = it->first;
@@ -149,9 +151,6 @@ void Pyre::Tick() {
     }
   }
 
-  Refine* ref;
-  ref = Refine( Efficiency& e );
-
   for (it = std::next(streams_.begin(),4); it != std::next(streams_.begin(),6); ++it) {
     Stream info = it->second;
     std::string name = it->first;
@@ -161,9 +160,6 @@ void Pyre::Tick() {
       maxfrac = frac;
     }
   }
-
-  Winning* win;
-  win = Winning( Efficiency& e );
 
   for (it = std::next(streams_.begin(),6); it != std::next(streams_.begin(),8); ++it) {
     Stream info = it->second;

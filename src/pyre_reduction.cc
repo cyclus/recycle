@@ -1,5 +1,4 @@
 #include "pyre_reduction.h"
-#include "efficiency.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -43,3 +42,15 @@ Material::Ptr Reduct::ReductionSepMaterial(std::map<int, double> effs, Material:
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
 };
+
+Reduct::Efficiency(reduct_current, reduct_li2o) {
+  double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) - 2.273*pow(current,2) + 11.2046*current - 19.7493;
+  double catalyst_eff = 0.075 * lithium_oxide + 0.775;
+  double reduct_eff = coulombic_eff * catalyst_eff;
+  return reduct_eff;
+};
+
+Reduct::Throughput(reduct_volume, reduct_time) {
+  double reduct_through = reduct_volume / reduct_time;
+  return reduct_through;
+}

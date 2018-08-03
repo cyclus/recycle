@@ -1,5 +1,4 @@
 #include "pyre_winning.h"
-#include "efficiency.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -10,10 +9,16 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
+Winning::Winning(winning_current, winning_time, winning_flowrate, winning_volume) {
+  currrent = winning_current;
+  reprocess_time = winning_time;
+  flowrate = winning_flowrate;
+  volume = winning_volume;
+}
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
-Material::Ptr WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
@@ -32,8 +37,6 @@ Material::Ptr WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) 
       continue;
     }
 
-    winning_eff = e->winning_eff;
-
     double qty = it->second;
     double sepqty = qty * eff * winning_eff;
     sepcomp[nuc] = sepqty;
@@ -42,4 +45,17 @@ Material::Ptr WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) 
 
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
+};
+
+Winning::Separation(current,reprocess_time,flowrate) {
+  coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) - 2.273*pow(current,2) + 11.2046*current - 19.7493;
+  temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
+  rate = 0.12435 * log(flowrate) + 0.7985;
+  winning_eff = coulombic_eff * thermal * rate;
+  return winning_eff;
+};
+
+Winning::Throughput(reprocess_time,volume) {
+  winning_through = volume / reprocess_time;
+  return winning_through;
 };
