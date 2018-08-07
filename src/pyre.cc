@@ -20,10 +20,14 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
-        v = &Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
-        rd = &Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
-        rf = &Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
-        w = &Winning(winning_current,winning_time,winning_flowrate,winning_volume);
+        Volox Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
+        v = &Volox;
+        Reduct Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
+        rd = &Reduct;
+        Refine Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
+        rf = &Refine;
+        Winning Winning(winning_current,winning_time,winning_flowrate,winning_volume);
+        w = &Winning;
         double _throughput = throughput;
       }
 
@@ -126,13 +130,16 @@ void Pyre::Tick() {
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
   std::string subprocess;
-  for (int i = 1; i < stream_name.size(); i++) {
-    if (i < 3) {subprocess = "Volox";}
-    else if (i < 5) {subprocess = "Reduct";}
-    else if (i < 7) {subprocess = "Refine";}
+  int stream_count = 1;
+  for (it = streams_.begin(); it != streams_.begin()++; ++it) {
+    Stream info = it->second;
+    std::string name = it->first;
+    if (stream_count < 3) {subprocess = "Volox";}
+    else if (stream_count < 5) {subprocess = "Reduct";}
+    else if (stream_count < 7) {subprocess = "Refine";}
     else {subprocess = "Winning";}
-
-    stagedsep[stream_name[i]] = Separate(stream_name[i],subprocess);
+    stream_count++;
+    stagedsep[name] = Separate(streams_.at(name),subprocess);
   }
 
   for (it = streams_.begin(); it != streams_.begin()++; ++it) {
@@ -169,11 +176,10 @@ void Pyre::Tick() {
     }
   }
 }
-
-std::map<std::string, Material::Ptr> 
-Pyre::Separate(std::string stream_name,std::string subprocess) {
-  Stream info = streams_.at(stream_name)
-  std::string name = stream_name;
+ 
+StreamSet Pyre::Separate(StreamSet stream, std::string subprocess) {
+  Stream info = stream->second;
+  std::string name = stream->first;
   if (subprocess = "Volox") {
     stagedsep[name] = v->VoloxSepMaterial(info.second, mat);
   } else if (subprocess = "Reduct") {

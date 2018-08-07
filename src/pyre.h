@@ -77,8 +77,10 @@ class Pyre
   virtual void Tock();
   virtual void EnterNotify();
 
-  std::map<std::string, Material::Ptr> Separate(std::string stream_name,
-    std::string subprocess);
+  typedef std::pair<double, std::map<int, double> > Stream;
+  typedef std::map<std::string, Stream> StreamSet;
+
+  StreamSet Separate(StreamSet stream, std::string subprocess);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
