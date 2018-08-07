@@ -11,7 +11,7 @@ public:
 
 Winning();
 
-Winning(winning_current, winning_time, winning_flowrate, winning_volume);
+Winning(double winning_current, double winning_time, double winning_flowrate, double winning_volume);
 /// @param feed feed yellowcake from voloxidation
 /// @param stream the separation efficiency for reduction streams
 /// @return composition composition of the separated material sent to fuel fabrication

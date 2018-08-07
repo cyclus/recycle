@@ -12,7 +12,7 @@ public:
 
 Volox();
 
-Volox(volox_temp, volox_time, volox_flowrate, volox_volume);
+Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_volume);
 /// @param feed feed snf
 /// @param stream the separation efficiency of voloxidation
 /// @return composition composition of the resulting product and waste

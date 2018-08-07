@@ -77,6 +77,9 @@ class Pyre
   virtual void Tock();
   virtual void EnterNotify();
 
+  std::map<std::string, Material::Ptr> Separate(std::string stream_name,
+    std::string subprocess);
+
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
 
@@ -110,11 +113,11 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
-  Volox* v;
-  Reduct* rd;
-  Refine* rf;
-  Winning* w;
- public:
+  Volox *v;
+  Reduct *rd;
+  Refine *rf;
+  Winning *w;
+ 
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \

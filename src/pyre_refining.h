@@ -11,7 +11,7 @@ public:
 
 Refine();
 
-Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
+Refine(double refine_temp,double refine_press,double refine_rotation,double refine_batch_size,double refine_time);
 
 /// @param feed salt with uranium and fission product feed
 /// @param stream the separation efficiency for reduction streams

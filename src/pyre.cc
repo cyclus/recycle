@@ -3,7 +3,6 @@
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
 #include "pyre_winning.h"
-#include <vector>
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -21,11 +20,11 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
-        v = Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
-        rd = Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
-        rf = Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
-        w = Winning(winning_current,winning_time,winning_flowrate,winning_volume);
-        _throughput = throughput;
+        v = &Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
+        rd = &Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
+        rf = &Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
+        w = &Winning(winning_current,winning_time,winning_flowrate,winning_volume);
+        double _throughput = throughput;
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
@@ -60,6 +59,7 @@ void Pyre::InitInv(cyclus::Inventories& inv) {
 
 typedef std::pair<double, std::map<int, double> > Stream;
 typedef std::map<std::string, Stream> StreamSet;
+std::vector <std::string> stream_name;
 
 void Pyre::EnterNotify() {
   cyclus::Facility::EnterNotify();
@@ -67,8 +67,6 @@ void Pyre::EnterNotify() {
 
   StreamSet::iterator it;
   std::map<int, double>::iterator it2;
-
-  vector <string> stream_name;
 
   for (it = streams_.begin(); it != streams_.end(); ++it) {
     stream_name.push_back(it->first);
@@ -127,14 +125,14 @@ void Pyre::Tick() {
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
-
+  std::string subprocess;
   for (int i = 1; i < stream_name.size(); i++) {
     if (i < 3) {subprocess = "Volox";}
     else if (i < 5) {subprocess = "Reduct";}
     else if (i < 7) {subprocess = "Refine";}
     else {subprocess = "Winning";}
 
-    stagedsep[stream_name] = Separate(stream_name[i],subprocess);
+    stagedsep[stream_name[i]] = Separate(stream_name[i],subprocess);
   }
 
   for (it = streams_.begin(); it != streams_.begin()++; ++it) {
@@ -172,6 +170,7 @@ void Pyre::Tick() {
   }
 }
 
+std::map<std::string, Material::Ptr> 
 Pyre::Separate(std::string stream_name,std::string subprocess) {
   Stream info = streams_.at(stream_name)
   std::string name = stream_name;
@@ -188,7 +187,7 @@ Pyre::Separate(std::string stream_name,std::string subprocess) {
   if (frac < maxfrac) {
     maxfrac = frac;
   }
-  return stagedsep[name];
+  return stagedsep;
 }
 
 
