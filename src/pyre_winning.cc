@@ -9,6 +9,8 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
+namespace recycle {
+
 Winning::Winning() {
   double current = 4;
   double reprocess_time = 1;
@@ -52,7 +54,7 @@ Material::Ptr WinningSepMaterial(std::map<int, double> effs, Material::Ptr mat) 
 
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
-};
+}
 
 double Efficiency(current,reprocess_time,flowrate) {
   double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) - 2.273*pow(current,2) + 11.2046*current - 19.7493;
@@ -60,9 +62,10 @@ double Efficiency(current,reprocess_time,flowrate) {
   double rate = 0.12435 * log(flowrate) + 0.7985;
   double winning_eff = coulombic_eff * thermal * rate;
   return winning_eff;
-};
+}
 
 double Throughput(reprocess_time,volume) {
   double winning_through = volume / reprocess_time;
   return winning_through;
 };
+}

@@ -54,17 +54,17 @@ Material::Ptr ReductionSepMaterial(std::map<int, double> effs, Material::Ptr mat
 
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
-};
+}
 
 double Efficiency(current, lithium_oxide) {
   double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) - 2.273*pow(current,2) + 11.2046*current - 19.7493;
   double catalyst_eff = 0.075 * lithium_oxide + 0.775;
   double reduct_eff = coulombic_eff * catalyst_eff;
   return reduct_eff;
-};
+}
 
 double Throughput(volume, reprocess_time) {
   double reduct_through = volume / reprocess_time;
   return reduct_through;
-}
+};
 }

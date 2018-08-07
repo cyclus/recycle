@@ -57,7 +57,7 @@ Material::Ptr RefineSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
 
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
-};
+}
 
 double Efficiency(temperature,pressure,rotation) {
   double thermal = (8.8333E-7*pow(temperature,3) - 0.00255*(temperature,2)+2.4572*temperature-691.1) / 100;
@@ -72,7 +72,7 @@ double Efficiency(temperature,pressure,rotation) {
   }
   double refine_eff = thermal * pres_eff * agitation;
   return refine_eff;
-};
+}
 
 double Throughput(batch_size, reprocess_time) {
   double refine_through = refine_batch_size / reprocess_time;

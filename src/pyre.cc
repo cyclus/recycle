@@ -1,8 +1,4 @@
 #include "pyre.h"
-#include "pyre_volox.h"
-#include "pyre_reduction.h"
-#include "pyre_refining.h"
-#include "pyre_winning.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -20,14 +16,14 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
-        Volox Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
-        v = &Volox;
-        Reduct Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
-        rd = &Reduct;
-        Refine Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
-        rf = &Refine;
-        Winning Winning(winning_current,winning_time,winning_flowrate,winning_volume);
-        w = &Winning;
+        Volox vol = Volox(volox_temp,volox_time,volox_flowrate,volox_volume);
+        v = &vol;
+        Reduct red = Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time);
+        rd = &red;
+        Refine ref = Refine(refine_temp,refine_press,refine_rotation,refine_batch_size,refine_time);
+        rf = &ref;
+        Winning win = Winning(winning_current,winning_time,winning_flowrate,winning_volume);
+        w = &win;
         double _throughput = throughput;
       }
 
@@ -134,22 +130,12 @@ void Pyre::Tick() {
   for (it = streams_.begin(); it != streams_.begin()++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    if (stream_count < 3) {subprocess = "Volox";}
-    else if (stream_count < 5) {subprocess = "Reduct";}
-    else if (stream_count < 7) {subprocess = "Refine";}
-    else {subprocess = "Winning";}
-    stream_count++;
-    stagedsep[name] = Separate(streams_.at(name),subprocess);
-  }
-
-  for (it = streams_.begin(); it != streams_.begin()++; ++it) {
-    Stream info = it->second;
-    std::string name = it->first;
-    stagedsep[name] = v->VoloxSepMaterial(info.second, mat);
+    stagedsep[name] = Separate(info, name, stream_count, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
+    stream_count++;
   }
 
   std::map<std::string, Material::Ptr>::iterator itf;
@@ -177,23 +163,20 @@ void Pyre::Tick() {
   }
 }
  
-StreamSet Pyre::Separate(StreamSet stream, std::string subprocess) {
-  Stream info = stream->second;
-  std::string name = stream->first;
-  if (subprocess = "Volox") {
-    stagedsep[name] = v->VoloxSepMaterial(info.second, mat);
-  } else if (subprocess = "Reduct") {
-    stagedsep[name] = rd->ReductSepMaterial(info.second, mat);
-  } else if (subprocess = "Refine") {
-    stagedsep[name] = rf->RefineSepMaterial(info.second, mat);
-  } else if (subprocess = "Winning") {
-    stagedsep[name] = w->WinningSepMaterial(info.second, mat);
+cyclus::Material::Ptr Pyre::Separate(Stream stream, 
+  std::string name, int stream_count, Material::Ptr mat) {
+
+  Material::Ptr material
+  if (stream_count < 3) {
+    material = v->VoloxSepMaterial(stream.second, mat);
+  } else if (stream_count < 5) {
+    material = rd->ReductSepMaterial(stream.second, mat);
+  } else if (stream_count < 7) {
+    material = rf->RefineSepMaterial(stream.second, mat);
+  } else {
+    material = w->WinningSepMaterial(stream.second, mat);
   }
-  double frac = streambufs[name].space() / stagedsep[name]->quantity();
-  if (frac < maxfrac) {
-    maxfrac = frac;
-  }
-  return stagedsep;
+  return material;
 }
 
 

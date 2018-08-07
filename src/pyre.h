@@ -3,6 +3,11 @@
 
 #include "cyclus.h"
 #include "recycle_version.h"
+#include "pyre_volox.h"
+#include "pyre_reduction.h"
+#include "pyre_refining.h"
+#include "pyre_winning.h"
+
 
 namespace recycle {
 
@@ -80,7 +85,8 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
-  StreamSet Separate(StreamSet stream, std::string subprocess);
+  Material::Ptr Separate(Stream stream, std::string name, int stream_count, 
+    cyclus::Material::Ptr feed);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
@@ -115,10 +121,10 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
-  Volox *v;
-  Reduct *rd;
-  Refine *rf;
-  Winning *w;
+  Volox* v;
+  Reduct* rd;
+  Refine* rf;
+  Winning* w;
  
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \

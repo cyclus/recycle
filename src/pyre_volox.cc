@@ -24,7 +24,7 @@ Volox::Volox(volox_temp,volox_time,volox_flowrate,volox_volume){
   double reprocess_time = volox_time;
   double flowrate = volox_flowrate;
   double volume = volox_volume;
-};
+}
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
@@ -55,7 +55,7 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
 
   Composition::Ptr c = Composition::CreateFromMass(sepcomp);
   return Material::CreateUntracked(tot_qty, c);
-};
+}
 
 double Efficiency(double temp, double reprocess_time, double flowrate) {
   double thermal = (8.8333E-7*pow(temp,3) - 0.001755*(temp,2)+1.166*temp-159.6) / 100;
@@ -63,7 +63,7 @@ double Efficiency(double temp, double reprocess_time, double flowrate) {
   double rate = 0.12435 * log(flowrate) + 0.7985;
   double volox_eff = thermal * temporal * rate;
   return volox_eff;
-};
+}
 
 double Throughput(double flowrate, double reprocess_time, double volume) {
   // placeholder calculation
