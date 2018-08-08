@@ -27,7 +27,7 @@ Reduct::Reduct(reduct_current,reduct_li2o,reduct_volume,reduct_time) {
 }
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
-Material::Ptr ReductionSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+Material::Ptr ReductSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;

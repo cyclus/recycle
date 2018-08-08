@@ -48,7 +48,7 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
     }
 
     double qty = it->second;
-    double sepqty = qty * eff * Volox::Efficiency(temp,reprocess_time,flowrate);
+    double sepqty = qty * eff * Efficiency(temp,reprocess_time,flowrate);
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }
