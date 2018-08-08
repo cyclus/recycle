@@ -13,22 +13,22 @@ using cyclus::CompMap;
 namespace recycle {
 
 Volox::Volox() {
-  double temp = 900;
-  double reprocess_time = 1;
-  double flowrate = 3;
-  double volume = 1;
+  temp = 900;
+  reprocess_time = 1;
+  flowrate = 3;
+  volume = 1;
 }
 
-Volox::Volox(volox_temp,volox_time,volox_flowrate,volox_volume){
-  double temp = volox_temp;
-  double reprocess_time = volox_time;
-  double flowrate = volox_flowrate;
-  double volume = volox_volume;
+Volox::Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_volume){
+  temp = volox_temp;
+  reprocess_time = volox_time;
+  flowrate = volox_flowrate;
+  volume = volox_volume;
 }
 
 // Note that this returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
-Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
@@ -48,7 +48,7 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
     }
 
     double qty = it->second;
-    double sepqty = qty * eff * Efficiency(temp,reprocess_time,flowrate);
+    double sepqty = qty * eff * Volox::Efficiency(temp, reprocess_time, flowrate);
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }
@@ -57,7 +57,7 @@ Material::Ptr VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   return Material::CreateUntracked(tot_qty, c);
 }
 
-double Efficiency(double temp, double reprocess_time, double flowrate) {
+double Volox::Efficiency(double temp, double reprocess_time, double flowrate) {
   double thermal = (8.8333E-7*pow(temp,3) - 0.001755*(temp,2)+1.166*temp-159.6) / 100;
   double temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
   double rate = 0.12435 * log(flowrate) + 0.7985;
@@ -65,9 +65,9 @@ double Efficiency(double temp, double reprocess_time, double flowrate) {
   return volox_eff;
 }
 
-double Throughput(double flowrate, double reprocess_time, double volume) {
+double Volox::Throughput(double flowrate, double reprocess_time, double volume) {
   // placeholder calculation
   double volox_through = volume / flowrate*reprocess_time;
   return volox_through;
-};
+}
 }

@@ -7,6 +7,12 @@
 namespace recycle {
 
 class Reduct {
+
+double current;
+double lithium_oxide;
+double volume;
+double reprocess_time;
+
 public:
 
 Reduct();

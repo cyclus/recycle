@@ -6,7 +6,14 @@
 
 namespace recycle {
 
+
 class Winning {
+
+double current;
+double reprocess_time;
+double flowrate;
+double volume;
+
 public:
 
 Winning();

@@ -7,11 +7,18 @@
 namespace recycle {
 
 class Refine{
+
+double temperature;
+double pressure;
+double rotation;
+double batch_size;
+double reprocess_time;
+
 public:
 
 Refine();
 
-Refine(double refine_temp,double refine_press,double refine_rotation,double refine_batch_size,double refine_time);
+Refine(double refine_temp, double refine_press, double refine_rotation, double refine_batch_size, double refine_time);
 
 /// @param feed salt with uranium and fission product feed
 /// @param stream the separation efficiency for reduction streams
