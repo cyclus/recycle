@@ -29,7 +29,6 @@ cyclus::Material::Ptr RefineSepMaterial(std::map<int, double> effs,
 double Efficiency(double temperature, double pressure, double rotation);
 
 double Throughput(double batch_size, double reprocess_time);
-
 };
 }
 #endif // RECYCLE_SRC_PYRE_REFINING_H_

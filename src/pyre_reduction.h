@@ -28,7 +28,6 @@ cyclus::Material::Ptr ReductSepMaterial(std::map<int, double> effs,
 double Efficiency(double current, double lithium_oxide);
 
 double Throughput(double volume, double reprocess_time);
-
 };
 }
 #endif // RECYCLE_SRC_PYRE_REDUCTION_H_
