@@ -15,7 +15,7 @@ Pyre::Pyre(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
       latitude(0.0),
       longitude(0.0),
-      coordinates(latitude, longitude) {
+      coordinates(latitude = 0.0, longitude = 0.0) {
         Volox vol = Volox(volox_temp, volox_time, volox_flowrate, volox_volume);
         v = &vol;
         Reduct red = Reduct(reduct_current, reduct_li2o, reduct_volume, reduct_time);

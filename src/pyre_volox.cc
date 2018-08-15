@@ -12,21 +12,17 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Volox::Volox() {
-  temp = 900;
-  reprocess_time = 1;
-  flowrate = 3;
-  volume = 1;
-}
+Volox::Volox() {}
 
-Volox::Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_volume){
+Volox::Volox(double volox_temp = 900, double volox_time = 1, 
+             double volox_flowrate = 3, double volox_volume = 1){
   temp = volox_temp;
   reprocess_time = volox_time;
   flowrate = volox_flowrate;
   volume = volox_volume;
 }
 
-// Note that this returns an untracked material that should just be used for
+// This returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
 Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
@@ -37,7 +33,7 @@ Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr 
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
     int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
+    int elem = nuc;
     double eff = 0;
     if (effs.count(nuc) > 0) {
       eff = effs[nuc];

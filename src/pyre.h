@@ -8,7 +8,6 @@
 #include "pyre_refining.h"
 #include "pyre_winning.h"
 
-
 namespace recycle {
 
 /// SepMaterial returns a material object that represents the composition and

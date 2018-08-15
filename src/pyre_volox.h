@@ -26,7 +26,6 @@ Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_
 cyclus::Material::Ptr VoloxSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
 
-
 /// @param temp temperature of the volox process
 /// @param time time spent in the process
 /// @param flow mass flow rate

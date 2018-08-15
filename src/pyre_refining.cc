@@ -12,17 +12,11 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Refine::Refine() {
-  temperature = 900;
-  pressure = 760;
-  rotation = 0;
-  batch_size = 20;
-  reprocess_time = 1;
-}
+Refine::Refine() {}
 
-Refine::Refine(double refine_temp, double refine_press, double refine_rotation, 
-  double refine_batch_size, double refine_time) {
-
+Refine::Refine(double refine_temp = 900, double refine_press = 760, 
+               double refine_rotation = 0, double refine_batch_size = 20,
+               double refine_time = 1) {
   temperature = refine_temp;
   pressure = refine_press;
   rotation = refine_rotation;
@@ -30,7 +24,7 @@ Refine::Refine(double refine_temp, double refine_press, double refine_rotation,
   reprocess_time = refine_time;
 }
 
-// Note that this returns an untracked material that should just be used for
+// This returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
 Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
@@ -41,7 +35,7 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
     int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
+    int elem = nuc;
     double eff = 0;
     if (effs.count(nuc) > 0) {
       eff = effs[nuc];
@@ -70,7 +64,7 @@ double Refine::Efficiency(double temperature, double pressure, double rotation) 
   } else {
     agitation = 0.0369924675*log(rotation)+0.829777331;
     if (agitation > 1) {
-      agitation = 1;
+      throw ValueError("Rotation efficiency cannot exceed 1");
     }
   }
   double refine_eff = thermal * pres_eff * agitation;
