@@ -15,7 +15,17 @@ Pyre::Pyre(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
       latitude(0.0),
       longitude(0.0),
-      coordinates(latitude, longitude) {}
+      coordinates(latitude = 0.0, longitude = 0.0) {
+        Volox vol = Volox(volox_temp, volox_time, volox_flowrate, volox_volume);
+        v = &vol;
+        Reduct red = Reduct(reduct_current, reduct_li2o, reduct_volume, reduct_time);
+        rd = &red;
+        Refine ref = Refine(refine_temp, refine_press, refine_rotation, refine_batch_size, refine_time);
+        rf = &ref;
+        Winning win = Winning(winning_current, winning_time, winning_flowrate, winning_volume);
+        w = &win;
+        double _throughput = throughput;
+      }
 
 cyclus::Inventories Pyre::SnapshotInv() {
   cyclus::Inventories invs;
@@ -49,6 +59,7 @@ void Pyre::InitInv(cyclus::Inventories& inv) {
 
 typedef std::pair<double, std::map<int, double> > Stream;
 typedef std::map<std::string, Stream> StreamSet;
+std::vector <std::string> stream_name;
 
 void Pyre::EnterNotify() {
   cyclus::Facility::EnterNotify();
@@ -58,6 +69,7 @@ void Pyre::EnterNotify() {
   std::map<int, double>::iterator it2;
 
   for (it = streams_.begin(); it != streams_.end(); ++it) {
+    stream_name.push_back(it->first);
     std::string name = it->first;
     Stream stream = it->second;
     double cap = stream.first;
@@ -113,14 +125,17 @@ void Pyre::Tick() {
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
-  for (it = streams_.begin(); it != streams_.end(); ++it) {
+  std::string subprocess;
+  int stream_count = 1;
+  for (it = streams_.begin(); it != streams_.begin()++; ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = SepMaterial(info.second, mat);
+    stagedsep[name] = Separate(info, name, stream_count, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
+    stream_count++;
   }
 
   std::map<std::string, Material::Ptr>::iterator itf;
@@ -147,37 +162,32 @@ void Pyre::Tick() {
     }
   }
 }
+ 
+cyclus::Material::Ptr Pyre::Separate(Stream stream, 
+  std::string name, int stream_count, Material::Ptr mat) {
 
-// Note that this returns an untracked material that should just be used for
-// its composition and qty - not in any real inventories, etc.
-Material::Ptr SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
-  CompMap cm = mat->comp()->mass();
-  cyclus::compmath::Normalize(&cm, mat->quantity());
-  double tot_qty = 0;
-  CompMap sepcomp;
-
-  CompMap::iterator it;
-  for (it = cm.begin(); it != cm.end(); ++it) {
-    int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
-    double eff = 0;
-    if (effs.count(nuc) > 0) {
-      eff = effs[nuc];
-    } else if (effs.count(elem) > 0) {
-      eff = effs[elem];
-    } else {
-      continue;
-    }
-
-    double qty = it->second;
-    double sepqty = qty * eff;
-    sepcomp[nuc] = sepqty;
-    tot_qty += sepqty;
+  Material::Ptr material;
+  switch (stream_count) {
+    case 1:
+    case 2:
+      material = v->VoloxSepMaterial(stream.second, mat);
+      break;
+    case 3:
+    case 4:
+      material = rd->ReductSepMaterial(stream.second, mat);
+      break;
+    case 5:
+    case 6:
+      material = rf->RefineSepMaterial(stream.second, mat);
+      break;
+    case 7:
+    case 8:
+      material = w->WinningSepMaterial(stream.second, mat);
+      break;
   }
+  return material;
+}
 
-  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
-  return Material::CreateUntracked(tot_qty, c);
-};
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>
 Pyre::GetMatlRequests() {

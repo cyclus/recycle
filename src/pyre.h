@@ -3,6 +3,10 @@
 
 #include "cyclus.h"
 #include "recycle_version.h"
+#include "pyre_volox.h"
+#include "pyre_reduction.h"
+#include "pyre_refining.h"
+#include "pyre_winning.h"
 
 namespace recycle {
 
@@ -16,10 +20,11 @@ namespace recycle {
 cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
                                   cyclus::Material::Ptr mat);
 
-/// Separations processes feed material into one or more streams containing
-/// specific elements and/or nuclides.  It uses mass-based efficiencies.
+/// Pyre processes feed material into multiple waste streams according to their
+/// respective sub-process. Separation uses mass-based efficiencies.
 ///
-/// User defined separations streams are specified as groups of
+/// Streams are predefined, but isotopic efficiencies and stream name
+/// can be specified by the user. Streams are specified as groups of
 /// component-efficiency pairs where 'component' means either a particular
 /// element or a particular nuclide.  Each component's paired efficiency
 /// represents the mass fraction of that component in the feed that is
@@ -34,16 +39,22 @@ cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
 /// reduce its stocks by trading and hits this limit for any of its output
 /// streams, further processing/separations of feed material will halt until
 /// room is again available in the output streams.
+class Volox;
+class Reduct;
+class Refine;
+class Winning;
+
 class Pyre 
   : public cyclus::Facility,
     public cyclus::toolkit::Position {
 #pragma cyclus note { \
-  "niche": "separations", \
+  "niche": "pyre", \
   "doc": \
-    "Separations processes feed material into one or more streams containing" \
-    " specific elements and/or nuclides.  It uses mass-based efficiencies." \
+    "Pyre processes feed material into multiple waste streams according to their" \
+    " respective sub-process. Separation uses mass-based efficiencies." \
     "\n\n" \
-    "User defined separations streams are specified as groups of" \
+    "Streams are predefined, but isotopic efficiencies and stream name" \
+    " can be specified by the user. Streams are specified as groups of" \
     " component-efficiency pairs where 'component' means either a particular" \
     " element or a particular nuclide.  Each component's paired efficiency" \
     " represents the mass fraction of that component in the feed that is" \
@@ -69,6 +80,12 @@ class Pyre
   virtual void Tick();
   virtual void Tock();
   virtual void EnterNotify();
+
+  typedef std::pair<double, std::map<int, double> > Stream;
+  typedef std::map<std::string, Stream> StreamSet;
+
+  cyclus::Material::Ptr Separate(Stream stream, std::string name, int stream_count, 
+    cyclus::Material::Ptr feed);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
@@ -103,6 +120,11 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
+  Volox* v;
+  Reduct* rd;
+  Refine* rf;
+  Winning* w;
+ 
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \
@@ -132,68 +154,174 @@ class Pyre
   std::string feed_recipe;
 
   #pragma cyclus var { \
-	"doc": "Amount of time spent in subprocess", \
-	"tooltip": "Amount of time spent in subprocess", \
-	"units": "months", \
-	"uilabel": "Reprocess Time" \
+  "doc": "The temperature of the Voloxidation process", \
+  "tooltip": "Voloxidation Temperature", \
+  "units": "C", \
+  "uitype": "range", \
+  "range": [500,1000], \
+  "uilabel": "Volox Temp", \
   }
-  int reprocess_time;
+  double volox_temp;
 
   #pragma cyclus var { \
-	"doc": "Volume of the subprocess container", \
-	"tooltip": "Volume of the subprocess", \
-	"units": "m^3", \
-	"uilabel": "Volume" \
+  "doc": "Time spent in the Voloxidation process", \
+  "tooltip": "Voloxidation process time", \
+  "units": "hrs", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Volox Time", \
   }
-  double volume;
+  double volox_time;
 
   #pragma cyclus var { \
-	"doc": "Weight percent of lithium oxide added as catalyst", \
-	"tooltip": "Weight percent of lithium oxide", \
-	"units": "percent", \
-	"uilabel": "Lithium Oxide" \
+  "doc": "Material flowrate through Voloxidation", \
+  "tooltip": "Voloxidation Flowrate", \
+  "units": "cms-1", \
+  "uitype": "range", \
+  "range": [0,4.5], \
+  "uilabel": "Volox Flowrate", \
   }
-  double lithium_oxide;
+  double volox_flowrate;
 
   #pragma cyclus var { \
-	"doc": "Batch size of the subprocess", \
-	"tooltip": "Batch size of the subprocess", \
-	"units": "kg", \
-	"uilabel": "Batch Size" \
+  "doc": "Volume of the voloxidation chamber", \
+  "tooltip": "Voloxidation Volume", \
+  "units": "m3", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Volox Volume", \
   }
-  double batch_size;
+  double volox_volume;
 
   #pragma cyclus var { \
-	"doc": "Pressure in the electrorefining process", \
-	"tooltip": "Pressure in the electrorefining process", \
-	"units": "mTorr", \
-	"uilabel": "Refiner Pressure" \
+  "doc": "Current in the Reduction process", \
+  "tooltip": "Electroreduction Current", \
+  "units": "A", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Reduction Current", \
   }
-  double pressure;
+  double reduct_current;
 
   #pragma cyclus var { \
-    "doc": "Temperature of the subprocess", \
-    "tooltip": "Temperature of the subprocess", \
-    "units": "K", \
-    "uilabel": "Temperature" \
+  "doc": "Weight Percent of Lithium Oxide in Reduction process", \
+  "tooltip": "Lithium Oxide Weight Percent", \
+  "units": "wt%", \
+  "uitype": "range", \
+  "range": [1,3], \
+  "uilabel": "Reduction Li2O wt%", \
   }
-  double temperature;
+  double reduct_li2o;
 
   #pragma cyclus var { \
-  	"doc": "Refiner stirrer speed", \
-  	"tooltip": "Refiner stirrer speed", \
-  	"units": "rpm", \
-  	"uilabel": "Stirrer Speed" \
+  "doc": "Volume of the Electroreduction Chamber", \
+  "tooltip": "Electroreduction Volume", \
+  "units": "m3", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Reduction Volume", \
   }
-  double stirrer_speed;
+  double reduct_volume;
 
   #pragma cyclus var { \
-  	"doc": "Current through the subprocess", \
-  	"tooltip": "Current through the subprocess", \
-  	"units": "mA", \
-  	"uilabel": "Current" \
+  "doc": "Time spent in the Reduction process", \
+  "tooltip": "Reduction process time", \
+  "units": "hrs", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Reduct Time", \
   }
-  double current;
+  double reduct_time;
+
+  #pragma cyclus var { \
+  "doc": "Temperature of the Electrorefining process", \
+  "tooltip": "Electrorefining Temperature", \
+  "units": "C", \
+  "uitype": "range", \
+  "range": [500,1000], \
+  "uilabel": "Refining Temperature", \
+  }
+  double refine_temp;
+
+  #pragma cyclus var { \
+  "doc": "Pressure of the Electrorefining process", \
+  "tooltip": "Electrorefining Pressure", \
+  "units": "mTorr", \
+  "uitype": "range", \
+  "range": [100,760], \
+  "uilabel": "Refining Pressure", \
+  }
+  double refine_press;
+
+  #pragma cyclus var { \
+  "doc": "Anode Rotation rate in the Electrorefiner", \
+  "tooltip": "Rotation speed", \
+  "units": "rpm", \
+  "uitype": "range", \
+  "range": [0,100], \
+  "uilabel": "Rotation speed", \
+  }
+  double refine_rotation;
+
+  #pragma cyclus var { \
+  "doc": "Batch Size of the Electrorefining process", \
+  "tooltip": "Batch Size", \
+  "units": "kg", \
+  "uitype": "range", \
+  "range": [10,40], \
+  "uilabel": "Refiner Batch Size", \
+  }
+  double refine_batch_size;
+
+  #pragma cyclus var { \
+  "doc": "Time spent in the Refining process", \
+  "tooltip": "Refining process time", \
+  "units": "hrs", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Refine Time", \
+  }
+  double refine_time;
+
+  #pragma cyclus var { \
+  "doc": "Current in the Electrowinning process", \
+  "tooltip": "Electrowinning Current", \
+  "units": "A", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Electrowinning Current", \
+  }
+  double winning_current;
+
+  #pragma cyclus var { \
+  "doc": "Time spent in the Electrowinning process", \
+  "tooltip": "Electrowinning Time", \
+  "units": "hr", \
+  "uitype": "range", \
+  "range": [1,4], \
+  "uilabel": "Electrowinning Time", \
+  }
+  double winning_time;
+
+  #pragma cyclus var { \
+  "doc": "Flowrate through the Electrowinning process", \
+  "tooltip": "Flowrate in Electrowinning", \
+  "units": "cms-1", \
+  "uitype": "range", \
+  "range": [0,4.5], \
+  "uilabel": "Electrowinning Flowrate", \
+  }
+  double winning_flowrate;
+
+  #pragma cyclus var { \
+  "doc": "Volume of the Electrowinning process", \
+  "tooltip": "Electrowinning Volume", \
+  "units": "m3", \
+  "uitype": "range", \
+  "range": [1,10], \
+  "uilabel": "Electrowinning Volume", \
+  }
+  double winning_volume;
 
   #pragma cyclus var { \
     "doc" : "Maximum amount of feed material to keep on hand.", \
@@ -214,7 +342,7 @@ class Pyre
     "default": 1e299, \
     "uitype": "range", \
     "range": [0.0, 1e299], \
-    "units": "kg/(time step)", \
+    "units": "kgday-1", \
   }
   double throughput;
 
