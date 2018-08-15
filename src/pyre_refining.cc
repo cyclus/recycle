@@ -57,7 +57,8 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
 
 double Refine::Efficiency(double temperature, double pressure, double rotation) {
   double agitation;
-  double thermal = (8.8333E-7*pow(temperature,3) - 0.00255*(temperature,2)+2.4572*temperature-691.1) / 100;
+  double thermal = (8.8333E-7*pow(temperature,3) - 0.00255*(temperature,2)
+                   +2.4572*temperature-691.1) / 100;
   double pres_eff = -0.0055128 * pressure + 100.5;
   if (rotation <= 1) {
     agitation = 0.032*rotation + 0.72;
