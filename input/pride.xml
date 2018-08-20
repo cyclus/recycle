@@ -8,10 +8,21 @@
   <archetypes>
     <spec><lib>agents</lib><name>NullRegion</name></spec>
     <spec><lib>agents</lib><name>NullInst</name></spec>
+    <spec><lib>cycamore</lib><name>Source</name></spec>
     <spec><lib>recycle</lib><name>Pyre</name></spec>
     <spec><lib>cycamore</lib><name>DeployInst</name></spec>
   </archetypes>
 
+  <facility>
+   <name>lwr_waste_source</name>
+     <config>
+       <Source>
+         <outcommod>leu</outcommod>
+         <throughput>1e299</throughput>
+         <outrecipe>lwr_waste</outrecipe>
+       </Source>
+     </config>
+  </facility>
 
   <facility>
     <name>LEU_pyro</name>
@@ -100,7 +111,7 @@
                   <comp>Rh</comp> <eff>0.2</eff>
                 </item>
                 <item>
-                  <comp>Mo</comp> <eff>1</eff>
+                  <comp>Mo</comp> <eff>0.2</eff>
                 </item>
                 <item>
                   <comp>Zr</comp> <eff>1</eff>
@@ -113,9 +124,6 @@
                 </item>
                 <item>
                   <comp>Ba</comp> <eff>1</eff>
-                </item>
-                <item>
-                  <comp>I</comp> <eff>1</eff>
                 </item>
               </efficiencies>
             </info>
@@ -202,19 +210,23 @@
             </info>
           </item>
         </streams>
-      </Separations>
+      </Pyre>
     </config>
   </facility>
 
   <region>
-    <name>SingleRegion</name>
+    <name>region</name>
     <config><NullRegion/></config>
     <institution>
-      <name>SingleInstitution</name>
+      <name>nullinst</name>
       <initialfacilitylist>
         <entry>
-          <prototype>OneFacility</prototype>
           <number>1</number>
+          <prototype>lwr_waste_source</prototype>
+        </entry>
+        <entry>
+          <number>1</number>
+          <prototype>LEU_pyro</prototype>
         </entry>
       </initialfacilitylist>
       <config><NullInst/></config>

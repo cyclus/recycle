@@ -16,13 +16,17 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude = 0.0, longitude = 0.0) {
-        Volox vol = Volox(volox_temp, volox_time, volox_flowrate, volox_volume);
+        Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
+        	volox_volume);
         v = &vol;
-        Reduct red = Reduct(reduct_current, reduct_li2o, reduct_volume, reduct_time);
+        Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
+        	reduct_volume, reduct_time);
         rd = &red;
-        Refine ref = Refine(refine_temp, refine_press, refine_rotation, refine_batch_size, refine_time);
+        Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
+        	refine_batch_size, refine_time);
         rf = &ref;
-        Winning win = Winning(winning_current, winning_time, winning_flowrate, winning_volume);
+        Winning win = Winning(winning_current, winning_time, winning_flowrate, 
+        	winning_volume);
         w = &win;
       }
 
