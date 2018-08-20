@@ -168,19 +168,16 @@ cyclus::Material::Ptr Pyre::Separate(Stream stream,
   Material::Ptr material;
   switch (stream_count) {
     case 1:
-    case 2:
       material = v->VoloxSepMaterial(stream.second, mat);
+      break;
+    case 2:
+      material = rd->ReductSepMaterial(stream.second, mat);
       break;
     case 3:
     case 4:
-      material = rd->ReductSepMaterial(stream.second, mat);
-      break;
-    case 5:
-    case 6:
       material = rf->RefineSepMaterial(stream.second, mat);
       break;
-    case 7:
-    case 8:
+    case 5:
       material = w->WinningSepMaterial(stream.second, mat);
       break;
   }
