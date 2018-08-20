@@ -20,16 +20,25 @@
         <feed_commods> <val>leu</val> </feed_commods>
         <feed_commod_prefs> <val>1.0</val> </feed_commod_prefs>
         <feed_recipe>lwr_waste</feed_recipe>
+        <volox_temp>900</volox_temp>
+        <volox_time>1</volox_time>
+        <volox_flowrate>2</volox_flowrate>
+        <volox_volume>1</volox_volume>
+        <reduct_current>4</reduct_current>
+        <reduct_lithium_oxide>2</reduct_lithium_oxide>
+        <reduct_volume>1</reduct_volume>
+        <reduct_time>2</reduct_time>
+        <refine_temp>1000</refine_temp>
+        <refine_press>500</refine_press>
+        <refine_rotation>100</refine_rotation>
+        <refine_batch_size>30</refine_batch_size>
+        <refine_time>2</refine_time>
+        <winning_current>5</winning_current>
+        <winning_time>1</winning_time>
+        <winning_flowrate>3</winning_flowrate>
+        <winning_volume>2</winning_volume>
         <feedbuf_size>1000</feedbuf_size>
         <throughput>1000</throughput>
-        <reprocess_time>1</reprocess_time>
-        <volume>10</volume>
-        <lithium_oxide>2</lithium_oxide>
-        <batch_size>40</batch_size>
-        <pressure>750</pressure>
-        <temperature>650</temperature>
-        <stirrer_speed>30</stirrer_speed>
-        <current>500</current>
         <leftover_commod>reprocess_waste</leftover_commod>
         <streams>
           <item>
@@ -39,6 +48,44 @@
               <efficiencies>
                 <item>
                   <comp>U</comp> <eff> 0.9936 </eff>
+                </item>
+              </efficiencies>
+            </info>
+          </item>
+          <item>
+            <commod>volox_waste</commod>
+            <info>
+              <buf_size>1000</buf_size>
+              <efficiencies>
+                <item>
+                  <comp>H</comp> <eff>1</eff>
+                </item>
+                <item>
+                  <comp>C</comp> <eff>1</eff>
+                </item>
+                <item>
+                  <comp>Kr</comp> <eff>1</eff>
+                </item>
+                <item>
+                  <comp>I</comp> <eff>1</eff>
+                </item>
+                <item>
+                  <comp>Cs</comp> <eff>.98</eff>
+                </item>
+                <item>
+                  <comp>Tc</comp> <eff>1</eff>
+                </item>
+                <item>
+                  <comp>Ru</comp> <eff>1</eff>
+                </item>
+                <item>
+                  <comp>Rh</comp> <eff>.80</eff>
+                </item>
+                <item>
+                  <comp>Te</comp> <eff>.9</eff>
+                </item>
+                <item>
+                  <comp>Mo</comp> <eff>.8</eff>
                 </item>
               </efficiencies>
             </info>
