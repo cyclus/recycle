@@ -211,7 +211,7 @@ class Pyre
   "range": [1,3], \
   "uilabel": "Reduction Li2O wt%", \
   }
-  double reduct_li2o;
+  double reduct_lithium_oxide;
 
   #pragma cyclus var { \
   "doc": "Volume of the Electroreduction Chamber", \

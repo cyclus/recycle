@@ -24,7 +24,6 @@ Pyre::Pyre(cyclus::Context* ctx)
         rf = &ref;
         Winning win = Winning(winning_current, winning_time, winning_flowrate, winning_volume);
         w = &win;
-        double _throughput = throughput;
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
@@ -374,4 +373,4 @@ extern "C" cyclus::Agent* ConstructPyre(cyclus::Context* ctx) {
   return new Pyre(ctx);
 }
 
-}  // namespace cycamore
+}  // namespace recycle
