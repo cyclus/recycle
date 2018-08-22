@@ -17,8 +17,6 @@ namespace recycle {
 /// separations efficiency for that nuclide or element.  Note that this returns
 /// an untracked material that should only be used for its composition and qty
 /// - not in any real inventories, etc.
-cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
-                                  cyclus::Material::Ptr mat);
 
 /// Pyre processes feed material into multiple waste streams according to their
 /// respective sub-process. Separation uses mass-based efficiencies.
@@ -84,8 +82,8 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
-  cyclus::Material::Ptr Separate(Stream stream, std::string name, int stream_count, 
-    cyclus::Material::Ptr feed);
+  cyclus::Material::Ptr Separate(Stream stream, int stream_count, 
+    cyclus::Material::Ptr sep);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
@@ -418,6 +416,10 @@ class Pyre
 
   /// Records an agent's latitude and longitude to the output db
   void RecordPosition();
+
+  void Record(std::string name, double val, std::string type);
+
+  void RecordStreams();
 };
 
 }  // namespace recycle

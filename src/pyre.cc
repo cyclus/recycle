@@ -15,7 +15,7 @@ Pyre::Pyre(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
       latitude(0.0),
       longitude(0.0),
-      coordinates(latitude = 0.0, longitude = 0.0) {
+      coordinates(latitude, longitude) {
         Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
         	volox_volume);
         v = &vol;
@@ -128,12 +128,12 @@ void Pyre::Tick() {
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
-  std::string subprocess;
+  Record("Separating", orig_qty, "UNF");
   int stream_count = 1;
-  for (it = streams_.begin(); it != streams_.begin()++; ++it) {
+  for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = Separate(info, name, stream_count, mat);
+    stagedsep[name] = Separate(info, stream_count, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
@@ -148,6 +148,7 @@ void Pyre::Tick() {
     if (m->quantity() > 0) {
       streambufs[name].Push(
           mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
+      Record("Separated", m->quantity() * maxfrac, name);
     }
   }
 
@@ -166,26 +167,22 @@ void Pyre::Tick() {
   }
 }
  
-cyclus::Material::Ptr Pyre::Separate(Stream stream, 
-  std::string name, int stream_count, Material::Ptr mat) {
-
-  Material::Ptr material;
+Material::Ptr Pyre::Separate(Stream stream, int stream_count, 
+  Material::Ptr mat) {
+  Material::Ptr sep;
   switch (stream_count) {
-    case 1:
-      material = v->VoloxSepMaterial(stream.second, mat);
-      break;
-    case 2:
-      material = rd->ReductSepMaterial(stream.second, mat);
-      break;
-    case 3:
-    case 4:
-      material = rf->RefineSepMaterial(stream.second, mat);
-      break;
-    case 5:
-      material = w->WinningSepMaterial(stream.second, mat);
-      break;
+    if (stream_count == 1) {
+      sep = v->VoloxSepMaterial(stream.second, mat);
+      Record("Test", sep->quantity(), "VOLOX");
+      } else if (stream_count == 2) {
+      sep = rd->ReductSepMaterial(stream.second, mat);
+      } else if (stream_count == 3 || stream_count == 4) {
+      sep = rf->RefineSepMaterial(stream.second, mat);
+      } else {
+      sep = w->WinningSepMaterial(stream.second, mat);
+      }
   }
-  return material;
+  return sep;
 }
 
 
@@ -367,6 +364,26 @@ void Pyre::RecordPosition() {
       ->AddVal("AgentId", id())
       ->AddVal("Latitude", latitude)
       ->AddVal("Longitude", longitude)
+      ->Record();
+}
+
+void Pyre::Record(std::string name, double val, std::string type) {
+  context()
+      ->NewDatum("SeparationEvents")
+      ->AddVal("AgentId", id())
+      ->AddVal("Time", context()->time())
+      ->AddVal("Event", name)
+      ->AddVal("Value", val)
+      ->AddVal("Type", type)
+      ->Record();
+}
+
+void Pyre::RecordStreams() {
+  context()
+      ->NewDatum("Test")
+      ->AddVal("AgentId", id())
+      ->AddVal("Time", context()->time())
+      ->AddVal("Stream", streams_)
       ->Record();
 }
 
