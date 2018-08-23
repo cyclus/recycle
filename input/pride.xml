@@ -9,8 +9,8 @@
     <spec><lib>agents</lib><name>NullRegion</name></spec>
     <spec><lib>agents</lib><name>NullInst</name></spec>
     <spec><lib>cycamore</lib><name>Source</name></spec>
-    <spec><lib>recycle</lib><name>Pyre</name></spec>
     <spec><lib>cycamore</lib><name>DeployInst</name></spec>
+    <spec><lib>recycle</lib><name>Pyre</name></spec>
   </archetypes>
 
   <facility>

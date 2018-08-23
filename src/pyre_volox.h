@@ -9,11 +9,6 @@ namespace recycle {
 
 class Volox {
 
-double temp;
-double reprocess_time;
-double flowrate;
-double volume;
-
 public:
 
 Volox();
@@ -25,6 +20,13 @@ Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_
 /// @return composition composition of the resulting product and waste
 cyclus::Material::Ptr VoloxSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
+
+private:
+
+double temp;
+double reprocess_time;
+double flowrate;
+double volume;
 
 /// @param temp temperature of the volox process
 /// @param time time spent in the process

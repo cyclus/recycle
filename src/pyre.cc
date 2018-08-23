@@ -17,22 +17,24 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
-        Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
-        	volox_volume);
-        v = &vol;
-        Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
-        	reduct_volume, reduct_time);
-        rd = &red;
-        Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
-        	refine_batch_size, refine_time);
-        rf = &ref;
-        Winning win = Winning(winning_current, winning_time, winning_flowrate, 
-        	winning_volume);
-        w = &win;
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
   cyclus::Inventories invs;
+  std::cout << "Volox Temp = " << volox_temp << std::endl;
+
+        Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
+          volox_volume);
+        v = &vol;
+        Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
+          reduct_volume, reduct_time);
+        rd = &red;
+        Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
+          refine_batch_size, refine_time);
+        rf = &ref;
+        Winning win = Winning(winning_current, winning_time, winning_flowrate, 
+          winning_volume);
+        w = &win;  
 
   // these inventory names are intentionally convoluted so as to not clash
   // with the user-specified stream commods that are used as the separations
@@ -63,7 +65,6 @@ void Pyre::InitInv(cyclus::Inventories& inv) {
 
 typedef std::pair<double, std::map<int, double> > Stream;
 typedef std::map<std::string, Stream> StreamSet;
-std::vector <std::string> stream_name;
 
 void Pyre::EnterNotify() {
   cyclus::Facility::EnterNotify();
@@ -73,7 +74,6 @@ void Pyre::EnterNotify() {
   std::map<int, double>::iterator it2;
 
   for (it = streams_.begin(); it != streams_.end(); ++it) {
-    stream_name.push_back(it->first);
     std::string name = it->first;
     Stream stream = it->second;
     double cap = stream.first;
@@ -130,12 +130,14 @@ void Pyre::Tick() {
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
   Record("Separating", orig_qty, "UNF");
+  RecordStreams();
   int stream_count = 1;
   for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    Record("Blah", orig_qty, "U235");
     stagedsep[name] = Separate(info, stream_count, mat);
+    std::cout << "hi" << std::endl;
+    Record("Placeholder", stagedsep[name]->quantity(), name);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
@@ -174,6 +176,7 @@ Material::Ptr Pyre::Separate(Stream stream, int stream_count, Material::Ptr mat)
   switch (stream_count) {
     case 1:
       material = v->VoloxSepMaterial(stream.second, mat);
+      Record("Volox", material->quantity(), "test");
       break;
     case 2:
       material = rd->ReductSepMaterial(stream.second, mat);

@@ -151,6 +151,7 @@ class Pyre
   std::string feed_recipe;
 
   #pragma cyclus var { \
+  "default": 900, \
   "doc": "The temperature of the Voloxidation process", \
   "tooltip": "Voloxidation Temperature", \
   "units": "C", \

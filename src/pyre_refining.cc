@@ -35,7 +35,7 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
     int nuc = it->first;
-    int elem = nuc;
+    int elem = (nuc / 10000000) * 10000000;
     double eff = 0;
     if (effs.count(nuc) > 0) {
       eff = effs[nuc];
