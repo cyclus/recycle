@@ -22,13 +22,13 @@ cyclus::Material::Ptr RefineSepMaterial(std::map<int, double> effs,
 
 private:
 
-double temperature;
+double temp;
 double pressure;
 double rotation;
 double batch_size;
 double reprocess_time;
 
-double Efficiency(double temperature, double pressure, double rotation);
+double Efficiency(double temp, double pressure, double rotation);
 
 double Throughput(double batch_size, double reprocess_time);
 };

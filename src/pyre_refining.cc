@@ -17,7 +17,7 @@ Refine::Refine() {}
 Refine::Refine(double refine_temp = 900, double refine_press = 760, 
                double refine_rotation = 0, double refine_batch_size = 20,
                double refine_time = 1) {
-  temperature = refine_temp;
+  temp = refine_temp;
   pressure = refine_press;
   rotation = refine_rotation;
   batch_size = refine_batch_size;
@@ -31,7 +31,7 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
   CompMap sepcomp;
-  double sepeff = Efficiency(temperature, pressure, rotation);
+  double sepeff = Efficiency(temp, pressure, rotation);
 
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
@@ -56,21 +56,21 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
   return Material::CreateUntracked(tot_qty, c);
 }
 
-double Refine::Efficiency(double temperature, double pressure, double rotation) {
+double Refine::Efficiency(double temp, double pressure, double rotation) {
   double agitation;
-  double thermal = (8.8333E-7*pow(temperature,3) - 0.00255*(temperature,2)
-                   +2.4572*temperature-691.1) / 100;
-  double pres_eff = -0.0055128 * pressure + 100.5;
+  double thermal = 4.7369E-9*pow(temp,3) - 1.08337E-5*pow(temp,2)
+    +0.008069*temp-0.9726;
+  double pres_eff = -4.6667*pow(pressure,-5) + 1.002;
   if (rotation <= 1) {
     agitation = 0.032*rotation + 0.72;
   } else {
     agitation = 0.0338396*log(rotation)+0.836671495;
     if (agitation > 1) {
-      std::cout << "Rotation = " << rotation << std::endl;
       throw ValueError("Rotation efficiency cannot exceed 1");
     }
   }
   double refine_eff = thermal * pres_eff * agitation;
+  std::cout << "Refine Eff = " << pres_eff << std::endl;
   return refine_eff;
 }
 

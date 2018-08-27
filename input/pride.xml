@@ -35,7 +35,7 @@
         <volox_time>1</volox_time>
         <volox_flowrate>2</volox_flowrate>
         <volox_volume>1</volox_volume>
-        <reduct_current>4</reduct_current>
+        <reduct_current>8</reduct_current>
         <reduct_lithium_oxide>2</reduct_lithium_oxide>
         <reduct_volume>1</reduct_volume>
         <reduct_time>2</reduct_time>
@@ -44,7 +44,7 @@
         <refine_rotation>100</refine_rotation>
         <refine_batch_size>30</refine_batch_size>
         <refine_time>2</refine_time>
-        <winning_current>5</winning_current>
+        <winning_current>8</winning_current>
         <winning_time>1</winning_time>
         <winning_flowrate>3</winning_flowrate>
         <winning_volume>2</winning_volume>
@@ -129,7 +129,7 @@
             </info>
           </item>
           <item>
-            <commod>U_prod</commod>
+            <commod>refine_U_prod</commod>
             <info>
               <buf_size>1000</buf_size>
               <efficiencies>
@@ -140,7 +140,7 @@
             </info>
           </item>
           <item>
-            <commod>TRU_prod</commod>
+            <commod>refine_TRU_prod</commod>
             <info>
               <buf_size>1000</buf_size>
               <efficiencies>

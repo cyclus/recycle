@@ -134,8 +134,7 @@ void Pyre::Tick() {
     Stream info = it->second;
     std::string name = it->first;
     std::cout << "Stream number " << stream_count << std::endl;
-    stagedsep[name] = Separate(info, stream_count, mat);
-    Record("Placeholder", stagedsep[name]->quantity(), name);
+    stagedsep[name] = Separate(name, info, stream_count, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
@@ -147,13 +146,16 @@ void Pyre::Tick() {
   for (itf = stagedsep.begin(); itf != stagedsep.end(); ++itf) {
     std::string name = itf->first;
     Material::Ptr m = itf->second;
+    std::cout << name << std::endl;
+    std::cout << m->quantity() << std::endl;
+    std::cout << maxfrac << std::endl;
     if (m->quantity() > 0) {
       streambufs[name].Push(
           mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
       Record("Separated", m->quantity() * maxfrac, name);
     }
   }
-  std::cout << "test" << std::endl;
+
   if (maxfrac == 1) {
     if (mat->quantity() > 0) {
       // unspecified separations fractions go to leftovers
@@ -169,23 +171,19 @@ void Pyre::Tick() {
   }
 }
  
-Material::Ptr Pyre::Separate(Stream stream, int stream_count, Material::Ptr mat) {
+Material::Ptr Pyre::Separate(std::string name, Stream stream, 
+  int stream_count, Material::Ptr mat) {
   Material::Ptr material;
-  switch (stream_count) {
-    case 1:
-      material = v.VoloxSepMaterial(stream.second, mat);
-      Record("Volox", material->quantity(), "test");
-      break;
-    case 2:
-      material = rd.ReductSepMaterial(stream.second, mat);
-      break;
-    case 3:
-    case 4:
-      material = rf.RefineSepMaterial(stream.second, mat);
-      break;
-    case 5:
-      material = w.WinningSepMaterial(stream.second, mat);
-      break;
+  if (name.find("volox") != std::string::npos) {
+    material = v.VoloxSepMaterial(stream.second, mat);
+  } else if (name.find("reduct") != std::string::npos) {
+    material = rd.ReductSepMaterial(stream.second, mat);
+  } else if (name.find("refine") != std::string::npos) {
+    material = rf.RefineSepMaterial(stream.second, mat);
+  } else if (name.find("winning") != std::string::npos) {
+    material = w.WinningSepMaterial(stream.second, mat);
+  } else {
+    throw ValueError("Stream names must include the name of the subprocess");
   }
   return material;
 }

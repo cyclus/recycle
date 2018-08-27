@@ -82,7 +82,8 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
-  cyclus::Material::Ptr Separate(Stream stream, int stream_count, cyclus::Material::Ptr feed);
+  cyclus::Material::Ptr Separate(std::string name, Stream stream, 
+    int stream_count, cyclus::Material::Ptr feed);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
