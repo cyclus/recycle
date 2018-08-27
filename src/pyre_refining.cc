@@ -31,6 +31,7 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
   CompMap sepcomp;
+  double sepeff = Efficiency(temperature, pressure, rotation);
 
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
@@ -46,7 +47,7 @@ Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Pt
     }
 
     double qty = it->second;
-    double sepqty = qty * eff * Refine::Efficiency(temperature, pressure, rotation);
+    double sepqty = qty * eff * sepeff;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }
@@ -63,8 +64,9 @@ double Refine::Efficiency(double temperature, double pressure, double rotation) 
   if (rotation <= 1) {
     agitation = 0.032*rotation + 0.72;
   } else {
-    agitation = 0.0369924675*log(rotation)+0.829777331;
+    agitation = 0.0338396*log(rotation)+0.836671495;
     if (agitation > 1) {
+      std::cout << "Rotation = " << rotation << std::endl;
       throw ValueError("Rotation efficiency cannot exceed 1");
     }
   }

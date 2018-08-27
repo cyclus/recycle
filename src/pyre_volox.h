@@ -36,6 +36,14 @@ double Efficiency(double temp, double reprocess_time, double flowrate);
 
 /// @return throughput material throughput of voloxidation
 double Throughput(double flowrate, double reprocess_time, double volume);
+
+void set_temp(double input);
+
+void set_time(double input);
+
+void set_flowrate(double input);
+
+void set_volume(double input);
 };
 }
 #endif // RECYCLE_SRC_PYRE_VOLOX_H_

@@ -8,12 +8,6 @@ namespace recycle {
 
 class Refine{
 
-double temperature;
-double pressure;
-double rotation;
-double batch_size;
-double reprocess_time;
-
 public:
 
 Refine();
@@ -25,6 +19,14 @@ Refine(double refine_temp, double refine_press, double refine_rotation, double r
 /// @return composition composition of the separated material sent to electrowinning
 cyclus::Material::Ptr RefineSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
+
+private:
+
+double temperature;
+double pressure;
+double rotation;
+double batch_size;
+double reprocess_time;
 
 double Efficiency(double temperature, double pressure, double rotation);
 

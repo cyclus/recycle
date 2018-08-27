@@ -117,10 +117,10 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
-  Volox* v;
-  Reduct* rd;
-  Refine* rf;
-  Winning* w;
+  Volox v;
+  Reduct rd;
+  Refine rf;
+  Winning w;
  
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
