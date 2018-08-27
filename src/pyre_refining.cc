@@ -70,7 +70,6 @@ double Refine::Efficiency(double temp, double pressure, double rotation) {
     }
   }
   double refine_eff = thermal * pres_eff * agitation;
-  std::cout << "Refine Eff = " << pres_eff << std::endl;
   return refine_eff;
 }
 

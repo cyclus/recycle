@@ -47,8 +47,6 @@ Material::Ptr Reduct::ReductSepMaterial(std::map<int, double> effs,
 
     double qty = it->second;
     double sepqty = qty * eff * sepeff;
-    std::cout << nuc << std::endl;
-    std::cout << "Nuc Id qty: " << sepqty << std::endl;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }
@@ -61,8 +59,6 @@ double Reduct::Efficiency(double current, double lithium_oxide) {
   double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) 
                          - 2.273*pow(current,2) + 11.2046*current - 19.7493;
   double catalyst_eff = 0.075 * lithium_oxide + 0.775;
-  std::cout << "Coulombic = " << coulombic_eff << std::endl;
-  std::cout << "Lithim = " << catalyst_eff << std::endl;
   double reduct_eff = coulombic_eff * catalyst_eff;
   return reduct_eff;
 }

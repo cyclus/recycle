@@ -13,8 +13,8 @@ namespace recycle {
 
 Winning::Winning() {}
 
-Winning::Winning(double winning_current, double winning_time, 
-                 double winning_flowrate, double winning_volume) {
+Winning::Winning(double winning_current = 8, double winning_time = 1, 
+                 double winning_flowrate = 3, double winning_volume = 1) {
   current = winning_current;
   reprocess_time = winning_time;
   flowrate = winning_flowrate;

@@ -55,16 +55,16 @@ typedef std::map<std::string, Stream> StreamSet;
 void Pyre::EnterNotify() {
   Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
           volox_volume);
-        v = vol;
+        v = &vol;
         Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
           reduct_volume, reduct_time);
-        rd = red;
+        rd = &red;
         Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
           refine_batch_size, refine_time);
-        rf = ref;
+        rf = &ref;
         Winning win = Winning(winning_current, winning_time, winning_flowrate, 
           winning_volume);
-        w = win;
+        w = &win;
   cyclus::Facility::EnterNotify();
   std::map<int, double> efficiency_;
 
