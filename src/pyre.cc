@@ -17,6 +17,7 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
+        
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
@@ -129,16 +130,14 @@ void Pyre::Tick() {
   std::map<std::string, Material::Ptr> stagedsep;
   Record("Separating", orig_qty, "UNF");
   RecordStreams();
-  int stream_count = 1;
   for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = Separate(name, info, stream_count, mat);
+    stagedsep[name] = Separate(name, info, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
-    stream_count++;
   }
 
   std::map<std::string, Material::Ptr>::iterator itf;
@@ -168,7 +167,7 @@ void Pyre::Tick() {
 }
  
 Material::Ptr Pyre::Separate(std::string name, Stream stream, 
-  int stream_count, Material::Ptr mat) {
+  Material::Ptr mat) {
   Material::Ptr material;
   if (name.find("volox") != std::string::npos) {
     material = v.VoloxSepMaterial(stream.second, mat);
