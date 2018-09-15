@@ -8,11 +8,6 @@ namespace recycle {
 
 class Reduct {
 
-double current;
-double lithium_oxide;
-double volume;
-double reprocess_time;
-
 public:
 
 Reduct();
@@ -24,6 +19,13 @@ Reduct(double reduct_current,double reduct_li2o,double reduct_volume,double redu
 /// @return composition composition of the separated material sent to refining
 cyclus::Material::Ptr ReductSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
+
+private:
+
+double current;
+double lithium_oxide;
+double volume;
+double reprocess_time;
 
 double Efficiency(double current, double lithium_oxide);
 

@@ -9,11 +9,6 @@ namespace recycle {
 
 class Winning {
 
-double current;
-double reprocess_time;
-double flowrate;
-double volume;
-
 public:
 
 Winning();
@@ -24,6 +19,13 @@ Winning(double winning_current, double winning_time, double winning_flowrate, do
 /// @return composition composition of the separated material sent to fuel fabrication
 cyclus::Material::Ptr WinningSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
+
+private:
+
+double current;
+double reprocess_time;
+double flowrate;
+double volume;
 
 double Efficiency(double current, double reprocess_time, double flowrate);
 

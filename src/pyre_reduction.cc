@@ -30,11 +30,12 @@ Material::Ptr Reduct::ReductSepMaterial(std::map<int, double> effs,
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
   CompMap sepcomp;
+  double sepeff = Efficiency(current, lithium_oxide);
 
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
     int nuc = it->first;
-    int elem = nuc;
+    int elem = (nuc / 10000000) * 10000000;
     double eff = 0;
     if (effs.count(nuc) > 0) {
       eff = effs[nuc];
@@ -45,7 +46,7 @@ Material::Ptr Reduct::ReductSepMaterial(std::map<int, double> effs,
     }
 
     double qty = it->second;
-    double sepqty = qty * eff * Reduct::Efficiency(current, lithium_oxide);
+    double sepqty = qty * eff * sepeff;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }

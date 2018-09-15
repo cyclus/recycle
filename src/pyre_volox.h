@@ -9,11 +9,6 @@ namespace recycle {
 
 class Volox {
 
-double temp;
-double reprocess_time;
-double flowrate;
-double volume;
-
 public:
 
 Volox();
@@ -26,6 +21,13 @@ Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_
 cyclus::Material::Ptr VoloxSepMaterial(std::map<int, double> effs,
 	cyclus::Material::Ptr mat);
 
+private:
+
+double temp;
+double reprocess_time;
+double flowrate;
+double volume;
+
 /// @param temp temperature of the volox process
 /// @param time time spent in the process
 /// @param flow mass flow rate
@@ -34,6 +36,14 @@ double Efficiency(double temp, double reprocess_time, double flowrate);
 
 /// @return throughput material throughput of voloxidation
 double Throughput(double flowrate, double reprocess_time, double volume);
+
+void set_temp(double input);
+
+void set_time(double input);
+
+void set_flowrate(double input);
+
+void set_volume(double input);
 };
 }
 #endif // RECYCLE_SRC_PYRE_VOLOX_H_

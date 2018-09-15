@@ -1,4 +1,5 @@
 #include "pyre.h"
+#include "cyclus.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -15,23 +16,12 @@ Pyre::Pyre(cyclus::Context* ctx)
     : cyclus::Facility(ctx),
       latitude(0.0),
       longitude(0.0),
-      coordinates(latitude = 0.0, longitude = 0.0) {
-        Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
-        	volox_volume);
-        v = &vol;
-        Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
-        	reduct_volume, reduct_time);
-        rd = &red;
-        Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
-        	refine_batch_size, refine_time);
-        rf = &ref;
-        Winning win = Winning(winning_current, winning_time, winning_flowrate, 
-        	winning_volume);
-        w = &win;
+      coordinates(latitude, longitude) {
+        
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
-  cyclus::Inventories invs;
+  cyclus::Inventories invs;  
 
   // these inventory names are intentionally convoluted so as to not clash
   // with the user-specified stream commods that are used as the separations
@@ -62,9 +52,20 @@ void Pyre::InitInv(cyclus::Inventories& inv) {
 
 typedef std::pair<double, std::map<int, double> > Stream;
 typedef std::map<std::string, Stream> StreamSet;
-std::vector <std::string> stream_name;
 
 void Pyre::EnterNotify() {
+  Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
+          volox_volume);
+        v = vol;
+        Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
+          reduct_volume, reduct_time);
+        rd = red;
+        Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
+          refine_batch_size, refine_time);
+        rf = ref;
+        Winning win = Winning(winning_current, winning_time, winning_flowrate, 
+          winning_volume);
+        w = win;
   cyclus::Facility::EnterNotify();
   std::map<int, double> efficiency_;
 
@@ -72,7 +73,6 @@ void Pyre::EnterNotify() {
   std::map<int, double>::iterator it2;
 
   for (it = streams_.begin(); it != streams_.end(); ++it) {
-    stream_name.push_back(it->first);
     std::string name = it->first;
     Stream stream = it->second;
     double cap = stream.first;
@@ -128,17 +128,16 @@ void Pyre::Tick() {
   StreamSet::iterator it;
   double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
-  std::string subprocess;
-  int stream_count = 1;
-  for (it = streams_.begin(); it != streams_.begin()++; ++it) {
+  Record("Separating", orig_qty, "UNF");
+  RecordStreams();
+  for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = Separate(info, name, stream_count, mat);
+    stagedsep[name] = Separate(name, info, mat);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
-    stream_count++;
   }
 
   std::map<std::string, Material::Ptr>::iterator itf;
@@ -148,6 +147,7 @@ void Pyre::Tick() {
     if (m->quantity() > 0) {
       streambufs[name].Push(
           mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
+      Record("Separated", m->quantity() * maxfrac, name);
     }
   }
 
@@ -166,24 +166,19 @@ void Pyre::Tick() {
   }
 }
  
-cyclus::Material::Ptr Pyre::Separate(Stream stream, 
-  std::string name, int stream_count, Material::Ptr mat) {
-
+Material::Ptr Pyre::Separate(std::string name, Stream stream, 
+  Material::Ptr mat) {
   Material::Ptr material;
-  switch (stream_count) {
-    case 1:
-      material = v->VoloxSepMaterial(stream.second, mat);
-      break;
-    case 2:
-      material = rd->ReductSepMaterial(stream.second, mat);
-      break;
-    case 3:
-    case 4:
-      material = rf->RefineSepMaterial(stream.second, mat);
-      break;
-    case 5:
-      material = w->WinningSepMaterial(stream.second, mat);
-      break;
+  if (name.find("volox") != std::string::npos) {
+    material = v.VoloxSepMaterial(stream.second, mat);
+  } else if (name.find("reduct") != std::string::npos) {
+    material = rd.ReductSepMaterial(stream.second, mat);
+  } else if (name.find("refine") != std::string::npos) {
+    material = rf.RefineSepMaterial(stream.second, mat);
+  } else if (name.find("winning") != std::string::npos) {
+    material = w.WinningSepMaterial(stream.second, mat);
+  } else {
+    throw ValueError("Stream names must include the name of the subprocess");
   }
   return material;
 }
@@ -367,6 +362,26 @@ void Pyre::RecordPosition() {
       ->AddVal("AgentId", id())
       ->AddVal("Latitude", latitude)
       ->AddVal("Longitude", longitude)
+      ->Record();
+}
+
+void Pyre::Record(std::string name, double val, std::string type) {
+  context()
+      ->NewDatum("SeparationEvents")
+      ->AddVal("AgentId", id())
+      ->AddVal("Time", context()->time())
+      ->AddVal("Event", name)
+      ->AddVal("Value", val)
+      ->AddVal("Type", type)
+      ->Record();
+}
+
+void Pyre::RecordStreams() {
+  context()
+      ->NewDatum("Test")
+      ->AddVal("AgentId", id())
+      ->AddVal("Time", context()->time())
+      ->AddVal("Stream", streams_)
       ->Record();
 }
 

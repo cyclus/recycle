@@ -17,8 +17,6 @@ namespace recycle {
 /// separations efficiency for that nuclide or element.  Note that this returns
 /// an untracked material that should only be used for its composition and qty
 /// - not in any real inventories, etc.
-cyclus::Material::Ptr SepMaterial(std::map<int, double> effs,
-                                  cyclus::Material::Ptr mat);
 
 /// Pyre processes feed material into multiple waste streams according to their
 /// respective sub-process. Separation uses mass-based efficiencies.
@@ -84,7 +82,7 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
-  cyclus::Material::Ptr Separate(Stream stream, std::string name, int stream_count, 
+  cyclus::Material::Ptr Separate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
@@ -120,10 +118,10 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
-  Volox* v;
-  Reduct* rd;
-  Refine* rf;
-  Winning* w;
+  Volox v;
+  Reduct rd;
+  Refine rf;
+  Winning w;
  
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
@@ -154,6 +152,7 @@ class Pyre
   std::string feed_recipe;
 
   #pragma cyclus var { \
+  "default": 900, \
   "doc": "The temperature of the Voloxidation process", \
   "tooltip": "Voloxidation Temperature", \
   "units": "C", \
@@ -418,6 +417,10 @@ class Pyre
 
   /// Records an agent's latitude and longitude to the output db
   void RecordPosition();
+
+  void Record(std::string name, double val, std::string type);
+
+  void RecordStreams();
 };
 
 }  // namespace recycle

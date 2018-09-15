@@ -13,7 +13,7 @@ namespace recycle {
 
 Winning::Winning() {}
 
-Winning::Winning(double winning_current = 4, double winning_time = 1, 
+Winning::Winning(double winning_current = 8, double winning_time = 1, 
                  double winning_flowrate = 3, double winning_volume = 1) {
   current = winning_current;
   reprocess_time = winning_time;
@@ -28,11 +28,12 @@ Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
   CompMap sepcomp;
+  double sepeff = Efficiency(current,reprocess_time,flowrate);
 
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
     int nuc = it->first;
-    int elem = nuc;
+    int elem = (nuc / 10000000) * 10000000;
     double eff = 0;
     if (effs.count(nuc) > 0) {
       eff = effs[nuc];
@@ -43,7 +44,7 @@ Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::
     }
 
     double qty = it->second;
-    double sepqty = qty * eff * Winning::Efficiency(current,reprocess_time,flowrate);
+    double sepqty = qty * eff * sepeff;
     sepcomp[nuc] = sepqty;
     tot_qty += sepqty;
   }
