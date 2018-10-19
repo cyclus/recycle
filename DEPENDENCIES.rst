@@ -1,11 +1,11 @@
 ##############################################
-Installing Cycamore Dependencies from Binaries
+Installing Recycle Dependencies from Binaries
 ##############################################
 
 To see user and developer documentation for this code, please visit
 the `Cyclus Homepage`_.
 
-This method describes two methods for installing Cycamore's only dependency,
+This method describes two methods for installing Recycle's only dependency,
 the Cyclus Core, from binary distributions.  If you would like to install it
 from source code, please see the `Cyclus Core repository
 <http://github.com/cyclus/cyclus>`_.
@@ -38,13 +38,13 @@ The Cyclus Core supports two binary installation options:
 
 **Conda** is a cross-platform, user-space package manager aimed at simplifying
 the installation of open source software. The Cyclus project uses Conda to
-distribute pre-built Cyclus and Cycamore binaries.
+distribute pre-built Cyclus and Recycle binaries.
 
 The **Debian package manager** simplifies the installation of open-source
 software. It contains all of the files required to use specific software, as
 well as variety of relevant information: maintainer, description, version,
 dependencies (other software or libraries required to use it).  The Cyclus
-team provides pre-built Cyclus and Cycamore Debian packages to simplify
+team provides pre-built Cyclus and Recycle Debian packages to simplify
 installation for the user. These packages are available for LTS Ubuntu version
 14.04 and 16.04 (though they may also work on other Linux systems).
 
@@ -127,7 +127,7 @@ installation procedure also assumes that you have root access to you computer.
 .. _`Cyclus Homepage`: http://fuelcycle.org/
 .. _`Cyclus User Guide`: http://fuelcycle.org/user/index.html
 .. _`Cyclus repo`: https://github.com/cyclus/cyclus
-.. _`Cycamore Repo`: https://github.com/cyclus/recycle
+.. _`Recycle Repo`: https://github.com/cyclus/recycle
 .. _Anaconda: https://www.continuum.io/downloads
 .. _miniconda: http://conda.pydata.org/miniconda.html
 .. _`dependency installation documentation`: https://github.com/cyclus/cyclus/blob/develop/DEPENDENCIES.rst

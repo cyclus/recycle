@@ -63,7 +63,7 @@ You can run the tests yourself using:
 
       $ cyclus_unit_tests
 
-  - for Cycamore:
+  - for Recycle:
 
     .. code-block:: bash
 
@@ -174,7 +174,7 @@ http://nvie.com/posts/a-successful-git-branching-model/
 Releases
 ========
 
-If you are going through a release of Cyclus and Cycamore, check out the release
+If you are going through a release of Cyclus and Recycle, check out the release
 procedure notes `here
 <https://github.com/cyclus/cyclus/blob/master/doc/release_procedure.rst>`_ and
 on the `website <http://fuelcycle.org/cep/cep3.html>`_.

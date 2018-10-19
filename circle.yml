@@ -11,7 +11,7 @@ jobs:
             - run: apt-get -qq update; apt-get -y install git openssh-client
             - checkout
             - run:
-                name: Build Cycamore
+                name: Build Recycle
                 command: |
                     python install.py -j 2 --build-type=Release \
                     -DBLAS_LIBRARIES="/opt/conda/lib/libblas.so" \
@@ -61,7 +61,7 @@ jobs:
 
                 
     # Update docker container
-    deploy: # Cycamore -> Cycamore:latest
+    deploy: # Recycle -> Recycle:latest
         docker:
             - image: circleci/ruby:2.4-node
         working_directory: ~/recycle
@@ -82,7 +82,7 @@ jobs:
                 name: Push on DockerHub
                 command: docker push cyclus/recycle:latest # push to docker depot
 
-    deploy_stable: # Cycamore:stable
+    deploy_stable: # Recycle:stable
         docker:
             - image: circleci/ruby:2.4-node
         working_directory: ~/recycle

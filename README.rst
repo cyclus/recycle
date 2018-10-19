@@ -1,5 +1,5 @@
 ###################################################
-Cycamore : The CYClus Additional MOdules REpository
+Recycle
 ###################################################
 
 Additional modules for the Cyclus nuclear fuel cycle simulator from the
@@ -7,16 +7,16 @@ University of Wisconsin - Madison are intended to support innovative
 fuel cycle simulations with the Cyclus fuel cycle simulator.
 
 This README is intended primarily for those who intend to contribute to the
-development of Cycamore archetypes.  If you are interested in Cyclus as a user
+development of Recycle archetypes.  If you are interested in Cyclus as a user
 or in developing your own Cyclus archetyes, you may want to consult `Getting
 Started with Cyclus <http://fuelcycle.org/user/install.html>`_.
 
 This README provides basic information about:
- - the dependency required by Cycamore
- - installation of Cycamore from the command line
- - how to run Cycamore unit tests
+ - the dependency required by Recycle
+ - installation of Recycle from the command line
+ - how to run Recycle unit tests
 
-Although Cycamore is meant to enable a basic fuel cycle simulation, you may want
+Although Recycle is meant to enable a basic fuel cycle simulation, you may want
 more functionality than it offers.  Third party modules can also be installed
 (or developed) with additional facilities.  Please visit the Cyclus website for
 a list of `contributed modules <http://fuelcycle.org/user/index.html#third-party-archetypes>`_.
@@ -29,7 +29,7 @@ a list of `contributed modules <http://fuelcycle.org/user/index.html#third-party
 - **To see user and developer documentation for this code, please visit
   the** `Users Guide <http://fuelcycle.org/user/index.html>`_,
 
-- **If you would like to contribute to Cycamore, please check our**
+- **If you would like to contribute to Recycle, please check our**
   `Contribution Guidelines <https://github.com/cyclus/cyclus/blob/master/CONTRIBUTING.rst>`_.
 
 
@@ -40,7 +40,7 @@ a list of `contributed modules <http://fuelcycle.org/user/index.html#third-party
 Dependencies
 ************
 
-Cycamore's only dependency is the Cyclus Core.
+Recycle's only dependency is the Cyclus Core.
 
 ====================   ==================
 Package                Minimum Version
@@ -57,7 +57,7 @@ There are a number of ways to install the Cyclus core:
   `Installing Cyclus from Binaries <DEPENDENCIES.rst>`_
 
 ******************************
-Quick Cycamore Installation
+Quick Recycle Installation
 ******************************
 
 Assuming you have the dependencies installed correctly, installing Cyclus using
@@ -79,7 +79,7 @@ refer to the `INSTALLATION guide <INSTALL.rst>`_.
 Running Tests
 ******************************
 
-Installing Cycamore will also install a test driver (i.e., an executable of all of
+Installing Recycle will also install a test driver (i.e., an executable of all of
 our tests). You can run the tests yourself via:
 
 .. code-block:: bash
@@ -93,11 +93,11 @@ Contributing
 We happily welcome new developers into the Cyclus Developer Team. If you are willing
 to contribute into Cyclus, please follow this procedure:
 
-#. Fork Cycamore repository,
+#. Fork Recycle repository,
 
 #. Create a working branch on you fork from the ``master`` branch,
 
-#. Implement your modification of the Cycamore source code,
+#. Implement your modification of the Recycle source code,
 
 #. Submit a Pull request into ``recycle/master`` branch,
 
@@ -109,7 +109,7 @@ You may also want to read our `Contribution Guidelines <CONTRIBUTING.rst>`_.
 .. _`Cyclus Homepage`: http://fuelcycle.org/
 .. _`Cyclus User Guide`: http://fuelcycle.org/user/index.html
 .. _`Cyclus repo`: https://github.com/cyclus/cyclus
-.. _`Cycamore Repo`: https://github.com/cyclus/recycle
+.. _`Recycle Repo`: https://github.com/cyclus/recycle
 .. _`INSTALL`: INSTALL.rst
 .. _`CONTRIBUTING`: CONTRIBUTING.rst
 
