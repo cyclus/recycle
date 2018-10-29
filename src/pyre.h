@@ -163,6 +163,7 @@ class Pyre
   double volox_temp;
 
   #pragma cyclus var { \
+  "default": 1, \
   "doc": "Time spent in the Voloxidation process", \
   "tooltip": "Voloxidation process time", \
   "units": "hrs", \
@@ -173,6 +174,7 @@ class Pyre
   double volox_time;
 
   #pragma cyclus var { \
+  "default": 3, \
   "doc": "Material flowrate through Voloxidation", \
   "tooltip": "Voloxidation Flowrate", \
   "units": "cms-1", \
@@ -183,6 +185,7 @@ class Pyre
   double volox_flowrate;
 
   #pragma cyclus var { \
+  "default": 3, \
   "doc": "Volume of the voloxidation chamber", \
   "tooltip": "Voloxidation Volume", \
   "units": "m3", \
@@ -193,6 +196,7 @@ class Pyre
   double volox_volume;
 
   #pragma cyclus var { \
+  "default": 6, \
   "doc": "Current in the Reduction process", \
   "tooltip": "Electroreduction Current", \
   "units": "A", \
@@ -203,6 +207,7 @@ class Pyre
   double reduct_current;
 
   #pragma cyclus var { \
+  "default": 2, \
   "doc": "Weight Percent of Lithium Oxide in Reduction process", \
   "tooltip": "Lithium Oxide Weight Percent", \
   "units": "wt%", \
@@ -213,6 +218,7 @@ class Pyre
   double reduct_lithium_oxide;
 
   #pragma cyclus var { \
+  "default": 3, \
   "doc": "Volume of the Electroreduction Chamber", \
   "tooltip": "Electroreduction Volume", \
   "units": "m3", \
@@ -223,6 +229,7 @@ class Pyre
   double reduct_volume;
 
   #pragma cyclus var { \
+  "default": 1, \
   "doc": "Time spent in the Reduction process", \
   "tooltip": "Reduction process time", \
   "units": "hrs", \
@@ -233,6 +240,7 @@ class Pyre
   double reduct_time;
 
   #pragma cyclus var { \
+  "default": 700, \
   "doc": "Temperature of the Electrorefining process", \
   "tooltip": "Electrorefining Temperature", \
   "units": "C", \
@@ -243,6 +251,7 @@ class Pyre
   double refine_temp;
 
   #pragma cyclus var { \
+  "default": 760, \
   "doc": "Pressure of the Electrorefining process", \
   "tooltip": "Electrorefining Pressure", \
   "units": "mTorr", \
@@ -253,6 +262,7 @@ class Pyre
   double refine_press;
 
   #pragma cyclus var { \
+  "default": 0, \
   "doc": "Anode Rotation rate in the Electrorefiner", \
   "tooltip": "Rotation speed", \
   "units": "rpm", \
@@ -263,6 +273,7 @@ class Pyre
   double refine_rotation;
 
   #pragma cyclus var { \
+  "default": 30, \
   "doc": "Batch Size of the Electrorefining process", \
   "tooltip": "Batch Size", \
   "units": "kg", \
@@ -273,6 +284,7 @@ class Pyre
   double refine_batch_size;
 
   #pragma cyclus var { \
+  "default": 1, \
   "doc": "Time spent in the Refining process", \
   "tooltip": "Refining process time", \
   "units": "hrs", \
@@ -283,6 +295,7 @@ class Pyre
   double refine_time;
 
   #pragma cyclus var { \
+  "default": 8, \
   "doc": "Current in the Electrowinning process", \
   "tooltip": "Electrowinning Current", \
   "units": "A", \
@@ -293,6 +306,7 @@ class Pyre
   double winning_current;
 
   #pragma cyclus var { \
+  "default": 1, \
   "doc": "Time spent in the Electrowinning process", \
   "tooltip": "Electrowinning Time", \
   "units": "hr", \
@@ -303,6 +317,7 @@ class Pyre
   double winning_time;
 
   #pragma cyclus var { \
+  "default": 3, \
   "doc": "Flowrate through the Electrowinning process", \
   "tooltip": "Flowrate in Electrowinning", \
   "units": "cms-1", \
@@ -313,6 +328,7 @@ class Pyre
   double winning_flowrate;
 
   #pragma cyclus var { \
+  "default": 3, \
   "doc": "Volume of the Electrowinning process", \
   "tooltip": "Electrowinning Volume", \
   "units": "m3", \
