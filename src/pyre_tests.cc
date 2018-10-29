@@ -245,6 +245,8 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   conds.push_back(Cond("SenderId", "==", id));
   int resid = sim.db().Query("Transactions", &conds).GetVal<int>("ResourceId");
   MatQuery mq (sim.GetMaterial(resid));
+  // default_efficiency is the Electrorefiner's separation efficiency given Pyre's default
+  // values for temperature, pressure, and rotation.
   default_efficiency = 7156278629279868703;
   EXPECT_DOUBLE_EQ(m[922350000]*0.6*default_efficiency*100, mq.mass("U235"));
   EXPECT_DOUBLE_EQ(m[922380000]*0.6*default_efficiency*100, mq.mass("U238"));
