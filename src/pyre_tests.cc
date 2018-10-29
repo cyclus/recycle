@@ -169,7 +169,7 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
   
   cyclus::MockSim sim2(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   
-  EXPECT_THROW(sim2.Run(), cyclus::ValueError) << "Single cumulative separation efficiency greater than 1 is not throwing an error but should.";
+  EXPECT_THROW(sim2.Run(), cyclus::ValueError) << "Single cumulative sep efficiency > 1 should throw an error.";
 // Check if a cumulative separation efficiency greater than 1 for multiple nuclides throw an error as expected.
   config =
       "<streams>"
