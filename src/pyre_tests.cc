@@ -58,7 +58,7 @@ TEST(PyreTests, SeparationEfficiency) {
   
   cyclus::MockSim sim1(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   
-  EXPECT_NO_THROW(sim1.Run()) << "Cumulative separation efficiency smaler than 1 is throwing an error but should not.";
+  EXPECT_NO_THROW(sim1.Run()) << "Cumulative separation efficiency < 1 should not throw an error.";
   
   
   config =
