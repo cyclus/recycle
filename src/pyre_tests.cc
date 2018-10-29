@@ -203,7 +203,7 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
   
   cyclus::MockSim sim3(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   
-  EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative separation efficiencies greater than 1 are not throwing an error but should.";
+  EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative sep efficiency > 1 should throw an error.";
 }
   
 TEST(PyreTests, SepMixElemAndNuclide) {
@@ -245,9 +245,10 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   conds.push_back(Cond("SenderId", "==", id));
   int resid = sim.db().Query("Transactions", &conds).GetVal<int>("ResourceId");
   MatQuery mq (sim.GetMaterial(resid));
-  EXPECT_DOUBLE_EQ(m[922350000]*0.6*0.7156278629279868703*100, mq.mass("U235"));
-  EXPECT_DOUBLE_EQ(m[922380000]*0.6*0.7156278629279868703*100, mq.mass("U238"));
-  EXPECT_DOUBLE_EQ(m[942390000]*0.7*0.7156278629279868703*100, mq.mass("Pu239"));
+  default_efficiency = 7156278629279868703;
+  EXPECT_DOUBLE_EQ(m[922350000]*0.6*default_efficiency*100, mq.mass("U235"));
+  EXPECT_DOUBLE_EQ(m[922380000]*0.6*default_efficiency*100, mq.mass("U238"));
+  EXPECT_DOUBLE_EQ(m[942390000]*0.7*default_efficiency*100, mq.mass("Pu239"));
   EXPECT_DOUBLE_EQ(0, mq.mass("Pu240"));
 }
 
@@ -388,4 +389,4 @@ TEST(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Latitude"), 10.0);
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 15.0);
  }
-} // namespace cycamore
+} // namespace recycle
