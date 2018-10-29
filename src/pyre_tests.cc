@@ -134,7 +134,7 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
 
   cyclus::MockSim sim1(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   
-  EXPECT_THROW(sim1.Run(), cyclus::ValueError) << "Direct separation efficiency greater than 1 is not throwing an error but should.";
+  EXPECT_THROW(sim1.Run(), cyclus::ValueError) << "Direct separation efficiency > 1 should throw an error.";
   
 // Check if a cumulative separation efficiency greater than 1 for a unique nuclide throw an error as expected.
   config =
