@@ -8,7 +8,7 @@
 
 namespace recycle {
 
-class PyreTests : public ::testing::Test {
+class PyreTests : public ::testing::TestWithParam < std::string > {
     protected:
         cyclus::TestContext tc_;
         Pyre* src_facility_;
