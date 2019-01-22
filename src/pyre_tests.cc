@@ -1,4 +1,5 @@
 #include "pyre.h"
+#include "pyre_tests.h"
 
 #include <gtest/gtest.h>
 #include <sstream>
@@ -13,7 +14,38 @@ using cyclus::Cond;
 using cyclus::toolkit::MatQuery;
 
 namespace recycle {
-  
+
+void PyreTests::SetUp() {
+  src_facility_ = new Pyre(tc_.get());
+  InitParameters();
+}
+
+void PyreTests::TearDown() {
+  delete src_facility_;
+}
+
+void PyreTests::InitParameters() {
+  simdur = 2;
+  simple_config = 
+      "<streams>"
+      "    <item>"
+      "        <commod>refine</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>";
+}
+
 // Check that cumulative separations efficiency for a single nuclide of less than or equal to one does not trigger an error.
 TEST(PyreTests, SeparationEfficiency) {
 
@@ -21,7 +53,7 @@ TEST(PyreTests, SeparationEfficiency) {
   std::string config =
       "<streams>"
       "    <item>"
-      "        <commod>stream1</commod>"
+      "        <commod>volox</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -30,7 +62,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream2</commod>"
+      "        <commod>reduct</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -39,7 +71,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream3</commod>"
+      "        <commod>refine</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -64,7 +96,7 @@ TEST(PyreTests, SeparationEfficiency) {
   config =
       "<streams>"
       "    <item>"
-      "        <commod>stream1</commod>"
+      "        <commod>volox</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -74,7 +106,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream2</commod>"
+      "        <commod>reduct</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -84,7 +116,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream3</commod>"
+      "        <commod>refine</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -115,7 +147,7 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
   std::string config =
       "<streams>"
       "    <item>"
-      "        <commod>stream1</commod>"
+      "        <commod>volox</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -207,25 +239,8 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
 }
   
 TEST(PyreTests, SepMixElemAndNuclide) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>refine</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U</comp> <eff>0.6</eff></item>"
-      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>"
-     ;
+  
+  std::string config = simple_config;
 
   CompMap m;
   m[id("u235")] = 0.08;
@@ -234,7 +249,6 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   m[id("Pu240")] = .01;
   Composition::Ptr c = Composition::CreateFromMass(m);
 
-  int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
   sim.AddSink("refine").capacity(100).Finalize();
@@ -247,7 +261,7 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   MatQuery mq (sim.GetMaterial(resid));
   // default_efficiency is the Electrorefiner's separation efficiency given Pyre's default
   // values for temperature, pressure, and rotation.
-  default_efficiency = 7156278629279868703;
+  double default_efficiency = 0.7156278629279868703;
   EXPECT_DOUBLE_EQ(m[922350000]*0.6*default_efficiency*100, mq.mass("U235"));
   EXPECT_DOUBLE_EQ(m[922380000]*0.6*default_efficiency*100, mq.mass("U238"));
   EXPECT_DOUBLE_EQ(m[942390000]*0.7*default_efficiency*100, mq.mass("Pu239"));
@@ -255,24 +269,6 @@ TEST(PyreTests, SepMixElemAndNuclide) {
 }
 
 TEST(PyreTests, Retire) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>volox_stream</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U235</comp> <eff>1.0</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>"
-     ;
 
   CompMap m;
   m[id("u235")] = 0.1;
@@ -285,7 +281,7 @@ TEST(PyreTests, Retire) {
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"),
 		      config, simdur, life);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("volox_stream").capacity(100).Finalize();
+  sim.AddSink("refine").capacity(100).Finalize();
   sim.AddSink("waste").capacity(70).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
@@ -315,24 +311,6 @@ TEST(PyreTests, Retire) {
  }
 
  TEST(PyreTests, PositionInitialize) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>volox_stream</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U</comp> <eff>0.6</eff></item>"
-      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>";
   CompMap m;
   m[id("u235")] = 0.08;
   m[id("u238")] = 0.9;
@@ -340,10 +318,9 @@ TEST(PyreTests, Retire) {
   m[id("Pu240")] = .01;
   Composition::Ptr c = Composition::CreateFromMass(m);
 
-  int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("volox_stream").capacity(100).Finalize();
+  sim.AddSink("refine").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
@@ -353,26 +330,10 @@ TEST(PyreTests, Retire) {
  }
 
   TEST(PyreTests, PositionInitialize2) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>volox_stream</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U</comp> <eff>0.6</eff></item>"
-      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>"
-      "<latitude>10.0</latitude> "
-      "<longitude>15.0</longitude> ";
+  std::string config
+  config.append("<latitude>10.0</latitude> ");
+  config.append("<longitude>15.0</longitude> ");
+
   CompMap m;
   m[id("u235")] = 0.08;
   m[id("u238")] = 0.9;
@@ -383,7 +344,7 @@ TEST(PyreTests, Retire) {
   int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("volox_stream").capacity(100).Finalize();
+  sim.AddSink("refine").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
