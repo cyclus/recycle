@@ -1,5 +1,5 @@
-#ifndef RECYCLE_SRC_CUSUM_H
-#define RECYCLE_SRC_CUSUM_H
+#ifndef RECYCLE_SRC_CUSUM_H_
+#define RECYCLE_SRC_CUSUM_H_
 
 #include "pyre.h"
 #include "cyclus.h"
