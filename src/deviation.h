@@ -3,19 +3,14 @@
 
 #include "pyre.h"
 #include "cyclus.h"
-#include <cstdlib>
-#include <cmath>
 
 namespace recycle {
 
 class Deviation {
 
-// default constructor
-Deviation::Deviation();
+double rng_gen(double lower, double upper)
 
-//overloaded constructor
-Deviation::Deviation();
-
+double NormalDist(double mean, double sigma)
 
 }
 }
