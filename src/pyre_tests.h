@@ -10,15 +10,10 @@ namespace recycle {
 
 class PyreTests : public ::testing::TestWithParam < std::string > {
     protected:
-        cyclus::TestContext tc_;
         Pyre* src_facility_;
 
         virtual void SetUp();
         virtual void TearDown();
-        void InitParameters();
-        double default_efficiency;
-        std::string config, simple_config;
-        int simdur, life;
 };
 
 } // namespace recycle

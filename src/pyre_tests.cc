@@ -16,16 +16,7 @@ using cyclus::toolkit::MatQuery;
 namespace recycle {
 
 void PyreTests::SetUp() {
-  src_facility_ = new Pyre(tc_.get());
-  InitParameters();
-}
-
-void PyreTests::TearDown() {
-  delete src_facility_;
-}
-
-void PyreTests::InitParameters() {
-  simdur = 2;
+  std::string simple_config;
   simple_config = 
       "<streams>"
       "    <item>"
@@ -44,6 +35,13 @@ void PyreTests::InitParameters() {
       "<throughput>100</throughput>"
       "<feedbuf_size>100</feedbuf_size>"
       "<feed_commods> <val>feed</val> </feed_commods>";
+  src_facility_ = new 
+}
+
+
+
+void PyreTests::TearDown() {
+  delete src_facility_;
 }
 
 // Check that cumulative separations efficiency for a single nuclide of less than or equal to one does not trigger an error.
@@ -240,7 +238,7 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
   
 TEST(PyreTests, SepMixElemAndNuclide) {
   
-  std::string config = simple_config;
+  std::string config = GetParam();
 
   CompMap m;
   m[id("u235")] = 0.08;
@@ -268,8 +266,8 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   EXPECT_DOUBLE_EQ(0, mq.mass("Pu240"));
 }
 
-TEST(PyreTests, Retire) {
-
+TEST_P(PyreTests, Retire) {
+  std::string config = GetParam();
   CompMap m;
   m[id("u235")] = 0.1;
   m[id("u238")] = 0.9;
@@ -310,7 +308,8 @@ TEST(PyreTests, Retire) {
       << "failed to discharge all material before decomissioning";
  }
 
- TEST(PyreTests, PositionInitialize) {
+ TEST_P(PyreTests, PositionInitialize) {
+  std::string config = GetParam();
   CompMap m;
   m[id("u235")] = 0.08;
   m[id("u238")] = 0.9;
@@ -329,8 +328,8 @@ TEST(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 0.0);
  }
 
-  TEST(PyreTests, PositionInitialize2) {
-  std::string config
+  TEST_P(PyreTests, PositionInitialize2) {
+  std::string config = GetParam();
   config.append("<latitude>10.0</latitude> ");
   config.append("<longitude>15.0</longitude> ");
 
@@ -352,4 +351,7 @@ TEST(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Latitude"), 10.0);
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 15.0);
  }
+
+INSTANTIATE_TEST_SUITE_P(SimpleConfig, PyreTests, ::testing::Values(simple_config));
+
 } // namespace recycle
