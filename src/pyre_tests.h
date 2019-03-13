@@ -10,15 +10,8 @@
 
 namespace recycle {
 
-template <class T> class FixtureBase : public T {
+class PyreTests : public ::testing::Test {
     protected:
-};
-
-class PyreTests : public FixtureBase<testing::Test> {
-};
-
-class ParamPyreTests : public FixtureBase<
-    testing::TestWithParam<std::string> > {
         cyclus::TestContext tc_;
         recycle::Pyre* src_facility;
         std::string simple_config;
