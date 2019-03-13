@@ -1,6 +1,7 @@
 #include "pyre.h"
 #include "pyre_tests.h"
 
+#include "context.h"
 #include <gtest/gtest.h>
 #include <sstream>
 #include "cyclus.h"
@@ -15,8 +16,18 @@ using cyclus::toolkit::MatQuery;
 
 namespace recycle {
 
-void PyreTests::SetUp() {
-  std::string simple_config;
+void ParamPyreTests::SetUp() {
+  cyclus::Context* ctx = tc_.get();
+  src_facility = new recycle::Pyre(ctx);
+  ParamPyreTests::InitParameters();
+  ParamPyreTests::SetupPyre();
+}
+
+void ParamPyreTests::TearDown() {
+  delete src_facility;
+}
+
+void ParamPyreTests::InitParameters() {
   simple_config = 
       "<streams>"
       "    <item>"
@@ -35,13 +46,10 @@ void PyreTests::SetUp() {
       "<throughput>100</throughput>"
       "<feedbuf_size>100</feedbuf_size>"
       "<feed_commods> <val>feed</val> </feed_commods>";
-  src_facility_ = new 
 }
 
-
-
-void PyreTests::TearDown() {
-  delete src_facility_;
+void ParamPyreTests::SetupPyre() {
+  src_facility->SetConfig(simple_config);
 }
 
 // Check that cumulative separations efficiency for a single nuclide of less than or equal to one does not trigger an error.
@@ -236,8 +244,8 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
   EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative sep efficiency > 1 should throw an error.";
 }
   
-TEST(PyreTests, SepMixElemAndNuclide) {
-  
+TEST_P(ParamPyreTests, SepMixElemAndNuclide) {
+  int simdur = 2;
   std::string config = GetParam();
 
   CompMap m;
@@ -266,7 +274,7 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   EXPECT_DOUBLE_EQ(0, mq.mass("Pu240"));
 }
 
-TEST_P(PyreTests, Retire) {
+TEST_P(ParamPyreTests, Retire) {
   std::string config = GetParam();
   CompMap m;
   m[id("u235")] = 0.1;
@@ -308,7 +316,8 @@ TEST_P(PyreTests, Retire) {
       << "failed to discharge all material before decomissioning";
  }
 
- TEST_P(PyreTests, PositionInitialize) {
+ TEST_P(ParamPyreTests, PositionInitialize) {
+  int simdur = 2;
   std::string config = GetParam();
   CompMap m;
   m[id("u235")] = 0.08;
@@ -328,7 +337,7 @@ TEST_P(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 0.0);
  }
 
-  TEST_P(PyreTests, PositionInitialize2) {
+  TEST_P(ParamPyreTests, PositionInitialize2) {
   std::string config = GetParam();
   config.append("<latitude>10.0</latitude> ");
   config.append("<longitude>15.0</longitude> ");
@@ -352,6 +361,6 @@ TEST_P(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 15.0);
  }
 
-INSTANTIATE_TEST_SUITE_P(SimpleConfig, PyreTests, ::testing::Values(simple_config));
+INSTANTIATE_TEST_CASE_P(SimpleConfig, ParamPyreTests, ::testing::Values(src_facility->test_config));
 
 } // namespace recycle
