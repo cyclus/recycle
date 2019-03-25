@@ -9,12 +9,16 @@ Cusum::Cusum() {
     this.startup = 10;
 }
 
+// @param magnitude 
+// @param threshold number of standard deviations before flag is raised
+// @param startup number of datapoints required before acceptable error
 Cusum::Cusum(double magnitude, double threshold, int startup) {
     this.magnitude = magnitude;
     this.threshold = threshold;
     this.startup = startup;
 }
 
+// @param newVal value to update running mean and variances
 void update_test(double newVal) {
     int count = count + 1;
 
