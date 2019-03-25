@@ -55,17 +55,36 @@ typedef std::map<std::string, Stream> StreamSet;
 
 void Pyre::EnterNotify() {
   Volox vol = Volox(volox_temp, volox_time, volox_flowrate, 
-          volox_volume);
-        v = vol;
-        Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
-          reduct_volume, reduct_time);
-        rd = red;
-        Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
-          refine_batch_size, refine_time);
-        rf = ref;
-        Winning win = Winning(winning_current, winning_time, winning_flowrate, 
-          winning_volume);
-        w = win;
+    volox_volume);
+  v = vol;
+  Reduct red = Reduct(reduct_current, reduct_lithium_oxide, 
+    reduct_volume, reduct_time);
+  rd = red;
+  Refine ref = Refine(refine_temp, refine_press, refine_rotation, 
+    refine_batch_size, refine_time);
+  rf = ref;
+  Winning win = Winning(winning_current, winning_time, winning_flowrate, 
+    winning_volume);
+  w = win;
+
+  v_temp.push(volox_temp);
+  v_time.push(volox_time);
+  v_flow.push(volox_flowrate);
+
+  rd_current.push(reduct_current);
+  rd_lithium.push(reduct_lithium_oxide);
+  rd_time.push(reduct_time);
+
+  rf_temp.push(reduct_temp);
+  rf_press.push(refine_press);
+  rf_rotation.push(refine_rotation);
+  rf_size.push(refine_batch_size);
+  rf_time.push(refine_time);
+
+  w_current.push(winning_current);
+  w_time.push(winning_time);
+  w_flow.push(winning_flowrate);
+
   cyclus::Facility::EnterNotify();
   std::map<int, double> efficiency_;
 
@@ -170,6 +189,13 @@ Material::Ptr Pyre::Separate(std::string name, Stream stream,
   Material::Ptr mat) {
   Material::Ptr material;
   if (name.find("volox") != std::string::npos) {
+    v_temp.push(DivertMat(divert_prob, divert_num, times_diverted,
+      v_temp));
+    v_time.push(DivertMat(divert_prob, divert_num, times_diverted,
+      v_time));
+    v_flow.push(DivertMat(divert_prob, divert_num, times_diverted,
+      v_flow));
+    v.set_params(v_temp, v_time, v_flow);
     material = v.VoloxSepMaterial(stream.second, mat);
   } else if (name.find("reduct") != std::string::npos) {
     material = rd.ReductSepMaterial(stream.second, mat);
@@ -183,6 +209,16 @@ Material::Ptr Pyre::Separate(std::string name, Stream stream,
   return material;
 }
 
+double Pyre::DivertMat(double divert_prob, int divert_num,
+  int times_diverted, std::vector input_v) {
+  if (Diversion::divert(divert_prob, divert_num, times_diverted)) {
+    times_diverted = times_diverted + 1;
+    double tmp = input_v.back();
+    return tmp * divert_quant;
+  } else {
+    return input_v.back();
+  }
+}
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>
 Pyre::GetMatlRequests() {

@@ -1,11 +1,11 @@
-#include "deviation.h"
+#include "diversion.h"
 #include <random>
 #include <cstdlib>
 #include "pyre.h"
 
-namespace deviation {
+namespace diversion {
 
-Deviation::Deviation() {
+Diversion::Diversion() {
     double divert_prob = 0.02;
     int divert_num = 1;
     int times_diverted = 0;
@@ -19,7 +19,6 @@ bool divert(double divert_prob, int divert_num,
         if (seed > divert_prob) {
             return false;
         } else {
-            times_diverted = times_diverted + 1;
             return true;
         }
     } else {
@@ -32,7 +31,7 @@ double rng_gen(double lower, double upper) {
     return sample;
 }
 
-double NormalDist(double mean, double sigma) {
+double normal_dist(double mean, double sigma) {
     std::random_device rd;
     std::mt19937 gen(rd());
     

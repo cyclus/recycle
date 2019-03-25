@@ -20,10 +20,10 @@ Volox::Volox(double volox_temp,
              double volox_volume
         ) 
         {
-          set_temp( volox_temp );
-          set_time( volox_time );
-          set_flowrate( volox_flowrate );
-          set_volume( volox_volume ); 
+          temp = volox_temp;
+          reprocess_time = volox_time;
+          flowrate = volox_flowrate;
+          volume = volox_volume; 
         }
 
 // This returns an untracked material that should just be used for
@@ -70,19 +70,26 @@ double Volox::Throughput(double flowrate, double reprocess_time, double volume) 
   return volox_through;
 }
 
-void Volox::set_temp(double input) {
-  temp = input;
+void Volox::set_params(std::vector v_temp, std::vector v_time,
+  std::vector v_flow) {
+  Volox::set_temp(v_temp);
+  Volox::set_time(v_time);
+  Volox::set_flowrate(v_flow);
 }
 
-void Volox::set_time(double input) {
-  reprocess_time = input;
+void Volox::set_temp(std::vector input) {
+  temp = input.back();
 }
 
-void Volox::set_flowrate(double input) {
-  flowrate = input;
+void Volox::set_time(std::vector input) {
+  reprocess_time = input.back();
 }
 
-void Volox::set_volume(double input) {
-  volume = input;
+void Volox::set_flowrate(std::vector input) {
+  flowrate = input.back();
+}
+
+void Volox::set_volume(std::vector input) {
+  volume = input.back();
 }
 }
