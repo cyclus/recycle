@@ -13,11 +13,15 @@ namespace recycle {
 
 Winning::Winning() {}
 
-Winning::Winning(double winning_current = 8, double winning_time = 1, 
-                 double winning_flowrate = 3, double winning_volume = 1) {
-  current = winning_current;
-  reprocess_time = winning_time;
-  flowrate = winning_flowrate;
+Winning::Winning(double winning_current = 8, 
+                 double winning_time = 1, 
+                 double winning_flowrate = 3, 
+                 double winning_volume = 1
+            ) 
+            {
+  current.push(winning_current);
+  reprocess_time.push(winning_time);
+  flowrate.push(winning_flowrate);
   volume = winning_volume;
 }
 
@@ -53,17 +57,22 @@ Material::Ptr Winning::WinningSepMaterial(std::map<int, double> effs, Material::
   return Material::CreateUntracked(tot_qty, c);
 }
 
-double Winning::Efficiency(double current, double reprocess_time, double flowrate) {
-  double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) 
-                         - 2.273*pow(current,2) + 11.2046*current - 19.7493;
-  double temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
-  double rate = 0.12435 * log(flowrate) + 0.7985;
+double Winning::Efficiency(std::vector<double> current, 
+  std::vector<double> reprocess_time, std::vector<double> flowrate) {
+  double curr = current.back();
+  double rep_time = reprocess_time.back();
+  double flow = flowrate.back();
+
+  double coulombic_eff = -0.00685*pow(curr,4) + 0.20413*pow(curr,3) 
+                         - 2.273*pow(curr,2) + 11.2046*curr - 19.7493;
+  double temporal = 0.2903 * log(rep_time*3600) - 1.696;
+  double rate = 0.12435 * log(flow) + 0.7985;
   double winning_eff = coulombic_eff * temporal * rate;
   return winning_eff;
 }
 
-double Winning::Throughput(double reprocess_time, double volume) {
-  double winning_through = volume / reprocess_time;
+double Winning::Throughput(std::vector<double> reprocess_time, double volume) {
+  double winning_through = volume / reprocess_time.back();
   return winning_through;
 };
 }

@@ -14,12 +14,16 @@ namespace recycle {
 
 Reduct::Reduct() {}
 
-Reduct::Reduct(double reduct_current = 5, double reduct_lithium_oxide = 2, 
-               double reduct_volume = 10, double reduct_time = 1) {
-  current = reduct_current;
-  lithium_oxide = reduct_lithium_oxide;
-  volume = reduct_volume;
-  reprocess_time = reduct_time;
+Reduct::Reduct(double reduct_current = 5, 
+               double reduct_lithium_oxide = 2, 
+               double reduct_volume = 10, 
+               double reduct_time = 1
+            ) 
+            {
+              current.push(reduct_current);
+              lithium.push(reduct_lithium_oxide);
+              volume = reduct_volume;
+              reprocess_time.push(reduct_time);
 }
 
 // This returns an untracked material that should just be used for
@@ -55,16 +59,21 @@ Material::Ptr Reduct::ReductSepMaterial(std::map<int, double> effs,
   return Material::CreateUntracked(tot_qty, c);
 }
 
-double Reduct::Efficiency(double current, double lithium_oxide) {
-  double coulombic_eff = -0.00685*pow(current,4) + 0.20413*pow(current,3) 
-                         - 2.273*pow(current,2) + 11.2046*current - 19.7493;
-  double catalyst_eff = 0.075 * lithium_oxide + 0.775;
+double Reduct::Efficiency(std::vector<double> current, 
+  std::vector<double> lithium_oxide) {
+  double curr = current.back();
+  double lith = lithium.back();
+
+  double coulombic_eff = -0.00685*pow(curr,4) + 0.20413*pow(curr,3) 
+                         - 2.273*pow(curr,2) + 11.2046*curr - 19.7493;
+  double catalyst_eff = 0.075 * lith + 0.775;
   double reduct_eff = coulombic_eff * catalyst_eff;
   return reduct_eff;
 }
 
-double Reduct::Throughput(double volume, double reprocess_time) {
-  double reduct_through = volume / reprocess_time;
+double Reduct::Throughput(double volume, 
+  std::vector<double> reprocess_time) {
+  double reduct_through = volume / reprocess_time.back();
   return reduct_through;
 };
 }

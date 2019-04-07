@@ -2,17 +2,19 @@
 #define RECYCLE_SRC_PYRE_REFINING_H_
 
 #include "cyclus.h"
+#include "process.h"
 #include "recycle_version.h"
 
 namespace recycle {
 
-class Refine{
+class Refine : protected Process {
 
 public:
 
 Refine();
 
-Refine(double refine_temp, double refine_press, double refine_rotation, double refine_batch_size, double refine_time);
+Refine(double refine_temp, double refine_press, double refine_rotation, 
+	double refine_batch_size, double refine_time);
 
 /// @param feed salt with uranium and fission product feed
 /// @param stream the separation efficiency for reduction streams
@@ -22,15 +24,12 @@ cyclus::Material::Ptr RefineSepMaterial(std::map<int, double> effs,
 
 private:
 
-double temp;
-double pressure;
-double rotation;
-double batch_size;
-double reprocess_time;
+double Efficiency(std::vector<double> temp, std::vector<double> pressure, 
+	std::vector<double> rotation);
 
-double Efficiency(double temp, double pressure, double rotation);
-
-double Throughput(double batch_size, double reprocess_time);
+double Throughput(std::vector<double> batch_size, 
+	std::vector<double> reprocess_time);
 };
 }
 #endif // RECYCLE_SRC_PYRE_REFINING_H_
+

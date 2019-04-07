@@ -2,17 +2,19 @@
 #define RECYCLE_SRC_PYRE_REDUCTION_H_
 
 #include "cyclus.h"
+#include "process.h"
 #include "recycle_version.h"
 
 namespace recycle {
 
-class Reduct {
+class Reduct : protected Process {
 
 public:
 
 Reduct();
 
-Reduct(double reduct_current,double reduct_li2o,double reduct_volume,double reduct_time);
+Reduct(double reduct_current, double reduct_li2o, 
+	double reduct_volume, double reduct_time);
 
 /// @param feed feed yellowcake from voloxidation
 /// @param stream the separation efficiency for reduction streams
@@ -22,14 +24,11 @@ cyclus::Material::Ptr ReductSepMaterial(std::map<int, double> effs,
 
 private:
 
-double current;
-double lithium_oxide;
-double volume;
-double reprocess_time;
+double Efficiency(std::vector<double> current, 
+	std::vector<double> lithium_oxide);
 
-double Efficiency(double current, double lithium_oxide);
-
-double Throughput(double volume, double reprocess_time);
+double Throughput(double volume, std::vector<double> reprocess_time);
 };
 }
 #endif // RECYCLE_SRC_PYRE_REDUCTION_H_
+

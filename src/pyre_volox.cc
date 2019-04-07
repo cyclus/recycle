@@ -20,11 +20,11 @@ Volox::Volox(double volox_temp,
              double volox_volume
         ) 
         {
-          temp = volox_temp;
-          reprocess_time = volox_time;
-          flowrate = volox_flowrate;
-          volume = volox_volume; 
-        }
+          temp.push(volox_temp);
+          reprocess_time.push(volox_time);
+          flowrate.push(volox_flowrate);
+          volume.push(volox_volume); 
+}
 
 // This returns an untracked material that should just be used for
 // its composition and qty - not in any real inventories, etc.
@@ -56,40 +56,23 @@ Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr 
   return Material::CreateUntracked(tot_qty, c);
 }
 
-double Volox::Efficiency(double temp, double reprocess_time, double flowrate) {
-  double thermal = 4.7369E-9*pow(temp,3) - 1.08337E-5*pow(temp,2)+0.008069*temp-0.9726;
-  double temporal = 0.2903 * log(reprocess_time*3600) - 1.696;
-  double rate = 0.12435 * log(flowrate) + 0.7985;
+double Volox::Efficiency(std::vector<double> temp, 
+  std::vector<double> reprocess_time, std::vector<double> flowrate) {
+  double tmp = temp.back();
+  double rep_time = reprocess_time.back();
+  double flow = flowrate.back();
+
+  double thermal = 4.7369E-9*pow(tmp,3) - 1.08337E-5*pow(tmp,2)+0.008069*tmp-0.9726;
+  double temporal = 0.2903 * log(rep_time*3600) - 1.696;
+  double rate = 0.12435 * log(flow) + 0.7985;
   double volox_eff = thermal * temporal * rate;
   return volox_eff;
 }
 
-double Volox::Throughput(double flowrate, double reprocess_time, double volume) {
+double Volox::Throughput(std::vector<double> flowrate, 
+  std::vector<double> reprocess_time, double volume) {
   // placeholder calculation
-  double volox_through = volume / flowrate*reprocess_time;
+  double volox_through = volume / flowrate.back()*reprocess_time.back();
   return volox_through;
-}
-
-void Volox::set_params(std::vector v_temp, std::vector v_time,
-  std::vector v_flow) {
-  Volox::set_temp(v_temp);
-  Volox::set_time(v_time);
-  Volox::set_flowrate(v_flow);
-}
-
-void Volox::set_temp(std::vector input) {
-  temp = input.back();
-}
-
-void Volox::set_time(std::vector input) {
-  reprocess_time = input.back();
-}
-
-void Volox::set_flowrate(std::vector input) {
-  flowrate = input.back();
-}
-
-void Volox::set_volume(std::vector input) {
-  volume = input.back();
 }
 }

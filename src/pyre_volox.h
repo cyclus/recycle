@@ -3,17 +3,19 @@
 
 #include "pyre.h"
 #include "cyclus.h"
+#include "process.h"
 #include "recycle_version.h"
 
 namespace recycle {
 
-class Volox {
+class Volox : protected Process {
 
 public:
 
 Volox();
 
-Volox(double volox_temp, double volox_time, double volox_flowrate, double volox_volume);
+Volox(double volox_temp, double volox_time, 
+	double volox_flowrate, double volox_volume);
 
 /// @param feed feed snf
 /// @param stream the separation efficiency of voloxidation
@@ -23,27 +25,17 @@ cyclus::Material::Ptr VoloxSepMaterial(std::map<int, double> effs,
 
 private:
 
-double temp;
-double reprocess_time;
-double flowrate;
-double volume;
-
 /// @param temp temperature of the volox process
 /// @param time time spent in the process
 /// @param flow mass flow rate
 /// @return efficiency separation efficiency of the voloxidation process
-double Efficiency(double temp, double reprocess_time, double flowrate);
+double Efficiency(std::vector<double> temp, std::vector<double> reprocess_time, 
+	std::vector<double> flowrate);
 
 /// @return throughput material throughput of voloxidation
-double Throughput(double flowrate, double reprocess_time, double volume);
+double Throughput(std::vector<double> flowrate, 
+	std::vector<double> reprocess_time, double volume);
 
-void set_temp(double input);
-
-void set_time(double input);
-
-void set_flowrate(double input);
-
-void set_volume(double input);
 };
 }
 #endif // RECYCLE_SRC_PYRE_VOLOX_H_

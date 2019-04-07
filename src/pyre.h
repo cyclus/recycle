@@ -1,6 +1,7 @@
 #ifndef RECYCLE_SRC_PYRE_H_
 #define RECYCLE_SRC_PYRE_H_
 
+#include "diversion.h"
 #include "cyclus.h"
 #include "recycle_version.h"
 #include "pyre_volox.h"
@@ -122,10 +123,6 @@ class Pyre
   Reduct rd;
   Refine rf;
   Winning w;
-  
-  std::vector<double> v_temp, v_time, v_flow, rd_current,
-    rd_lithium, rd_time, rf_temp, rf_press, rf_rotation,
-    rf_size, rf_time, w_current, w_time, w_flow;
 
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
