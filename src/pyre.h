@@ -1,13 +1,13 @@
 #ifndef RECYCLE_SRC_PYRE_H_
 #define RECYCLE_SRC_PYRE_H_
 
-#include "diversion.h"
 #include "cyclus.h"
 #include "recycle_version.h"
 #include "pyre_volox.h"
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
 #include "pyre_winning.h"
+#include "diversion.h"
 
 namespace recycle {
 
@@ -42,6 +42,7 @@ class Volox;
 class Reduct;
 class Refine;
 class Winning;
+class Diversion;
 
 class Pyre 
   : public cyclus::Facility,
@@ -86,6 +87,8 @@ class Pyre
   cyclus::Material::Ptr Separate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
 
+  double DivertMat(double input);
+
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
 
@@ -123,6 +126,7 @@ class Pyre
   Reduct rd;
   Refine rf;
   Winning w;
+  Diversion d;
 
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
@@ -151,6 +155,22 @@ class Pyre
     "default": "", \
   }
   std::string feed_recipe;
+
+  #pragma cyclus var { \
+  "default": 0.05, \
+  "doc": "The probability of a parameter being altered", \
+  "tooltip": "Diversion Probability", \
+  "uilabel": "Diversion Prob", \
+  }
+  double divert_prob;
+
+  #pragma cyclus var { \
+  "default": 0, \
+  "doc": "How many times a diversion will take place in a simulation", \
+  "tooltip": "Number of Diversions", \
+  "uilabel": "Diversion Number", \
+  }
+  int divert_num;
 
   #pragma cyclus var { \
   "default": 900, \

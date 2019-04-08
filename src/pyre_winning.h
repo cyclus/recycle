@@ -7,7 +7,7 @@
 
 namespace recycle {
 
-class Winning : protected Process {
+class Winning : public Process {
 
 public:
 

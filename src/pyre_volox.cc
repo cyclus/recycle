@@ -20,10 +20,10 @@ Volox::Volox(double volox_temp,
              double volox_volume
         ) 
         {
-          temp.push(volox_temp);
-          reprocess_time.push(volox_time);
-          flowrate.push(volox_flowrate);
-          volume.push(volox_volume); 
+          temp.push_back(volox_temp);
+          reprocess_time.push_back(volox_time);
+          flowrate.push_back(volox_flowrate);
+          volume = volox_volume; 
 }
 
 // This returns an untracked material that should just be used for

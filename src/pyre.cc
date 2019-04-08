@@ -66,6 +66,8 @@ void Pyre::EnterNotify() {
   Winning win = Winning(winning_current, winning_time, winning_flowrate, 
     winning_volume);
   w = win;
+  Diversion diver = Diversion(divert_prob, divert_num);
+  d = diver;
 
   cyclus::Facility::EnterNotify();
   std::map<int, double> efficiency_;
@@ -175,24 +177,18 @@ Material::Ptr Pyre::Separate(std::string name, Stream stream,
     double v_time = v.get_time();
     double v_flow = v.get_flowrate();
 
-    v.set_temp(DivertMat(divert_prob, divert_num, times_diverted,
-      v_temp));
-    v.set_time(DivertMat(divert_prob, divert_num, times_diverted,
-      v_time));
-    v.set_flowrate(DivertMat(divert_prob, divert_num, times_diverted,
-      v_flow));
+    v.set_temp(DivertMat(v_temp));
+    v.set_time(DivertMat(v_time));
+    v.set_flowrate(DivertMat(v_flow));
     material = v.VoloxSepMaterial(stream.second, mat);
   } else if (name.find("reduct") != std::string::npos) {
     double rd_current = rd.get_current();
     double rd_lithium = rd.get_lithium();
     double rd_time = rd.get_time();
 
-    rd.set_current(DivertMat(divert_prob, divert_num, times_diverted,
-      rd_current));
-    rd.set_lithium(DivertMat(divert_prob, divert_num, times_diverted,
-      rd_lithium));
-    rd.set_time(DivertMat(divert_prob, divert_num, times_diverted,
-      rd_time));
+    rd.set_current(DivertMat(rd_current));
+    rd.set_lithium(DivertMat(rd_lithium));
+    rd.set_time(DivertMat(rd_time));
     material = rd.ReductSepMaterial(stream.second, mat);
   } else if (name.find("refine") != std::string::npos) {
     double rf_temp = rf.get_temp();
@@ -201,28 +197,20 @@ Material::Ptr Pyre::Separate(std::string name, Stream stream,
     double rf_size = rf.get_size();
     double rf_time = rf.get_time();
 
-    rf.set_temp(DivertMat(divert_prob, divert_num, times_diverted,
-      rf_temp));
-    rf.set_pressure(DivertMat(divert_prob, divert_num, times_diverted,
-      rf_press));
-    rf.set_rotation(DivertMat(divert_prob, divert_num, times_diverted,
-      rf_rotation));
-    rf.set_size(DivertMat(divert_prob, divert_num, times_diverted,
-      rf_size));
-    rf.set_time(DivertMat(divert_prob, divert_num, times_diverted,
-      rf_time));
+    rf.set_temp(DivertMat(rf_temp));
+    rf.set_pressure(DivertMat(rf_press));
+    rf.set_rotation(DivertMat(rf_rotation));
+    rf.set_size(DivertMat(rf_size));
+    rf.set_time(DivertMat(rf_time));
     material = rf.RefineSepMaterial(stream.second, mat);
   } else if (name.find("winning") != std::string::npos) {
     double w_current = w.get_current();
     double w_time = w.get_time();
     double w_flow = w.get_flowrate();
 
-    w.set_current(DivertMat(divert_prob, divert_num, times_diverted,
-      w_current));
-    w.set_time(DivertMat(divert_prob, divert_num, times_diverted,
-      w_time));
-    w.set_flowrate(DivertMat(divert_prob, divert_num, times_diverted,
-      w_flow));
+    w.set_current(DivertMat(w_current));
+    w.set_time(DivertMat(w_time));
+    w.set_flowrate(DivertMat(w_flow));
     material = w.WinningSepMaterial(stream.second, mat);
   } else {
     throw ValueError("Stream names must include the name of the subprocess");
@@ -230,13 +218,15 @@ Material::Ptr Pyre::Separate(std::string name, Stream stream,
   return material;
 }
 
-double Pyre::DivertMat(double divert_prob, int divert_num,
-  int times_diverted, double input) {
-  if (Diversion::divert(divert_prob, divert_num, times_diverted)) {
+double Pyre::DivertMat(double input) {
+  double divert_prob = d.get_prob();
+  int divert_num = d.get_num();
+  int times_diverted = d.get_times_divert();
+  if (d.divert(divert_prob, divert_num, times_diverted)) {
     times_diverted = times_diverted + 1;
-    double tmp = input_v.back();
-    double divert_quant = Diversion::rng_gen(0,5)/100 + 1;
-    return tmp * divert_quant;
+    d.set_times_divert(times_diverted);
+    double divert_quant = d.rng_gen(0,5)/100 + 1;
+    return input * divert_quant;
   } else {
     return input;
   }

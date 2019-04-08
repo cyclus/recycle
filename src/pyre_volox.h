@@ -1,14 +1,14 @@
 #ifndef RECYCLE_SRC_PYRE_VOLOX_H_
 #define RECYCLE_SRC_PYRE_VOLOX_H_
 
+#include "process.h"
 #include "pyre.h"
 #include "cyclus.h"
-#include "process.h"
 #include "recycle_version.h"
 
 namespace recycle {
 
-class Volox : protected Process {
+class Volox : public recycle::Process {
 
 public:
 

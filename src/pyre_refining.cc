@@ -21,11 +21,11 @@ Refine::Refine(double refine_temp = 900,
                double refine_time = 1
             ) 
             {
-  temp.push(refine_temp);
-  pressure.push(refine_press);
-  rotation.push(refine_rotation);
-  size.push(refine_batch_size);
-  reprocess_time.push(refine_time);
+  temp.push_back(refine_temp);
+  pressure.push_back(refine_press);
+  rotation.push_back(refine_rotation);
+  b_size.push_back(refine_batch_size);
+  reprocess_time.push_back(refine_time);
 }
 
 // This returns an untracked material that should just be used for
@@ -70,7 +70,7 @@ double Refine::Efficiency(std::vector<double> temp,
   double thermal = 4.7369E-9*pow(tmp,3) - 1.08337E-5*pow(tmp,2)
     +0.008069*tmp-0.9726;
   double pres_eff = -4.6667*pow(pres,-5) + 1.002;
-  if (rotation <= 1) {
+  if (rot <= 1) {
     agitation = 0.032*rot + 0.72;
   } else {
     agitation = 0.0338396*log(rot)+0.836671495;
@@ -82,9 +82,9 @@ double Refine::Efficiency(std::vector<double> temp,
   return refine_eff;
 }
 
-double Refine::Throughput(std::vector<double> batch_size, 
+double Refine::Throughput(std::vector<double> b_size, 
   std::vector<double> reprocess_time) {
-  double refine_through = size.back() / reprocess_time.back();
+  double refine_through = b_size.back() / reprocess_time.back();
   return refine_through;
 };
 }

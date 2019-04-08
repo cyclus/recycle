@@ -7,7 +7,7 @@
 
 namespace recycle {
 
-class Reduct : protected Process {
+class Reduct : public Process {
 
 public:
 

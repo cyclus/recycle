@@ -1,79 +1,71 @@
-#include "pyre.h"
 #include "process.h"
+#include <vector>
 
 namespace recycle {
 
-Process::Process() {
-    set_temp(0);
-    set_current(0);
-    set_rotation(0);
-    set_pressure(0);
-    set_lithium(0);
-    set_time(0);
-    set_size(0);
+Process::Process() {}
+
+void Process::set_temp(double input) {
+    temp.push_back(input);
 }
 
-void set_temp(double input) {
-    temp.push(input);
+void Process::set_current(double input){
+    current.push_back(input);
 }
 
-void set_current(double input){
-    current.push(input);
+void Process::set_rotation(double input){
+    rotation.push_back(input);
 }
 
-void set_rotation(double input){
-    rotation.push(input);
+void Process::set_pressure(double input){
+    pressure.push_back(input);
 }
 
-void set_pressure(double input){
-    pressure.push(input);
+void Process::set_lithium(double input){
+    lithium.push_back(input);
 }
 
-void set_lithium(double input){
-    lithium.push(input);
+void Process::set_time(double input){
+    reprocess_time.push_back(input);
 }
 
-void set_time(double input){
-    reprocess_time.push(input);
+void Process::set_flowrate(double input){
+    flowrate.push_back(input);
 }
 
-void set_flowrate(double input){
-    flowrate.push(input);
+void Process::set_size(double input){
+    b_size.push_back(input);
 }
 
-void set_size(double input){
-    size.push(input);
-}
-
-double get_temp() {
+double Process::get_temp() {
     return temp.back();
 }
 
-double get_current() {
+double Process::get_current() {
     return current.back();
 }
 
-double get_rotation() {
+double Process::get_rotation() {
     return rotation.back();
 }
 
-double get_pressure() {
+double Process::get_pressure() {
     return pressure.back();
 }
 
-double get_lithium() {
+double Process::get_lithium() {
     return lithium.back();
 }
 
-double get_time() {
+double Process::get_time() {
     return reprocess_time.back();
 }
 
-double get_flowrate() {
+double Process::get_flowrate() {
     return flowrate.back();
 }
 
-double get_size() {
-    return size.back();
-}
+double Process::get_size() {
+    return b_size.back();
+};
 }

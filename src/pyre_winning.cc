@@ -19,9 +19,9 @@ Winning::Winning(double winning_current = 8,
                  double winning_volume = 1
             ) 
             {
-  current.push(winning_current);
-  reprocess_time.push(winning_time);
-  flowrate.push(winning_flowrate);
+  current.push_back(winning_current);
+  reprocess_time.push_back(winning_time);
+  flowrate.push_back(winning_flowrate);
   volume = winning_volume;
 }
 

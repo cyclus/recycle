@@ -1,15 +1,20 @@
 #include "diversion.h"
 #include "pyre.h"
 
-namespace diversion {
+namespace recycle {
 
-Diversion::Diversion() {
-    double divert_prob = 0.02;
-    int divert_num = 1;
-    int times_diverted = 0;
+Diversion::Diversion() {}
+
+Diversion::Diversion(
+    double divert_prob = 0.02,
+    int divert_num = 1
+) {
+    set_prob(divert_prob);
+    set_num(divert_num);
+    set_times_divert(0);
 }
 
-bool divert(double divert_prob, int divert_num, 
+bool Diversion::divert(double divert_prob, int divert_num, 
     int times_diverted) {
 
     if (times_diverted < divert_num) {
@@ -24,17 +29,41 @@ bool divert(double divert_prob, int divert_num,
     }
 }
 
-double rng_gen(double lower, double upper) {
-    sample = lower + (rand()/(RAND_MAX+1.0))*upper;
+double Diversion::rng_gen(double lower, double upper) {
+    double sample = lower + (rand()/(RAND_MAX+1.0))*upper;
     return sample;
 }
 
-double normal_dist(double mean, double sigma) {
+double Diversion::normal_dist(double mean, double sigma) {
     std::random_device rd;
     std::mt19937 gen(rd());
     
     std::normal_distribution<double> d(mean, sigma);
-    sample = d(gen);
+    double sample = d(gen);
     return sample;
+}
+
+void Diversion::set_prob(double input) {
+    divert_prob = input;
+}
+
+void Diversion::set_num(int input) {
+    divert_num = input;
+}
+
+void Diversion::set_times_divert(int input) {
+    times_diverted = input;
+}
+
+double Diversion::get_prob() {
+    return divert_prob;
+}
+
+int Diversion::get_num() {
+    return divert_num;
+}
+
+int Diversion::get_times_divert() {
+    return times_diverted;
 }
 }

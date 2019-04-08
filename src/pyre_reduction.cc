@@ -20,10 +20,10 @@ Reduct::Reduct(double reduct_current = 5,
                double reduct_time = 1
             ) 
             {
-              current.push(reduct_current);
-              lithium.push(reduct_lithium_oxide);
+              current.push_back(reduct_current);
+              lithium.push_back(reduct_lithium_oxide);
               volume = reduct_volume;
-              reprocess_time.push(reduct_time);
+              reprocess_time.push_back(reduct_time);
 }
 
 // This returns an untracked material that should just be used for
@@ -34,7 +34,7 @@ Material::Ptr Reduct::ReductSepMaterial(std::map<int, double> effs,
   cyclus::compmath::Normalize(&cm, mat->quantity());
   double tot_qty = 0;
   CompMap sepcomp;
-  double sepeff = Efficiency(current, lithium_oxide);
+  double sepeff = Efficiency(current, lithium);
 
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
@@ -60,7 +60,7 @@ Material::Ptr Reduct::ReductSepMaterial(std::map<int, double> effs,
 }
 
 double Reduct::Efficiency(std::vector<double> current, 
-  std::vector<double> lithium_oxide) {
+  std::vector<double> lithium) {
   double curr = current.back();
   double lith = lithium.back();
 

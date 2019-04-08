@@ -7,7 +7,7 @@
 
 namespace recycle {
 
-class Refine : protected Process {
+class Refine : public Process {
 
 public:
 
@@ -27,7 +27,7 @@ private:
 double Efficiency(std::vector<double> temp, std::vector<double> pressure, 
 	std::vector<double> rotation);
 
-double Throughput(std::vector<double> batch_size, 
+double Throughput(std::vector<double> b_size, 
 	std::vector<double> reprocess_time);
 };
 }
