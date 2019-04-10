@@ -1,4 +1,6 @@
 #include "diversion.h"
+#include <cstdlib>
+#include <ctime>
 #include "pyre.h"
 
 namespace recycle {
@@ -12,6 +14,7 @@ Diversion::Diversion(
     set_prob(divert_prob);
     set_num(divert_num);
     set_times_divert(0);
+    srand(time(0));
 }
 
 bool Diversion::divert(double divert_prob, int divert_num, 
@@ -19,6 +22,7 @@ bool Diversion::divert(double divert_prob, int divert_num,
 
     if (times_diverted < divert_num) {
         double seed = rng_gen(0,1);
+        //std::cout << "Prob: " << divert_prob << std::endl;
         if (seed > divert_prob) {
             return false;
         } else {

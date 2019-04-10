@@ -12,67 +12,57 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Volox::Volox() {}
+// kdh : a default constructor should construct a valid object.
+Volox::Volox() {
+  temp(0);
+  Rtime(0);
+  flowrate(0);
+  volume(0);
+}
 
-Volox::Volox(double volox_temp, 
-             double volox_time, 
-             double volox_flowrate, 
-             double volox_volume
+// kdh : these should just be temp, time, flowrate
+// and all associated pragmas should have defaults...
+Volox::Volox(double temp, 
+             double Rtime, 
+             double flowrate, 
+             double volume
         ) 
         {
-          temp.push_back(volox_temp);
-          reprocess_time.push_back(volox_time);
-          flowrate.push_back(volox_flowrate);
-          volume = volox_volume; 
+          temp(temp);
+          Rtime(Rtime);
+          flowrate(flowrate);
+          volume(volume); 
 }
 
-// This returns an untracked material that should just be used for
-// its composition and qty - not in any real inventories, etc.
-Material::Ptr Volox::VoloxSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
-  CompMap cm = mat->comp()->mass();
-  cyclus::compmath::Normalize(&cm, mat->quantity());
-  double tot_qty = 0;
-  CompMap sepcomp;
-  double sepeff = Efficiency(temp, reprocess_time, flowrate);
-
-  CompMap::iterator it;
-  for (it = cm.begin(); it != cm.end(); ++it) {
-    int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
-    double eff = 0;
-    if (effs.count(nuc) > 0) {
-      eff = effs[nuc];
-    } else if (effs.count(elem) > 0) {
-      eff = effs[elem];
-    } else {
-      continue;
-    }
-    double qty = it->second;
-    double sepqty = qty * eff * sepeff;
-    sepcomp[nuc] = sepqty;
-    tot_qty += sepqty;
-  }
-  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
-  return Material::CreateUntracked(tot_qty, c);
+double Volox::Efficiency() {
+  return Thermal()*Temporal()*RateEff();
 }
 
-double Volox::Efficiency(std::vector<double> temp, 
-  std::vector<double> reprocess_time, std::vector<double> flowrate) {
-  double tmp = temp.back();
-  double rep_time = reprocess_time.back();
-  double flow = flowrate.back();
-
-  double thermal = 4.7369E-9*pow(tmp,3) - 1.08337E-5*pow(tmp,2)+0.008069*tmp-0.9726;
-  double temporal = 0.2903 * log(rep_time*3600) - 1.696;
-  double rate = 0.12435 * log(flow) + 0.7985;
-  double volox_eff = thermal * temporal * rate;
-  return volox_eff;
+//KDH instead of double thermal = .... (above)
+double Volox::Thermal(double c0 = 4.369E-9,
+                      double c1 = -1.0833E-5, 
+                      double c2 = 0.008069,
+                      double c3 = -0.9726
+) {
+  // KDH document this function so that it's clear what paper you got the relation from
+  return c0*pow(temp(), 3) + c1*pow(temp(),2) + c2*temp() + c3;
 }
 
-double Volox::Throughput(std::vector<double> flowrate, 
-  std::vector<double> reprocess_time, double volume) {
+double Volox::Temporal(double c0 = 0.2903,
+                       double c1 = 1.696
+) {
+  return c0 * log(Rtime()*3600) - c1;
+}
+
+double Volox::RateEff(double c0 = 0.12435,
+                      double c1 = 0.7985
+) {
+  return c0*log(flowrate()) + c1;
+}
+
+double Volox::Throughput() {
   // placeholder calculation
-  double volox_through = volume / flowrate.back()*reprocess_time.back();
-  return volox_through;
+  // KDH no need to call it volox_*, as we know we are in the volox scope
+  return volume() / flowrate()*Rtime();
 }
 }

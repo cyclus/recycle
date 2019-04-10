@@ -66,7 +66,7 @@ class Pyre
     "The facility receives material into a feed inventory that it processes with" \
     " a specified throughput each time step.  Each output stream has a" \
     " corresponding output inventory size/limit.  If the facility is unable to" \
-    " reduce its stocks by trading and hits this limit for any of its output" \
+    " reduce its stockKDH we typically put typedefs at the top of the file.s by trading and hits this limit for any of its output" \
     " streams, further processing/separations of feed material will halt until" \
     " room is again available in the output streams." \
     "", \
@@ -87,7 +87,7 @@ class Pyre
   cyclus::Material::Ptr Separate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
 
-  double DivertMat(double input);
+  double DivertMat(double input, std::string process, std::string parameter);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);

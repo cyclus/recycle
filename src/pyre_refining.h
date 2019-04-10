@@ -16,19 +16,17 @@ Refine();
 Refine(double refine_temp, double refine_press, double refine_rotation, 
 	double refine_batch_size, double refine_time);
 
-/// @param feed salt with uranium and fission product feed
-/// @param stream the separation efficiency for reduction streams
-/// @return composition composition of the separated material sent to electrowinning
-cyclus::Material::Ptr RefineSepMaterial(std::map<int, double> effs,
-	cyclus::Material::Ptr mat);
-
 private:
 
-double Efficiency(std::vector<double> temp, std::vector<double> pressure, 
-	std::vector<double> rotation);
+double Efficiency();
 
-double Throughput(std::vector<double> b_size, 
-	std::vector<double> reprocess_time);
+double Thermal(double c0, double c1, double c2, double c3);
+
+double PressureEff(double c0, double c1, double c2, double c3);
+
+double Agitation(double c0, double c1, double c2, double c3);
+
+double Throughput();
 };
 }
 #endif // RECYCLE_SRC_PYRE_REFINING_H_

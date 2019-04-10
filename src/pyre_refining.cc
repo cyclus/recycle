@@ -12,79 +12,65 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Refine::Refine() {}
+Refine::Refine() {
+  temp(0);
+  pressure(0);
+  rotation(0);
+  b_size(0);
+  Rtime(0);
+}
 
-Refine::Refine(double refine_temp = 900, 
-               double refine_press = 760, 
-               double refine_rotation = 0, 
-               double refine_batch_size = 20,
-               double refine_time = 1
+Refine::Refine(double temp = 900, 
+               double press = 760, 
+               double rotation = 0, 
+               double batch_size = 20,
+               double r_time = 1
             ) 
             {
-  temp.push_back(refine_temp);
-  pressure.push_back(refine_press);
-  rotation.push_back(refine_rotation);
-  b_size.push_back(refine_batch_size);
-  reprocess_time.push_back(refine_time);
+  temp(refine_temp);
+  pressure(refine_press);
+  rotation(refine_rotation);
+  b_size(refine_batch_size);
+  Rtime(r_time);
 }
 
-// This returns an untracked material that should just be used for
-// its composition and qty - not in any real inventories, etc.
-Material::Ptr Refine::RefineSepMaterial(std::map<int, double> effs, Material::Ptr mat) {
-  CompMap cm = mat->comp()->mass();
-  cyclus::compmath::Normalize(&cm, mat->quantity());
-  double tot_qty = 0;
-  CompMap sepcomp;
-  double sepeff = Efficiency(temp, pressure, rotation);
-
-  CompMap::iterator it;
-  for (it = cm.begin(); it != cm.end(); ++it) {
-    int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
-    double eff = 0;
-    if (effs.count(nuc) > 0) {
-      eff = effs[nuc];
-    } else if (effs.count(elem) > 0) {
-      eff = effs[elem];
-    } else {
-      continue;
-    }
-
-    double qty = it->second;
-    double sepqty = qty * eff * sepeff;
-    sepcomp[nuc] = sepqty;
-    tot_qty += sepqty;
-  }
-
-  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
-  return Material::CreateUntracked(tot_qty, c);
+double Refine::Efficiency() {
+  return Thermal()*PressureEff()*Agitation();
 }
 
-double Refine::Efficiency(std::vector<double> temp, 
-  std::vector<double> pressure, std::vector<double> rotation) {
-  double tmp = temp.back();
-  double pres = pressure.back();
-  double rot = rotation.back();
-  double agitation;
+double Refine::Thermal(double c0 = 4.7369E-9,
+                       double c1 = -1.08337E-5,
+                       double c2 = 0.008069,
+                       double c3 = 0.9726
+) {
+  return c0*pow(temp(),3) + c1*pow(temp(),2) + c2*temp() + c3;
+}
 
-  double thermal = 4.7369E-9*pow(tmp,3) - 1.08337E-5*pow(tmp,2)
-    +0.008069*tmp-0.9726;
-  double pres_eff = -4.6667*pow(pres,-5) + 1.002;
-  if (rot <= 1) {
-    agitation = 0.032*rot + 0.72;
+double Refine::PressureEff(double c0 = -7.17631E-10,
+                           double c1 = 4.04545E-07,
+                           double c2 = -8.06336E-05,
+                           double c3 = 1.002
+) {
+  return c0*pow(pressure(), 3) + c1*pow(pressure(), 2) + c2*pressure() + c3;
+}
+
+double Refine::Agitation(double c0 = 0.032,
+                         double c1 = 0.72,
+                         double c2 = 0.0338396,
+                         double c3 = 0.83667
+) {
+  if (rotation() <= 1) {
+    double agitation = c0*rotation() + c1;
   } else {
-    agitation = 0.0338396*log(rot)+0.836671495;
+    double agitation = c2*log(rotation()) + c3;
     if (agitation > 1) {
       throw ValueError("Rotation efficiency cannot exceed 1");
     }
   }
-  double refine_eff = thermal * pres_eff * agitation;
-  return refine_eff;
+  return agitation;
 }
 
-double Refine::Throughput(std::vector<double> b_size, 
-  std::vector<double> reprocess_time) {
-  double refine_through = b_size.back() / reprocess_time.back();
-  return refine_through;
+double Refine::Throughput() {
+  return b_size() / Rtime();
 };
 }

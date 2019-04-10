@@ -5,67 +5,109 @@ namespace recycle {
 
 Process::Process() {}
 
-void Process::set_temp(double input) {
-    temp.push_back(input);
+// KDH make sure the docs state the units.
+void Process::temp(double new_temp) {
+    subcomponents["temp"].push_back(new_temp);
 }
 
-void Process::set_current(double input){
-    current.push_back(input);
+void Process::current(double new_current){
+    subcomponents["current"].push_back(new_current);
 }
 
-void Process::set_rotation(double input){
-    rotation.push_back(input);
+void Process::rotation(double new_rotate){
+    subcomponents["rotation"].push_back(new_rotate);
 }
 
-void Process::set_pressure(double input){
-    pressure.push_back(input);
+void Process::set_pressure(double new_press){
+    subcomponents["pressure"].push_back(new_press);
 }
 
-void Process::set_lithium(double input){
-    lithium.push_back(input);
+void Process::lithium(double new_lithium){
+    subcomponents["lithium"].push_back(new_lithium);
 }
 
-void Process::set_time(double input){
-    reprocess_time.push_back(input);
+void Process::Rtime(double new_time){
+    subcomponents["reprocess time"].push_back(new_time);
 }
 
-void Process::set_flowrate(double input){
-    flowrate.push_back(input);
+void Process::flowrate(double new_flow){
+    subcomponents["flowrate"].push_back(new_flow);
 }
 
-void Process::set_size(double input){
-    b_size.push_back(input);
+void Process::b_size(double new_size){
+    subcomponents["batch size"].push_back(new_size);
 }
 
-double Process::get_temp() {
-    return temp.back();
+void Process::volume(double new_volume) {
+    subcomponents["volume"].push_back(new_volume)
 }
 
-double Process::get_current() {
-    return current.back();
+double Process::temp() {
+    return subcomponents["temp"].back();
 }
 
-double Process::get_rotation() {
-    return rotation.back();
+double Process::current() {
+    return subcomponents["current"].back();
 }
 
-double Process::get_pressure() {
-    return pressure.back();
+double Process::rotation() {
+    return subcomponents["rotation"].back();
 }
 
-double Process::get_lithium() {
-    return lithium.back();
+double Process::pressure() {
+    return subcomponents["pressure"].back();
 }
 
-double Process::get_time() {
-    return reprocess_time.back();
+double Process::lithium() {
+    return subcomponents["lithium"].back();
 }
 
-double Process::get_flowrate() {
-    return flowrate.back();
+double Process::Rtime() {
+    return subcomponents["reprocess time"].back();
 }
 
-double Process::get_size() {
-    return b_size.back();
+double Process::flowrate() {
+    return subcomponents["flowrate"].back();
+}
+
+double Process::b_size() {
+    return subcomponents["batch size"].back();
+}
+
+double Process::volume() {
+    return subcomponents["volume"].back();
+}
+
+Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+  CompMap cm = mat->comp()->mass();
+  cyclus::compmath::Normalize(&cm, mat->quantity());
+  double tot_qty = 0;
+  CompMap sepcomp;
+
+  CompMap::iterator it;
+  for (it = cm.begin(); it != cm.end(); ++it) {
+    int nuc = it->first;
+    int elem = (nuc / 10000000) * 10000000;
+    double eff = 0;
+    if (effs.count(nuc) > 0) {
+      eff = effs[nuc];
+    } else if (effs.count(elem) > 0) {
+      eff = effs[elem];
+    } else {
+      continue;
+    }
+
+    double qty = it->second;
+    double sepqty = qty * eff * Efficiency();
+    sepcomp[nuc] = sepqty;
+    tot_qty += sepqty;
+  }
+
+  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
+  return Material::CreateUntracked(tot_qty, c);
+}
+
+virtual double Process::Efficiency() {
+    return 1;
 };
 }

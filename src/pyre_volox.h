@@ -17,24 +17,22 @@ Volox();
 Volox(double volox_temp, double volox_time, 
 	double volox_flowrate, double volox_volume);
 
-/// @param feed feed snf
-/// @param stream the separation efficiency of voloxidation
-/// @return composition composition of the resulting product and waste
-cyclus::Material::Ptr VoloxSepMaterial(std::map<int, double> effs,
-	cyclus::Material::Ptr mat);
-
 private:
 
 /// @param temp temperature of the volox process
 /// @param time time spent in the process
 /// @param flow mass flow rate
 /// @return efficiency separation efficiency of the voloxidation process
-double Efficiency(std::vector<double> temp, std::vector<double> reprocess_time, 
-	std::vector<double> flowrate);
+double Efficiency();
+
+double Thermal(double c0, double c1, double c2, double c3);
+
+double Temporal(double c0, double c1);
+
+double RateEff(double c0, double c1);
 
 /// @return throughput material throughput of voloxidation
-double Throughput(std::vector<double> flowrate, 
-	std::vector<double> reprocess_time, double volume);
+double Throughput();
 
 };
 }

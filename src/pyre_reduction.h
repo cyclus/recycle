@@ -16,18 +16,15 @@ Reduct();
 Reduct(double reduct_current, double reduct_li2o, 
 	double reduct_volume, double reduct_time);
 
-/// @param feed feed yellowcake from voloxidation
-/// @param stream the separation efficiency for reduction streams
-/// @return composition composition of the separated material sent to refining
-cyclus::Material::Ptr ReductSepMaterial(std::map<int, double> effs,
-	cyclus::Material::Ptr mat);
-
 private:
 
-double Efficiency(std::vector<double> current, 
-	std::vector<double> lithium_oxide);
+double Efficiency();
 
-double Throughput(double volume, std::vector<double> reprocess_time);
+double Coulombic(double c0, double c1, double c2, double c3, double c4);
+
+double Catalyst(double c0, double c1)
+
+double Throughput();
 };
 }
 #endif // RECYCLE_SRC_PYRE_REDUCTION_H_
