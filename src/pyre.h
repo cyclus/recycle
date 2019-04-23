@@ -8,6 +8,7 @@
 #include "pyre_refining.h"
 #include "pyre_winning.h"
 #include "diversion.h"
+#include "diverter.h"
 
 namespace recycle {
 
@@ -127,6 +128,8 @@ class Pyre
   Refine rf;
   Winning w;
   Diversion d;
+
+  std::vector<Process*> components_;
 
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \

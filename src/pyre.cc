@@ -64,19 +64,24 @@ void Pyre::EnterNotify() {
   v = Volox(volox_temp, volox_time, volox_flowrate, 
     volox_volume);
 
-  components_.push(v)
+  components_.push_back(v);
 
   rd = Reduct(reduct_current, reduct_lithium_oxide, 
     reduct_volume, reduct_time);
 
-  components_.push(rd)
+  components_.push_back(rd);
 
 
   rf = Refine(refine_temp, refine_press, refine_rotation, 
     refine_batch_size, refine_time);
 
+  components_.push_back(rf);
+
   w = Winning(winning_current, winning_time, winning_flowrate, 
     winning_volume);
+  
+  components_.push_back(w);
+
   d = Diversion(divert_prob, divert_num);
 
   cyclus::Facility::EnterNotify();
