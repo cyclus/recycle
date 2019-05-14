@@ -43,7 +43,7 @@ class Volox;
 class Reduct;
 class Refine;
 class Winning;
-class Diversion;
+class Diverter;
 
 class Pyre 
   : public cyclus::Facility,
@@ -127,9 +127,34 @@ class Pyre
   Reduct rd;
   Refine rf;
   Winning w;
-  Diversion d;
+  Diverter d;
 
-  std::vector<Process*> components_;
+  std::map<std::string, Process*> components_;
+
+  #pragma cyclus var { \
+    "doc": "Pair of locations for material diversion, Operator " \
+           " diversion requires the parameter to be altered.", \
+    "uilabel": "Diversion Location", \
+    "default": <refine, temp>, \
+  }
+  std::pair<std::string, std::string> location_;
+
+  #pragma cyclus var { \
+    "doc": "The frequency of material diversion in the plant.", \
+    "uilabel": "Diversion Frequency", \
+    "units": "Time steps", \
+    "default": 1E299, \
+  }
+  int frequency_;
+
+  #pragma cyclus var { \
+    "doc": "The quantity material to be diverted at each diversion " \
+           "location.", \
+    "uilabel": "Diversion Quantity", \
+    "units": "kg or %", \
+    "default": 0.01, \
+  }
+  double siphon_;
 
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
@@ -158,14 +183,6 @@ class Pyre
     "default": "", \
   }
   std::string feed_recipe;
-
-  #pragma cyclus var { \
-  "default": 0.05, \
-  "doc": "The probability of a parameter being altered", \
-  "tooltip": "Diversion Probability", \
-  "uilabel": "Diversion Prob", \
-  }
-  double divert_prob;
 
   #pragma cyclus var { \
   "default": 0, \

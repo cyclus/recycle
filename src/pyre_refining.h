@@ -4,6 +4,9 @@
 #include "cyclus.h"
 #include "process.h"
 #include "recycle_version.h"
+#include "boost/function.hpp"
+#include "boost/bind.hpp"
+#include <boost/math/tools/roots.hpp>
 
 namespace recycle {
 
@@ -18,9 +21,11 @@ Refine(double refine_temp, double refine_press, double refine_rotation,
 
 private:
 
+boost::function<double(double)> ThermalFunc;
+
 double Efficiency();
 
-double Thermal(double c0, double c1, double c2, double c3);
+double Thermal(double temp, double newEff, double c0, double c1, double c2, double c3);
 
 double PressureEff(double c0, double c1, double c2, double c3);
 

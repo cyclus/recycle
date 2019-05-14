@@ -64,25 +64,25 @@ void Pyre::EnterNotify() {
   v = Volox(volox_temp, volox_time, volox_flowrate, 
     volox_volume);
 
-  components_.push_back(v);
+  components_["volox"] = v;
 
   rd = Reduct(reduct_current, reduct_lithium_oxide, 
     reduct_volume, reduct_time);
 
-  components_.push_back(rd);
+  components_["reduct"] = rd;
 
 
   rf = Refine(refine_temp, refine_press, refine_rotation, 
     refine_batch_size, refine_time);
 
-  components_.push_back(rf);
+  components_["refine"]. = rf;
 
   w = Winning(winning_current, winning_time, winning_flowrate, 
     winning_volume);
   
-  components_.push_back(w);
+  components_["winning"] = w;
 
-  d = Diversion(divert_prob, divert_num);
+  d = Diverter(ctx, components_, location_, frequency_, siphon_);
 
   cyclus::Facility::EnterNotify();
   // KDH: figure out if you're going to clean this up
@@ -158,6 +158,8 @@ void Pyre::Tick() {
   Record("Separating", orig_qty, "UNF");
   RecordStreams();
   
+  d.Divert(ctx,)
+
   // KDH: it wouldn't hurt for this to be its own function (private).
   for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
@@ -202,108 +204,18 @@ Material::Ptr Pyre::Separate(std::string name, Stream stream,
   Material::Ptr mat) {
   Material::Ptr material;
 
-
-
-  // KDH: "volox" should be saved in a var.
-  // even better, perhaps you could hold a 
-  // list of the possible things we would want to create... 
-  
-  // imagine pyre has a diverter object (just one)
-  // diverter = Diverter(rate, location, whatever)  
-  // maybe this happens one level above, in the tick function
-  diverter.divert(components_) 
-
-  // and then in the diverter class
-  // there is a function called divert that loops through the components
-  // and diverts material from them if it's supposed to,
-  // but only at the location where it knows it's supposed to.
-  // and then the pyre overlay should direct the facilities 
-  // to make any physical changes to their dependent vars 
-  // accordingly.  
-  // alternatively
-  for component in components:
-    component.divert()
-    // component class owns diversion logic
-    //diversion is instantiated when component is initialized.
-
   if (name.find("volox") != std::string::npos) {
-    std::string process = "volox"
-
-    // KDH : this should probably all happen in the volox class...
-    // volox knows its own physics.
-    // any component should be able to answer two questions;
-    // at this temp, time, flowrate, etc... (for whatever vars) how much material are we producing?
-    // in order to increase production, what changes about each var?
-    double v_temp = v.get_temp();
-    double v_time = v.get_time();
-    double v_flow = v.get_flowrate();
-
-    v.set_temp(DivertMat(v_temp, process, "temp"));
-    v.set_time(DivertMat(v_time, process, "time"));
-    v.set_flowrate(DivertMat(v_flow, process, "flowrate"));
     material = v.VoloxSepMaterial(stream.second, mat);
-
   } else if (name.find("reduct") != std::string::npos) {
-    std::string process = "reduct";
-
-    double rd_current = rd.get_current();
-    double rd_lithium = rd.get_lithium();
-    double rd_time = rd.get_time();
-
-    rd.set_current(DivertMat(rd_current, process, "current"));
-    rd.set_lithium(DivertMat(rd_lithium, process, "lithium"));
-    rd.set_time(DivertMat(rd_time, process, "time"));
     material = rd.ReductSepMaterial(stream.second, mat);
   } else if (name.find("refine") != std::string::npos) {
-    std::string process = "refine";
-
-    double rf_temp = rf.get_temp();
-    double rf_press = rf.get_pressure();
-    double rf_rotation = rf.get_rotation();
-    double rf_size = rf.get_size();
-    double rf_time = rf.get_time();
-
-    rf.set_temp(DivertMat(rf_temp, process, "temp"));
-    rf.set_pressure(DivertMat(rf_press, process, "pressure"));
-    rf.set_rotation(DivertMat(rf_rotation, process, "rotation"));
-    rf.set_size(DivertMat(rf_size, process, "size"));
-    rf.set_time(DivertMat(rf_time, process, "time"));
     material = rf.RefineSepMaterial(stream.second, mat);
   } else if (name.find("winning") != std::string::npos) {
-    std::string process = "winning";
-
-    double w_current = w.get_current();
-    double w_time = w.get_time();
-    double w_flow = w.get_flowrate();
-
-    w.set_current(DivertMat(w_current, process, "current"));
-    w.set_time(DivertMat(w_time, process, "time"));
-    w.set_flowrate(DivertMat(w_flow, process, "flowrate"));
     material = w.WinningSepMaterial(stream.second, mat);
   } else {
     throw ValueError("Stream names must include the name of the subprocess");
   }
   return material;
-}
-
-
-// KDH this definitely should be implemented in the diversion class.
-double Pyre::DivertMat(double input, std::string process, 
-  std::string parameter) {
-  double divert_prob = d.get_prob();
-  int divert_num = d.get_num();
-  int times_diverted = d.get_times_divert();
-
-  if (d.divert(divert_prob, divert_num, times_diverted)) {
-    times_diverted = times_diverted + 1;
-    d.set_times_divert(times_diverted);
-    double divert_quant = d.rng_gen(0,5)/100 + 1;
-    double divert = input * divert_quant;
-    Record("Diverted", divert, parameter);
-    return divert;
-  } else {
-    return input;
-  }
 }
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>
