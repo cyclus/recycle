@@ -2,6 +2,8 @@
 #define RECYCLE_SRC_DIVERTER_H_
 
 #include "cyclus.h"
+#include "pyre.h"
+#include "process.h"
 
 namespace recycle {
 
@@ -9,13 +11,25 @@ class Diverter {
 
 public:
 
+std::pair<std::string, std::string> location;
+int frequency;
+double siphon;
+
 Diverter();
 
-Diverter(cyclus::Context* ctx, std::vector<Process*> components, int frequency,
+Diverter(cyclus::Context* ctx, int frequency,
     double siphon);
 
-Divert(cyclus::Context* ctx, int frequency);
+void location(std::pair<std::string,std::string> location_);
+std::pair<std::string,std::string> location();
+
+void frequency(int frequency_);
+int frequency();
+
+void siphon(double siphon_);
+double siphon();
+
+void Divert(cyclus::Context* ctx, std::map<std::string, Process*>);
 
 }
-
 }

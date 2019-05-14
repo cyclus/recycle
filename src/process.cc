@@ -3,6 +3,8 @@
 
 namespace recycle {
 
+using boost::math::tools::bisect;
+
 Process::Process() {}
 
 // KDH make sure the docs state the units.
@@ -76,6 +78,12 @@ double Process::b_size() {
 
 double Process::volume() {
     return subcomponents["volume"].back();
+}
+
+struct Process::TerminationCondition {
+    bool operator() (double min, double max)  {
+        return abs(min - max) <= 0.000001;
+    }
 }
 
 Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
