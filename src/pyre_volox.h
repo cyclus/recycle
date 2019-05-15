@@ -6,6 +6,8 @@
 #include "cyclus.h"
 #include "recycle_version.h"
 
+class Process;
+
 namespace recycle {
 
 class Volox : public recycle::Process {
@@ -18,6 +20,10 @@ Volox(double volox_temp, double volox_time,
 	double volox_flowrate, double volox_volume);
 
 private:
+
+double th0, th1, th2, th3, t0, t1, r0, r1;
+
+void set_coeff();
 
 /// @param temp temperature of the volox process
 /// @param time time spent in the process

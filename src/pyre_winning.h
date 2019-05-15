@@ -5,9 +5,11 @@
 #include "process.h"
 #include "recycle_version.h"
 
+class Process;
+
 namespace recycle {
 
-class Winning : public Process {
+class Winning : public recycle::Process {
 
 public:
 
@@ -16,18 +18,21 @@ Winning();
 Winning(double winning_current, double winning_time, 
 	double winning_flowrate, double winning_volume);
 
-/// @param feed feed yellowcake from voloxidation
-/// @param stream the separation efficiency for reduction streams
-/// @return composition composition of the separated material sent to fuel fabrication
-cyclus::Material::Ptr WinningSepMaterial(std::map<int, double> effs,
-	cyclus::Material::Ptr mat);
-
 private:
 
-double Efficiency(std::vector<double> current, 
-	std::vector<double> reprocess_time, std::vector<double> flowrate);
+double c0,c1,c2,c3,c4,t0,t1,r0,r1;
 
-double Throughput(std::vector<double> reprocess_time, double volume);
+void set_coeff();
+
+double Efficiency();
+
+double Coulombic(double c0, double c1, double c2, double c3, double c4);
+
+double Temporal(double c0, double c1);
+
+double RateEff(double c0, double c1);
+
+double Throughput();
 };
 }
 #endif // RECYCLE_SRC_PYRE_WINNING_H_

@@ -7,7 +7,6 @@
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
 #include "pyre_winning.h"
-#include "diversion.h"
 #include "diverter.h"
 
 namespace recycle {
@@ -129,13 +128,19 @@ class Pyre
   Winning w;
   Diverter d;
 
-  std::map<std::string, Process*> components_;
+  std::map<std::string, Process> components_;
+
+  #pragma cyclus var { \
+    "doc": "The type of diversion that will occur inside the plant.", \
+    "uilabel": "Diversion Type", \
+  }
+  std::string type_;
 
   #pragma cyclus var { \
     "doc": "Pair of locations for material diversion, Operator " \
            " diversion requires the parameter to be altered.", \
     "uilabel": "Diversion Location", \
-    "default": <refine, temp>, \
+    "default": ("refine", "temp"), \
   }
   std::pair<std::string, std::string> location_;
 

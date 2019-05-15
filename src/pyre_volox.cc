@@ -1,4 +1,5 @@
 #include "pyre.h"
+#include "process.h"
 #include "pyre_volox.h"
 
 using cyclus::Material;
@@ -22,20 +23,32 @@ Volox::Volox() {
 
 // kdh : these should just be temp, time, flowrate
 // and all associated pragmas should have defaults...
-Volox::Volox(double temp, 
-             double Rtime, 
-             double flowrate, 
-             double volume
+Volox::Volox(double new_temp, 
+             double new_Rtime, 
+             double new_flowrate, 
+             double new_volume
         ) 
         {
-          temp(temp);
-          Rtime(Rtime);
-          flowrate(flowrate);
-          volume(volume); 
+          set_coeff();
+          temp(new_temp);
+          Rtime(new_Rtime);
+          flowrate(new_flowrate);
+          volume(new_volume); 
+}
+
+void Volox::set_coeff() {
+  th0 = 4.369E-9;
+  th1 = -1.0833E-5;
+  th2 = 0.008069;
+  th3 = -0.9726;
+  t0 = 0.2903;
+  t1 = 1.696;
+  r0 = 0.12435;
+  r1 = 0.7985;
 }
 
 double Volox::Efficiency() {
-  return Thermal()*Temporal()*RateEff();
+  return Thermal(th0,th1,th2,th3)*Temporal(t0,t1)*RateEff(r0,r1);
 }
 
 //KDH instead of double thermal = .... (above)

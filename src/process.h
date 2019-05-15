@@ -1,7 +1,11 @@
 #ifndef RECYCLE_SRC_PROCESS_H_
 #define RECYCLE_SRC_PROCESS_H_
 
+#include "cyclus.h"
+#include "pyre.h"
 #include <vector>
+
+using cyclus::Material;
 
 namespace recycle {
 
@@ -42,17 +46,12 @@ double volume();
 // its composition and qty - not in any real inventories, etc.
 Material::Ptr SepMaterial(std::map<int, double> effs, Material::Ptr mat);
 
-//std::vector<double> temp;
-//std::vector<double> current;
-//std::vector<double> rotation;
-//std::vector<double> pressure;
-//std::vector<double> lithium;
-//std::vector<double> reprocess_time;
-//std::vector<double> flowrate;
-//std::vector<double> b_size;
+virtual void DivertMat(std::string type, std::pair<std::string, std::string> location,
+  double siphon);
 
-//KDH 
-std::map<std::string, std::vector<double>> subcomponents;// "temp", vector<double>
+virtual double Efficiency();
+
+std::map<std::string, std::vector<double>> subcomponents;
 
 };
 }

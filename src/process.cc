@@ -1,9 +1,17 @@
+#include "cyclus.h"
+#include "pyre.h"
 #include "process.h"
-#include <vector>
+
+using cyclus::Material;
+using cyclus::Composition;
+using cyclus::toolkit::ResBuf;
+using cyclus::toolkit::MatVec;
+using cyclus::KeyError;
+using cyclus::ValueError;
+using cyclus::Request;
+using cyclus::CompMap;
 
 namespace recycle {
-
-using boost::math::tools::bisect;
 
 Process::Process() {}
 
@@ -20,7 +28,7 @@ void Process::rotation(double new_rotate){
     subcomponents["rotation"].push_back(new_rotate);
 }
 
-void Process::set_pressure(double new_press){
+void Process::pressure(double new_press){
     subcomponents["pressure"].push_back(new_press);
 }
 
@@ -41,7 +49,7 @@ void Process::b_size(double new_size){
 }
 
 void Process::volume(double new_volume) {
-    subcomponents["volume"].push_back(new_volume)
+    subcomponents["volume"].push_back(new_volume);
 }
 
 double Process::temp() {
@@ -80,12 +88,6 @@ double Process::volume() {
     return subcomponents["volume"].back();
 }
 
-struct Process::TerminationCondition {
-    bool operator() (double min, double max)  {
-        return abs(min - max) <= 0.000001;
-    }
-}
-
 Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
   CompMap cm = mat->comp()->mass();
   cyclus::compmath::Normalize(&cm, mat->quantity());
@@ -115,7 +117,10 @@ Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat
   return Material::CreateUntracked(tot_qty, c);
 }
 
-virtual double Process::Efficiency() {
+void Process::DivertMat(std::string type, std::pair<std::string, std::string> location,
+  double siphon) {};
+
+double Process::Efficiency() {
     return 1;
 };
 }

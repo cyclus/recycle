@@ -5,8 +5,8 @@
 #include "process.h"
 #include "recycle_version.h"
 #include "boost/function.hpp"
-#include "boost/bind.hpp"
-#include <boost/math/tools/roots.hpp>
+
+class Process;
 
 namespace recycle {
 
@@ -20,6 +20,17 @@ Refine(double refine_temp, double refine_press, double refine_rotation,
 	double refine_batch_size, double refine_time);
 
 private:
+
+double t0,t1,t2,t3,p0,p1,p2,p3,a0,a1,a2,a3,agi;
+
+void set_coeff();
+
+struct TerminationCondition;
+
+void DivertMat(std::string type, std::pair<std::string, std::string> location,
+  double siphon);
+
+void OpDivertMat(std::pair<std::string, std::string> location, double siphon);
 
 boost::function<double(double)> ThermalFunc;
 

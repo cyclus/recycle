@@ -20,7 +20,29 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
-        
+  v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
+    this->volox_volume);
+
+  components_["volox"] = v;
+
+  rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
+    this->reduct_volume, this->reduct_time);
+
+  components_["reduct"] = rd;
+
+
+  rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
+    this->refine_batch_size, this->refine_time);
+
+  components_["refine"] = rf;
+
+  w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
+    this->winning_volume);
+  
+  components_["winning"] = w;
+
+  d = Diverter(ctx, this->location_, this->frequency_, 
+    this->siphon_, this->divert_num_, this->type_);
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
@@ -61,29 +83,6 @@ void Pyre::EnterNotify() {
   // (maybe not, this might just be python)
   // (also, maybe ok if these are public vars)
   // also confused why you don't need this->volox_temp
-  v = Volox(volox_temp, volox_time, volox_flowrate, 
-    volox_volume);
-
-  components_["volox"] = v;
-
-  rd = Reduct(reduct_current, reduct_lithium_oxide, 
-    reduct_volume, reduct_time);
-
-  components_["reduct"] = rd;
-
-
-  rf = Refine(refine_temp, refine_press, refine_rotation, 
-    refine_batch_size, refine_time);
-
-  components_["refine"]. = rf;
-
-  w = Winning(winning_current, winning_time, winning_flowrate, 
-    winning_volume);
-  
-  components_["winning"] = w;
-
-  d = Diverter(ctx, components_, location_, frequency_, 
-    siphon_, divert_num_);
 
   cyclus::Facility::EnterNotify();
   // KDH: figure out if you're going to clean this up
@@ -159,7 +158,7 @@ void Pyre::Tick() {
   Record("Separating", orig_qty, "UNF");
   RecordStreams();
   
-  bool divert = d.Divert(ctx, components_);
+  bool divert = d.Divert(components_);
 
   // KDH: it wouldn't hurt for this to be its own function (private).
   for (it = streams_.begin(); it != streams_.end(); ++it) {
@@ -174,8 +173,8 @@ void Pyre::Tick() {
   }
 
   if (divert) {
-    stagedsep["diverted"].Push(d.DivertStream(stagedsep));
-    Record("Diverted", stagedsep["diverted"]->quantity(), d.location()->first);
+    stagedsep["diverted"] = d.DivertStream(stagedsep);
+    Record("Diverted", stagedsep["diverted"]->quantity(), d.locate().first);
   }
 
   // KDH: this could also be its own function (private)
@@ -209,7 +208,7 @@ Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream,
   Material::Ptr mat) {
   Material::Ptr material;
 
-  Process* subprocess = components_[name];
+  Process subprocess = components_[name];
   return subprocess.SepMaterial(stream.second, mat);
 }
 

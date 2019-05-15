@@ -1,4 +1,5 @@
 #include "pyre.h"
+#include "process.h"
 #include "pyre_reduction.h"
 
 using cyclus::Material;
@@ -14,20 +15,31 @@ namespace recycle {
 
 Reduct::Reduct() {}
 
-Reduct::Reduct(double current = 5, 
-               double lithium = 2, 
-               double volume = 10, 
-               double Rtime = 1
+Reduct::Reduct(double new_current = 5, 
+               double new_lithium = 2, 
+               double new_volume = 10, 
+               double new_Rtime = 1
             ) 
             {
-              current(current);
-              lithium(lithium);
-              volume(volume);
-              Rtime(Rtime);
+              set_coeff();
+              current(new_current);
+              lithium(new_lithium);
+              volume(new_volume);
+              Rtime(new_Rtime);
+}
+
+void Reduct::set_coeff() {
+  c0 = -0.00685;
+  c1 = 0.20413;
+  c2 = -2.273;
+  c3 = 11.2046;
+  c4 = 19.7493;
+  ca0 = 0.075;
+  ca1 = 0.775;
 }
 
 double Reduct::Efficiency() {
-  return coulombic_eff * catalyst_eff;
+  return Coulombic(c0,c1,c2,c3,c4) * Catalyst(ca0,ca1);
 }
 
 double Reduct::Coulombic(double c0 = -0.00685,

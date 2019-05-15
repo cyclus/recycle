@@ -1,5 +1,5 @@
-#include "pyre.h"
 #include "cyclus.h"
+#include "pyre.h"
 #include "process.h"
 #include "diverter.h"
 
@@ -9,65 +9,65 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Diverter::Diverter() {
+Diverter::Diverter() {}
 
-}
-
-Diverter::Diverter(cyclus::Context* ctx, std::pair<std::string,std::string> location_, 
-    int frequency_, double siphon_, int divert_num_) {
-    location(location_);
-    frequency(frequency_);
-    siphon(siphon_);
-    divert_num(divert_num_);
+Diverter::Diverter(cyclus::Context* ctx, std::pair<std::string,std::string> location, 
+    int frequency = 1E299, double quantity = 0.01, int divert_number = 1, std::string type_ = "operator") {
+    tc = ctx;
+    locate(location);
+    freq(frequency);
+    siphon(quantity);
+    divert_num(divert_number);
     divert_time(0);
+    type = type_;
 }
 
-void location(std::pair<std::string,std::string> location_) {
-    location = location_;
+void Diverter::locate(std::pair<std::string,std::string> new_local) {
+    location = new_local;
 }
 
-std::pair<std::string,std::string> location() {
+std::pair<std::string,std::string> Diverter::locate() {
     return location;
 }
 
-void frequency(int frequency_) {
-    frequency = frequency_;
+void Diverter::freq(int new_freq) {
+    frequency = new_freq;
 }
 
-int frequency() {
+int Diverter::freq() {
     return frequency;
 }
 
-void siphon(double siphon_) {
-    siphon = siphon_;
+void Diverter::siphon(double new_siphon) {
+    quantity = new_siphon;
 }
 
-double siphon() {
-    return siphon;
+double Diverter::siphon() {
+    return quantity;
 }
 
-void divert_num(int divert_num_) {
-    divert_num = divert_num_;
+void Diverter::divert_num(int new_num) {
+    divert_number = new_num;
 }
 
-int divert_num() {
-    return divert_num;
+int Diverter::divert_num() {
+    return divert_number;
 }
 
-void divert_time(int divert_time_) {
-    divert_time = divert_time_;
+void Diverter::divert_time(int new_time) {
+    divert_times = new_time;
 }
 
-int divert_time() {
-    return divert_time;
+int Diverter::divert_time() {
+    return divert_times;
 }
 
-bool Diverter::Divert(cyclus::Context* ctx, std::map<std::string, Process*>) {
-    if (ctx->time() % frequency == 0) {
+bool Diverter::Divert(std::map<std::string, Process> components) {
+    if (tc->time() % freq() == 0) {
         if (divert_time() < divert_num()) {
             divert_time(divert_time()+1);
-            Process* x = components[location()->first];
-            x.DivertMat(location(), siphon());
+            Process x = components[locate().first];
+            x.DivertMat(type, locate(), siphon());
             return true;
         } else {
             return false;
@@ -78,7 +78,7 @@ bool Diverter::Divert(cyclus::Context* ctx, std::map<std::string, Process*>) {
 }
 
 Material::Ptr Diverter::DivertStream(std::map<std::string, Material::Ptr> sepstreams) {
-    Material::Ptr m = sepstreams[location()->first];
+    Material::Ptr m = sepstreams[locate().first];
     return m->ExtractComp(m->quantity() * siphon(), m->comp());
 } 
 }
