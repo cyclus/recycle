@@ -25,7 +25,7 @@ boost::function<double(double)> ThermalFunc;
 
 double Efficiency();
 
-double Thermal(double temp, double newEff, double c0, double c1, double c2, double c3);
+double Thermal(double temp, double new_eff, double c0, double c1, double c2, double c3);
 
 double PressureEff(double c0, double c1, double c2, double c3);
 

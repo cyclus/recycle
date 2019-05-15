@@ -50,8 +50,8 @@ void Refine::NefDivertMat(double siphon) {
 void Refine::OpDivertMat(std::pair<std::string, std::string> location, double siphon) {
   std::string subcomponent = location->second;
   if (subcomponent == "temp"){
-    double newEff = Efficiency() * siphon;
-    ThermalFunc = boost::bind(recycle::Refine::Thermal,this,_1,newEff,4.7369E-9,-1.08337E-5,0.008069,-0.9726);
+    double new_eff = Efficiency() * (1+siphon);
+    ThermalFunc = boost::bind(recycle::Refine::Thermal,this,_1,new_eff,4.7369E-9,-1.08337E-5,0.008069,-0.9726);
     std::pair<double, double> result = bisect(ThermalFunc, 400, 1200, TerminationCondition());
     double root = (result.first + result.second) / 2;
     temp(root);

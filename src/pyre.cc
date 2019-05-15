@@ -82,7 +82,8 @@ void Pyre::EnterNotify() {
   
   components_["winning"] = w;
 
-  d = Diverter(ctx, components_, location_, frequency_, siphon_);
+  d = Diverter(ctx, components_, location_, frequency_, 
+    siphon_, divert_num_);
 
   cyclus::Facility::EnterNotify();
   // KDH: figure out if you're going to clean this up
@@ -158,18 +159,23 @@ void Pyre::Tick() {
   Record("Separating", orig_qty, "UNF");
   RecordStreams();
   
-  d.Divert(ctx,)
+  bool divert = d.Divert(ctx, components_);
 
   // KDH: it wouldn't hurt for this to be its own function (private).
   for (it = streams_.begin(); it != streams_.end(); ++it) {
     Stream info = it->second;
     std::string name = it->first;
-    stagedsep[name] = Separate(name, info, mat);
+    stagedsep[name] = ProcessSeparate(name, info, mat);
     Record("Staged", stagedsep[name]->quantity(), name);
     double frac = streambufs[name].space() / stagedsep[name]->quantity();
     if (frac < maxfrac) {
       maxfrac = frac;
     }
+  }
+
+  if (divert) {
+    stagedsep["diverted"].Push(d.DivertStream(stagedsep));
+    Record("Diverted", stagedsep["diverted"]->quantity(), d.location()->first);
   }
 
   // KDH: this could also be its own function (private)
@@ -199,23 +205,12 @@ void Pyre::Tick() {
   }
 }
  
- // KDH : name this in a way that makes sense for pyre... 
-Material::Ptr Pyre::Separate(std::string name, Stream stream, 
+Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream, 
   Material::Ptr mat) {
   Material::Ptr material;
 
-  if (name.find("volox") != std::string::npos) {
-    material = v.VoloxSepMaterial(stream.second, mat);
-  } else if (name.find("reduct") != std::string::npos) {
-    material = rd.ReductSepMaterial(stream.second, mat);
-  } else if (name.find("refine") != std::string::npos) {
-    material = rf.RefineSepMaterial(stream.second, mat);
-  } else if (name.find("winning") != std::string::npos) {
-    material = w.WinningSepMaterial(stream.second, mat);
-  } else {
-    throw ValueError("Stream names must include the name of the subprocess");
-  }
-  return material;
+  Process* subprocess = components_[name];
+  return subprocess.SepMaterial(stream.second, mat);
 }
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>

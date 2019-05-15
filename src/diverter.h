@@ -29,7 +29,9 @@ int frequency();
 void siphon(double siphon_);
 double siphon();
 
-void Divert(cyclus::Context* ctx, std::map<std::string, Process*>);
+bool Divert(cyclus::Context* ctx, std::map<std::string, Process*>);
+
+Material::Ptr DivertStream(std::map<std::string, Material::Ptr> sepstreams);
 
 }
 }

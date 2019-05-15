@@ -85,7 +85,7 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
-  cyclus::Material::Ptr Separate(std::string name, Stream stream, 
+  cyclus::Material::Ptr ProcessSeparate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
 
   double DivertMat(double input, std::string process, std::string parameter);
@@ -185,12 +185,12 @@ class Pyre
   std::string feed_recipe;
 
   #pragma cyclus var { \
-  "default": 0, \
-  "doc": "How many times a diversion will take place in a simulation", \
-  "tooltip": "Number of Diversions", \
-  "uilabel": "Diversion Number", \
+    "default": 0, \
+    "doc": "How many times a diversion will take place in a simulation", \
+    "tooltip": "Number of Diversions", \
+    "uilabel": "Diversion Number", \
   }
-  int divert_num;
+  int divert_num_;
 
   #pragma cyclus var { \
   "default": 900, \
