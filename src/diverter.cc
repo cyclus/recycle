@@ -67,7 +67,6 @@ bool Diverter::Divert(int t, std::map<std::string, Process*> components) {
         if (divert_time() < divert_num()) {
             divert_time(divert_time()+1);
             Process* x = components[locate().first];
-            std::cout << locate().first << std::endl;
             x->DivertMat(type, locate(), siphon());
             return true;
         } else {

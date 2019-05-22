@@ -161,13 +161,12 @@ void Pyre::Tick() {
     std::string name = itf->first;
     Material::Ptr m = itf->second;
     if (m->quantity() > 0) {
-      std::cout << m->quantity() << std::endl;
       streambufs[name].Push(
           mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
       Record("Separated", m->quantity() * maxfrac, name);
     }
   }
-  std::cout << "test" << std::endl;
+
   if (maxfrac == 1) {
     if (mat->quantity() > 0) {
       // unspecified separations fractions go to leftovers
@@ -217,7 +216,7 @@ Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream,
   //removes anything after the underscore in the stream name so it can processed properly
   std::istringstream stream_name(name);
   std::getline(stream_name,short_name,'_');
-  std::cout << short_name << std::endl;
+
   Process * subprocess = components_[short_name];
   return subprocess->SepMaterial(stream.second, mat);
 }

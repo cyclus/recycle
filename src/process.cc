@@ -44,7 +44,7 @@ void Process::flowrate(double new_flow){
 }
 
 void Process::b_size(double new_size){
-    subcomponents["batch size"].push_back(new_size);
+    subcomponents["batch"].push_back(new_size);
 }
 
 void Process::volume(double new_volume) {
@@ -80,7 +80,7 @@ double Process::flowrate() {
 }
 
 double Process::b_size() {
-    return subcomponents["batch size"].back();
+    return subcomponents["batch"].back();
 }
 
 double Process::volume() {
