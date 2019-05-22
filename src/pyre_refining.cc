@@ -63,13 +63,15 @@ struct Refine::TerminationCondition {
 
 void Refine::DivertMat(std::string type, std::pair<std::string, std::string> location,
   double siphon) {
-    if (type == "Operator") {
+    std::cout << "test" << std::endl;
+    if (type == "operator") {
       OpDivertMat(location, siphon);
     } 
 }
 
 void Refine::OpDivertMat(std::pair<std::string, std::string> location, double siphon) {
   std::string subcomponent = location.second;
+  std::cout << subcomponent << std::endl;
   if (subcomponent == "temp"){
     double new_eff = Efficiency() * (1+siphon);
     ThermalFunc = boost::bind(&recycle::Refine::Thermal,this,_1,new_eff,
@@ -77,6 +79,7 @@ void Refine::OpDivertMat(std::pair<std::string, std::string> location, double si
     std::pair<double, double> result = bisect(ThermalFunc, 400, 1200, TerminationCondition());
     double root = (result.first + result.second) / 2;
     temp(root);
+    std::cout << root << std::endl;
   } else if (subcomponent == "pressure") {
   } else if (subcomponent == "rotation") {
   } else if (subcomponent == "batch size") {
@@ -112,10 +115,11 @@ double Refine::Agitation(double c0 = 0.032,
                          double c2 = 0.0338396,
                          double c3 = 0.83667
 ) {
+  double agi;
   if (rotation() <= 1) {
-    double agi = c0*rotation() + c1;
+    agi = c0*rotation() + c1;
   } else {
-    double agi = c2*log(rotation()) + c3;
+    agi = c2*log(rotation()) + c3;
     if (agi > 1) {
       throw ValueError("Rotation efficiency cannot exceed 1");
     }

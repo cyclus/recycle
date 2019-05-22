@@ -51,13 +51,13 @@ int divert_time();
 /// @param t the current time step
 /// @param components a map of class objects for each sub-process
 /// @return true if diversion takes place and false if not
-bool Divert(int t, std::map<std::string, Process> components);
+bool Divert(int t, std::map<std::string, Process*> components);
 
 /// @brief DivertStream uses ExtractQty to remove material from separations streams and places into
 /// a "diverted" stream.
 /// @param sepstreams a map of all streams
 /// @return the new diverted stream
-Material::Ptr DivertStream(std::map<std::string, Material::Ptr> sepstreams);
+std::map<std::string, Material::Ptr> DivertStream(std::map<std::string, Material::Ptr> sepstreams);
 
 };
 }

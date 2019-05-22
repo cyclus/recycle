@@ -62,9 +62,9 @@ double Volox::Thermal(double c0 = 4.369E-9,
 }
 
 double Volox::Temporal(double c0 = 0.2903,
-                       double c1 = 1.696
+                       double c1 = -1.696
 ) {
-  return c0 * log(Rtime()*3600) - c1;
+  return c0 * log(Rtime()*3600) + c1;
 }
 
 double Volox::RateEff(double c0 = 0.12435,

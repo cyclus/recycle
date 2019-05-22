@@ -33,7 +33,7 @@ void Winning::set_coeff() {
   c1 = 0.20413;
   c2 = -2.273;
   c3 = 11.2046;
-  c4 = 19.7493;
+  c4 = -19.7493;
   t0 = 0.2903;
   t1 = 1.696;
   r0 = 0.12435;
@@ -48,16 +48,16 @@ double Winning::Coulombic(double c0 = -0.00685,
                           double c1 = 0.20413,
                           double c2 = -2.273,
                           double c3 = 11.2046,
-                          double c4 = 19.7493
+                          double c4 = -19.7493
 ) {
   return c0*pow(current(), 4) + c1*pow(current(), 3) + c2*pow(current(), 2)
           + c3*current() + c4;
 }
 
 double Winning::Temporal(double c0 = 0.2903,
-                         double c1 = 1.696
+                         double c1 = -1.696
 ) {
-  return c0 * log(Rtime()*3600) - c1;
+  return c0 * log(Rtime()*3600) + c1;
 }
 
 double Winning::RateEff(double c0 = 0.12435,

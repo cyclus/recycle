@@ -62,12 +62,13 @@ int Diverter::divert_time() {
     return divert_times;
 }
 
-bool Diverter::Divert(int t, std::map<std::string, Process> components) {
+bool Diverter::Divert(int t, std::map<std::string, Process*> components) {
     if (t % freq() == 0) {
         if (divert_time() < divert_num()) {
             divert_time(divert_time()+1);
-            Process x = components[locate().first];
-            x.DivertMat(type, locate(), siphon());
+            Process* x = components[locate().first];
+            std::cout << locate().first << std::endl;
+            x->DivertMat(type, locate(), siphon());
             return true;
         } else {
             return false;
@@ -77,13 +78,14 @@ bool Diverter::Divert(int t, std::map<std::string, Process> components) {
     }
 }
 
-Material::Ptr Diverter::DivertStream(std::map<std::string, Material::Ptr> sepstreams) {
+std::map<std::string, Material::Ptr> Diverter::DivertStream(std::map<std::string, Material::Ptr> sepstreams) {
     std::map<std::string, Material::Ptr>::iterator div;
     for (div = sepstreams.begin(); div != sepstreams.end(); ++div){
         std::string stream_name = div->first;
         if(stream_name.find(locate().first) != std::string::npos) {
             Material::Ptr m = sepstreams[stream_name];
-            return m->ExtractQty(m->quantity() * siphon());
+            sepstreams["diverted"] = m->ExtractQty(m->quantity() * siphon());
+            return sepstreams;
         }
     }
 } 

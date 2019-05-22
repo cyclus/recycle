@@ -40,8 +40,6 @@ double a0;
 double a1;
 double a2;
 double a3;
-/// agitation value from central stirrer
-double agi;
 
 /// @brief sets all coefficients to their defaults
 void set_coeff();

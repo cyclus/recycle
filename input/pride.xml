@@ -32,9 +32,11 @@
         <feed_commods> <val>leu</val> </feed_commods>
         <feed_commod_prefs> <val>1.0</val> </feed_commod_prefs>
         <feed_recipe>lwr_waste</feed_recipe>
+        <location_sub>refine</location_sub>
+        <location_par>temp</location_par>
         <frequency_>10</frequency_>
         <divert_num_>1</divert_num_>
-        <volox_temp>900</volox_temp>
+        <volox_temp>750</volox_temp>
         <volox_time>1</volox_time>
         <volox_flowrate>2</volox_flowrate>
         <volox_volume>1</volox_volume>
@@ -42,8 +44,8 @@
         <reduct_lithium_oxide>2</reduct_lithium_oxide>
         <reduct_volume>1</reduct_volume>
         <reduct_time>2</reduct_time>
-        <refine_temp>1000</refine_temp>
-        <refine_press>200</refine_press>
+        <refine_temp>900</refine_temp>
+        <refine_press>600</refine_press>
         <refine_rotation>100</refine_rotation>
         <refine_batch_size>30</refine_batch_size>
         <refine_time>2</refine_time>

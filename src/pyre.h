@@ -125,7 +125,7 @@ class Pyre
   Winning w;
   Diverter d;
 
-  std::map<std::string, Process> components_;
+  std::map<std::string, Process*> components_;
 
   #pragma cyclus var { \
     "doc": "The type of diversion that will occur inside the plant.", \
@@ -143,7 +143,7 @@ class Pyre
   #pragma cyclus var { \
     "doc": "What parameter will be used to divert.", \
     "uilabel": "Parameter Diversion Location", \
-    "default": "refine", \
+    "default": "temp", \
   }
   std::string location_par;
 

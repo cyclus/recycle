@@ -149,10 +149,9 @@ void Pyre::Tick() {
       maxfrac = frac;
     }
   }
-
+  
   if (divert) {
-    std::cout << "divert" << std::endl;
-    stagedsep["diverted"] = d.DivertStream(stagedsep);
+    stagedsep = d.DivertStream(stagedsep);
     Record("Diverted", stagedsep["diverted"]->quantity(), d.locate().first);
   }
 
@@ -162,12 +161,13 @@ void Pyre::Tick() {
     std::string name = itf->first;
     Material::Ptr m = itf->second;
     if (m->quantity() > 0) {
+      std::cout << m->quantity() << std::endl;
       streambufs[name].Push(
           mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
       Record("Separated", m->quantity() * maxfrac, name);
     }
   }
-
+  std::cout << "test" << std::endl;
   if (maxfrac == 1) {
     if (mat->quantity() > 0) {
       // unspecified separations fractions go to leftovers
@@ -182,6 +182,33 @@ void Pyre::Tick() {
     }
   }
 }
+
+void Pyre::SetObj() {
+  if(context()->time() == 0) {
+    v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
+      this->volox_volume);
+
+    components_["volox"] = &v;
+
+    rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
+      this->reduct_volume, this->reduct_time);
+
+    components_["reduct"] = &rd;
+
+    rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
+      this->refine_batch_size, this->refine_time);
+
+    components_["refine"] = &rf;
+
+    w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
+      this->winning_volume);
+  
+    components_["winning"] = &w;
+
+    d = Diverter(std::make_pair(this->location_sub, this->location_par), 
+      this->frequency_, this->siphon_, this->divert_num_, this->type_);
+  }
+}
  
 Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream, 
   Material::Ptr mat) {
@@ -190,39 +217,9 @@ Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream,
   //removes anything after the underscore in the stream name so it can processed properly
   std::istringstream stream_name(name);
   std::getline(stream_name,short_name,'_');
-
-  Process subprocess = components_[short_name];
-  return subprocess.SepMaterial(stream.second, mat);
-}
-
-void Pyre::SetObj() {
-  if(context()->time() == 0) {
-    std::cout << "This->" << this->type_ << std::endl;
-    std::cout << "This->" << this->winning_time << std::endl;
-    std::cout << frequency_ << std::endl;
-    v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
-      this->volox_volume);
-
-    components_["volox"] = v;
-
-    rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
-      this->reduct_volume, this->reduct_time);
-
-    components_["reduct"] = rd;
-
-    rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
-      this->refine_batch_size, this->refine_time);
-
-    components_["refine"] = rf;
-
-    w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
-      this->winning_volume);
-  
-    components_["winning"] = w;
-
-    d = Diverter(std::make_pair(this->location_sub, this->location_par), 
-      this->frequency_, this->siphon_, this->divert_num_, this->type_);
-  }
+  std::cout << short_name << std::endl;
+  Process * subprocess = components_[short_name];
+  return subprocess->SepMaterial(stream.second, mat);
 }
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>
