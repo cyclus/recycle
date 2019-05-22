@@ -6,14 +6,14 @@
 using cyclus::Material;
 using cyclus::Composition;
 using cyclus::CompMap;
+using cyclus::Context;
 
 namespace recycle {
 
 Diverter::Diverter() {}
 
-Diverter::Diverter(cyclus::Context* ctx, std::pair<std::string,std::string> location, 
+Diverter::Diverter(std::pair<std::string,std::string> location, 
     int frequency = 1E299, double quantity = 0.01, int divert_number = 1, std::string type_ = "operator") {
-    tc = ctx;
     locate(location);
     freq(frequency);
     siphon(quantity);
@@ -62,8 +62,8 @@ int Diverter::divert_time() {
     return divert_times;
 }
 
-bool Diverter::Divert(std::map<std::string, Process> components) {
-    if (tc->time() % freq() == 0) {
+bool Diverter::Divert(int t, std::map<std::string, Process> components) {
+    if (t % freq() == 0) {
         if (divert_time() < divert_num()) {
             divert_time(divert_time()+1);
             Process x = components[locate().first];
@@ -78,7 +78,13 @@ bool Diverter::Divert(std::map<std::string, Process> components) {
 }
 
 Material::Ptr Diverter::DivertStream(std::map<std::string, Material::Ptr> sepstreams) {
-    Material::Ptr m = sepstreams[locate().first];
-    return m->ExtractComp(m->quantity() * siphon(), m->comp());
+    std::map<std::string, Material::Ptr>::iterator div;
+    for (div = sepstreams.begin(); div != sepstreams.end(); ++div){
+        std::string stream_name = div->first;
+        if(stream_name.find(locate().first) != std::string::npos) {
+            Material::Ptr m = sepstreams[stream_name];
+            return m->ExtractQty(m->quantity() * siphon());
+        }
+    }
 } 
 }

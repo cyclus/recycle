@@ -28,11 +28,12 @@
     <name>LEU_pyro</name>
     <config>
       <Pyre>
+        <type_>operator</type_>
         <feed_commods> <val>leu</val> </feed_commods>
         <feed_commod_prefs> <val>1.0</val> </feed_commod_prefs>
         <feed_recipe>lwr_waste</feed_recipe>
-        <divert_prob>0.05</divert_prob>
-        <divert_num>1</divert_num>
+        <frequency_>10</frequency_>
+        <divert_num_>1</divert_num_>
         <volox_temp>900</volox_temp>
         <volox_time>1</volox_time>
         <volox_flowrate>2</volox_flowrate>

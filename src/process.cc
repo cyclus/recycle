@@ -1,5 +1,4 @@
 #include "cyclus.h"
-#include "pyre.h"
 #include "process.h"
 
 using cyclus::Material;

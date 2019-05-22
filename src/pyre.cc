@@ -20,29 +20,6 @@ Pyre::Pyre(cyclus::Context* ctx)
       latitude(0.0),
       longitude(0.0),
       coordinates(latitude, longitude) {
-  v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
-    this->volox_volume);
-
-  components_["volox"] = v;
-
-  rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
-    this->reduct_volume, this->reduct_time);
-
-  components_["reduct"] = rd;
-
-
-  rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
-    this->refine_batch_size, this->refine_time);
-
-  components_["refine"] = rf;
-
-  w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
-    this->winning_volume);
-  
-  components_["winning"] = w;
-
-  d = Diverter(ctx, this->location_, this->frequency_, 
-    this->siphon_, this->divert_num_, this->type_);
       }
 
 cyclus::Inventories Pyre::SnapshotInv() {
@@ -145,6 +122,7 @@ void Pyre::EnterNotify() {
 }
 
 void Pyre::Tick() {
+  SetObj();
   if (feed.count() == 0) {
     return;
   }
@@ -158,7 +136,7 @@ void Pyre::Tick() {
   Record("Separating", orig_qty, "UNF");
   RecordStreams();
   
-  bool divert = d.Divert(components_);
+  bool divert = d.Divert(context()->time(),components_);
 
   // KDH: it wouldn't hurt for this to be its own function (private).
   for (it = streams_.begin(); it != streams_.end(); ++it) {
@@ -173,6 +151,7 @@ void Pyre::Tick() {
   }
 
   if (divert) {
+    std::cout << "divert" << std::endl;
     stagedsep["diverted"] = d.DivertStream(stagedsep);
     Record("Diverted", stagedsep["diverted"]->quantity(), d.locate().first);
   }
@@ -207,9 +186,43 @@ void Pyre::Tick() {
 Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream, 
   Material::Ptr mat) {
   Material::Ptr material;
+  std::string short_name;
+  //removes anything after the underscore in the stream name so it can processed properly
+  std::istringstream stream_name(name);
+  std::getline(stream_name,short_name,'_');
 
-  Process subprocess = components_[name];
+  Process subprocess = components_[short_name];
   return subprocess.SepMaterial(stream.second, mat);
+}
+
+void Pyre::SetObj() {
+  if(context()->time() == 0) {
+    std::cout << "This->" << this->type_ << std::endl;
+    std::cout << "This->" << this->winning_time << std::endl;
+    std::cout << frequency_ << std::endl;
+    v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
+      this->volox_volume);
+
+    components_["volox"] = v;
+
+    rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
+      this->reduct_volume, this->reduct_time);
+
+    components_["reduct"] = rd;
+
+    rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
+      this->refine_batch_size, this->refine_time);
+
+    components_["refine"] = rf;
+
+    w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
+      this->winning_volume);
+  
+    components_["winning"] = w;
+
+    d = Diverter(std::make_pair(this->location_sub, this->location_par), 
+      this->frequency_, this->siphon_, this->divert_num_, this->type_);
+  }
 }
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>

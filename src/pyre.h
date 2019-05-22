@@ -11,13 +11,11 @@
 
 namespace recycle {
 
-/// SepMaterial returns a material object that represents the composition and
-/// quantity resulting from the separation of material from mat using the given
-/// mass-based efficiencies.  Each key in effs represents a nuclide or element
-/// (canonical PyNE form), and each value is the corresponding mass-based
-/// separations efficiency for that nuclide or element.  Note that this returns
-/// an untracked material that should only be used for its composition and qty
-/// - not in any real inventories, etc.
+class Volox;
+class Reduct;
+class Refine;
+class Winning;
+class Diverter;
 
 /// Pyre processes feed material into multiple waste streams according to their
 /// respective sub-process. Separation uses mass-based efficiencies.
@@ -38,12 +36,6 @@ namespace recycle {
 /// reduce its stocks by trading and hits this limit for any of its output
 /// streams, further processing/separations of feed material will halt until
 /// room is again available in the output streams.
-class Volox;
-class Reduct;
-class Refine;
-class Winning;
-class Diverter;
-
 class Pyre 
   : public cyclus::Facility,
     public cyclus::toolkit::Position {
@@ -81,13 +73,18 @@ class Pyre
   virtual void Tock();
   virtual void EnterNotify();
 
+  void SetObj();
+
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
+  /// @brief Passes streams to appropriate subprocess for separation
+  /// @param name Name of the stream
+  /// @param stream Stream to be separated
+  /// @param feed Input material stream
+  /// @return New material object for the product of the separation process
   cyclus::Material::Ptr ProcessSeparate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
-
-  double DivertMat(double input, std::string process, std::string parameter);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
@@ -137,18 +134,24 @@ class Pyre
   std::string type_;
 
   #pragma cyclus var { \
-    "doc": "Pair of locations for material diversion, Operator " \
-           " diversion requires the parameter to be altered.", \
-    "uilabel": "Diversion Location", \
-    "default": ("refine", "temp"), \
+    "doc": "Sub-process location of diversion.", \
+    "uilabel": "Process Diversion Location", \
+    "default": "refine", \
   }
-  std::pair<std::string, std::string> location_;
+  std::string location_sub;
+
+  #pragma cyclus var { \
+    "doc": "What parameter will be used to divert.", \
+    "uilabel": "Parameter Diversion Location", \
+    "default": "refine", \
+  }
+  std::string location_par;
 
   #pragma cyclus var { \
     "doc": "The frequency of material diversion in the plant.", \
     "uilabel": "Diversion Frequency", \
     "units": "Time steps", \
-    "default": 1E299, \
+    "default": 10, \
   }
   int frequency_;
 
