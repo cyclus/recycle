@@ -78,6 +78,8 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
+  /// @brief Iterates through streams and adds nucId efficiences to ensure <1
+  /// @return a map of nucIds and their cumulative separation efficiency
   std::map<int, double> AddEffs();
 
   /// @brief Iterates through input streams and passes info to ProcessSeparate
