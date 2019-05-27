@@ -78,6 +78,13 @@ class Pyre
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
+  std::map<int, double> AddEffs();
+
+  /// @brief Iterates through input streams and passes info to ProcessSeparate
+  /// @param feed Input material stream
+  /// @return a stream map of separated materials, to be diverted or traded
+  std::map<std::string, Material::Ptr> Separate(Material::Ptr feed);
+
   /// @brief Passes streams to appropriate subprocess for separation
   /// @param name Name of the stream
   /// @param stream Stream to be separated
@@ -85,6 +92,13 @@ class Pyre
   /// @return New material object for the product of the separation process
   cyclus::Material::Ptr ProcessSeparate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
+
+  /// @brief Buffer allocates separated quantities to ResBuffers for trading
+  /// @param stagedsep A map of streams returned from ProcessSeparate
+  /// @param mat the feed material
+  /// @param maxfrac a ratio of free space in the buffer
+  double Buffer(std::map<std::string, Material::Ptr> stagedsep, 
+    Material::Ptr mat);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);

@@ -14,6 +14,42 @@ namespace recycle {
 
 Process::Process() {}
 
+Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
+  CompMap cm = mat->comp()->mass();
+  cyclus::compmath::Normalize(&cm, mat->quantity());
+  double tot_qty = 0;
+  CompMap sepcomp;
+
+  CompMap::iterator it;
+  for (it = cm.begin(); it != cm.end(); ++it) {
+    int nuc = it->first;
+    int elem = (nuc / 10000000) * 10000000;
+    double eff = 0;
+    if (effs.count(nuc) > 0) {
+      eff = effs[nuc];
+    } else if (effs.count(elem) > 0) {
+      eff = effs[elem];
+    } else {
+      continue;
+    }
+
+    double qty = it->second;
+    double sepqty = qty * eff * Efficiency();
+    sepcomp[nuc] = sepqty;
+    tot_qty += sepqty;
+  }
+
+  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
+  return Material::CreateUntracked(tot_qty, c);
+}
+
+void Process::DivertMat(std::string type, std::pair<std::string, std::string> location,
+  double siphon) {};
+
+double Process::Efficiency() {
+    return 1;
+}
+
 // KDH make sure the docs state the units.
 void Process::temp(double new_temp) {
     subcomponents["temp"].push_back(new_temp);
@@ -85,41 +121,5 @@ double Process::b_size() {
 
 double Process::volume() {
     return subcomponents["volume"].back();
-}
-
-Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat) {
-  CompMap cm = mat->comp()->mass();
-  cyclus::compmath::Normalize(&cm, mat->quantity());
-  double tot_qty = 0;
-  CompMap sepcomp;
-
-  CompMap::iterator it;
-  for (it = cm.begin(); it != cm.end(); ++it) {
-    int nuc = it->first;
-    int elem = (nuc / 10000000) * 10000000;
-    double eff = 0;
-    if (effs.count(nuc) > 0) {
-      eff = effs[nuc];
-    } else if (effs.count(elem) > 0) {
-      eff = effs[elem];
-    } else {
-      continue;
-    }
-
-    double qty = it->second;
-    double sepqty = qty * eff * Efficiency();
-    sepcomp[nuc] = sepqty;
-    tot_qty += sepqty;
-  }
-
-  Composition::Ptr c = Composition::CreateFromMass(sepcomp);
-  return Material::CreateUntracked(tot_qty, c);
-}
-
-void Process::DivertMat(std::string type, std::pair<std::string, std::string> location,
-  double siphon) {};
-
-double Process::Efficiency() {
-    return 1;
 };
 }

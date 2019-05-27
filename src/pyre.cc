@@ -54,46 +54,19 @@ void Pyre::InitInv(cyclus::Inventories& inv) {
 }
 
 void Pyre::EnterNotify() {
-  // KDH : it's weird to me that volox_temp is available in this scope
-  // if it's a private member variable... does the c++ style 
-  // guide require a following underscore in the var name?
-  // (maybe not, this might just be python)
-  // (also, maybe ok if these are public vars)
-  // also confused why you don't need this->volox_temp
-
   cyclus::Facility::EnterNotify();
-  // KDH: figure out if you're going to clean this up
-  // should it remain in pyre? 
-  // if not, get rid of cruft...
   std::map<int, double> efficiency_;
-
-  StreamSet::iterator it;
-  for (it = streams_.begin(); it != streams_.end(); ++it) {
-    std::string name = it->first;
-    Stream stream = it->second;
-    double cap = stream.first;
-    if (cap >= 0) {
-      streambufs[name].capacity(cap);
-    }
-
-    // KDH : perhaps it2 could be it_inner or something... 
-    // though i, j, k is fine too.
-    // best to give it a physical name... is it a stream?
-    // it's an entry in the compmap for the stream maybe? 
-    // still a bit unclear what a stream is... tbd.
-    std::map<int, double>::iterator iso_pair;
-    for (iso_pair = stream.second.begin(); iso_pair != stream.second.end(); iso_pair++) {
-      efficiency_[iso_pair->first] += iso_pair->second;
-    }
-    RecordPosition();
-  }
+  efficiency_ = AddEffs();
 
   // KDH :maybe these are priority buffers... do they have anything to do with pyre?
-  std::map<int, double>::iterator it2;
+  // GTW :remembered wrong, this is going through the effs in each stream and adding it
+  // to eff_pb_. If eff_pb_ has any items then an error is thrown. Priority buffers are not
+  // handled in pyre
+  std::map<int, double>::iterator effs;
   std::vector<int> eff_pb_;
-  for (it2 = efficiency_.begin(); it2 != efficiency_.end(); it2++) {
-    if (it2->second > 1) {
-      eff_pb_.push_back(it2->first);
+  for (effs = efficiency_.begin(); effs != efficiency_.end(); effs++) {
+    if (effs->second > 1) {
+      eff_pb_.push_back(effs->first);
     }
   }
 
@@ -121,6 +94,25 @@ void Pyre::EnterNotify() {
   }
 }
 
+std::map<int, double> Pyre::AddEffs() {
+  StreamSet::iterator i;
+  std::map<int, double> eff_map;
+  for (i = streams_.begin(); i != streams_.end(); ++i) {
+    std::string name = i->first;
+    Stream stream = i->second;
+    double cap = stream.first;
+    if (cap >= 0) {
+      streambufs[name].capacity(cap);
+    }
+    std::map<int, double>::iterator iso_pair;
+    for (iso_pair = stream.second.begin(); iso_pair != stream.second.end(); iso_pair++) {
+      eff_map[iso_pair->first] += iso_pair->second;
+    }
+    RecordPosition();
+  }
+  return eff_map;
+}
+
 void Pyre::Tick() {
   SetObj();
   if (feed.count() == 0) {
@@ -130,42 +122,16 @@ void Pyre::Tick() {
   Material::Ptr mat = feed.Pop(pop_qty, cyclus::eps_rsrc());
   double orig_qty = mat->quantity();
 
-  StreamSet::iterator it;
-  double maxfrac = 1;
   std::map<std::string, Material::Ptr> stagedsep;
   Record("Separating", orig_qty, "UNF");
-  RecordStreams();
   
   bool divert = d.Divert(context()->time(),components_);
-
-  // KDH: it wouldn't hurt for this to be its own function (private).
-  for (it = streams_.begin(); it != streams_.end(); ++it) {
-    Stream info = it->second;
-    std::string name = it->first;
-    stagedsep[name] = ProcessSeparate(name, info, mat);
-    Record("Staged", stagedsep[name]->quantity(), name);
-    double frac = streambufs[name].space() / stagedsep[name]->quantity();
-    if (frac < maxfrac) {
-      maxfrac = frac;
-    }
-  }
-  
+  stagedsep = Separate(mat);
   if (divert) {
     stagedsep = d.DivertStream(stagedsep);
     Record("Diverted", stagedsep["diverted"]->quantity(), d.locate().first);
   }
-
-  // KDH: this could also be its own function (private)
-  std::map<std::string, Material::Ptr>::iterator itf;
-  for (itf = stagedsep.begin(); itf != stagedsep.end(); ++itf) {
-    std::string name = itf->first;
-    Material::Ptr m = itf->second;
-    if (m->quantity() > 0) {
-      streambufs[name].Push(
-          mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
-      Record("Separated", m->quantity() * maxfrac, name);
-    }
-  }
+  double maxfrac = Buffer(stagedsep, mat);
 
   if (maxfrac == 1) {
     if (mat->quantity() > 0) {
@@ -186,39 +152,72 @@ void Pyre::SetObj() {
   if(context()->time() == 0) {
     v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
       this->volox_volume);
-
     components_["volox"] = &v;
 
     rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
       this->reduct_volume, this->reduct_time);
-
     components_["reduct"] = &rd;
 
     rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
       this->refine_batch_size, this->refine_time);
-
     components_["refine"] = &rf;
 
     w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
       this->winning_volume);
-  
     components_["winning"] = &w;
 
     d = Diverter(std::make_pair(this->location_sub, this->location_par), 
       this->frequency_, this->siphon_, this->divert_num_, this->type_);
   }
 }
- 
+
+std::map<std::string, Material::Ptr> Pyre::Separate(Material::Ptr mat) {
+  StreamSet::iterator strm;
+  std::map<std::string, Material::Ptr> separating;
+  // this func would need streams_, and output stagedsep
+  // this function would be called Separate
+  for (strm = streams_.begin(); strm != streams_.end(); ++strm) {
+    Stream info = strm->second;
+    std::string name = strm->first;
+    separating[name] = ProcessSeparate(name, info, mat);
+    Record("Staged", separating[name]->quantity(), name);
+  }
+  return separating;
+}
+
 Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream, 
   Material::Ptr mat) {
   Material::Ptr material;
   std::string short_name;
-  //removes anything after the underscore in the stream name so it can processed properly
+  //removes anything after the underscore in the stream name so it can process properly
   std::istringstream stream_name(name);
   std::getline(stream_name,short_name,'_');
 
   Process * subprocess = components_[short_name];
   return subprocess->SepMaterial(stream.second, mat);
+}
+
+double Pyre::Buffer(std::map<std::string, Material::Ptr> stagedsep, 
+  Material::Ptr mat) {
+  std::map<std::string, Material::Ptr>::iterator sep;
+  double maxfrac = 1;
+
+  for (sep = stagedsep.begin(); sep != stagedsep.end(); ++sep) {
+    std::string name = sep->first;
+    Material::Ptr m = sep->second;
+
+    double frac = streambufs[name].space() / stagedsep[name]->quantity();
+    if (frac < maxfrac) {
+      maxfrac = frac;
+    }
+
+    if (m->quantity() > 0) {
+      streambufs[name].Push(
+          mat->ExtractComp(m->quantity() * maxfrac, m->comp()));
+      Record("Separated", m->quantity() * maxfrac, name);
+    }
+  }
+  return maxfrac;
 }
 
 std::set<cyclus::RequestPortfolio<Material>::Ptr>
