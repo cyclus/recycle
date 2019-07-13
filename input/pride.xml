@@ -78,7 +78,7 @@
           <item>
             <commod>volox_waste</commod>
             <info>
-              <buf_size>100000</buf_size>
+              <buf_size>1000</buf_size>
               <efficiencies>
                 <item>
                   <comp>H</comp> <eff>1</eff>
@@ -119,7 +119,7 @@
           <item>
             <commod>reduct_waste</commod>
             <info>
-              <buf_size>100000</buf_size>
+              <buf_size>1000</buf_size>
               <efficiencies>
                 <item>
                   <comp>U</comp> <eff>0.00096</eff>
@@ -154,7 +154,7 @@
           <item>
             <commod>refine_U_prod</commod>
             <info>
-              <buf_size>100000</buf_size>
+              <buf_size>1000</buf_size>
               <efficiencies>
                 <item>
                   <comp>U</comp> <eff> 0.9936 </eff>
@@ -165,7 +165,7 @@
           <item>
             <commod>refine_TRU_prod</commod>
             <info>
-              <buf_size>100000</buf_size>
+              <buf_size>1000</buf_size>
               <efficiencies>
                 <item>
                   <comp>U</comp> <eff>0.00544</eff>
@@ -188,7 +188,7 @@
           <item>
             <commod>winning_waste</commod>
             <info>
-              <buf_size>100000</buf_size>
+              <buf_size>1000</buf_size>
               <efficiencies>
                 <item>
                   <comp>Np</comp> <eff>0.0001</eff>
