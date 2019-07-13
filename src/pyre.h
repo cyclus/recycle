@@ -73,6 +73,7 @@ class Pyre
   virtual void Tock();
   virtual void EnterNotify();
 
+  /// @brief This function creates objects for the subprocesses and diverter
   void SetObj();
 
   std::string test_config;
