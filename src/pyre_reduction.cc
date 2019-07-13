@@ -13,7 +13,13 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Reduct::Reduct() {}
+Reduct::Reduct() {
+  set_coeff();
+  current(0);
+  lithium(0);
+  volume(0);
+  Rtime(0);
+}
 
 Reduct::Reduct(double new_current = 5, 
                double new_lithium = 2, 

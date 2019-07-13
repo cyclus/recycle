@@ -13,7 +13,12 @@ using cyclus::CompMap;
 
 namespace recycle {
 
-Winning::Winning() {}
+Winning::Winning() {
+  current(0);
+  Rtime(0);
+  flowrate(0);
+  volume(0);
+}
 
 Winning::Winning(double new_current = 8, 
                  double new_time = 1, 
