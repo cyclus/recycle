@@ -75,6 +75,11 @@ class Pyre
 
   void SetObj();
 
+  std::string test_config;
+  inline void SetConfig(std::string name) {
+    test_config = name;
+  }
+
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 

@@ -1,5 +1,7 @@
 #include "pyre.h"
+#include "pyre_tests.h"
 
+#include "context.h"
 #include <gtest/gtest.h>
 #include <sstream>
 #include "cyclus.h"
@@ -13,15 +15,51 @@ using cyclus::Cond;
 using cyclus::toolkit::MatQuery;
 
 namespace recycle {
-  
+
+void PyreTests::SetUp() {
+  cyclus::Context* ctx = tc_.get();
+  src_facility = new recycle::Pyre(ctx);
+  PyreTests::InitParameters();
+  PyreTests::SetupPyre();
+}
+
+void PyreTests::TearDown() {
+  delete src_facility;
+}
+
+void PyreTests::InitParameters() {
+  simple_config = 
+      "<streams>"
+      "    <item>"
+      "        <commod>refine</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>";
+}
+
+void PyreTests::SetupPyre() {
+  src_facility->SetConfig(simple_config);
+}
+
 // Check that cumulative separations efficiency for a single nuclide of less than or equal to one does not trigger an error.
-TEST(PyreTests, SeparationEfficiency) {
+TEST_F(PyreTests, SeparationEfficiency) {
 
   int simdur = 2;
   std::string config =
       "<streams>"
       "    <item>"
-      "        <commod>stream1</commod>"
+      "        <commod>volox</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -30,7 +68,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream2</commod>"
+      "        <commod>reduct</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -39,7 +77,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream3</commod>"
+      "        <commod>refine</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -64,7 +102,7 @@ TEST(PyreTests, SeparationEfficiency) {
   config =
       "<streams>"
       "    <item>"
-      "        <commod>stream1</commod>"
+      "        <commod>volox</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -74,7 +112,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream2</commod>"
+      "        <commod>reduct</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -84,7 +122,7 @@ TEST(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>stream3</commod>"
+      "        <commod>refine</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -108,14 +146,14 @@ TEST(PyreTests, SeparationEfficiency) {
 }
 
 // Check that an error is correctly thrown when separations efficiency of greater than one.
-TEST(PyreTests, SeparationEfficiencyThrowing) {
+TEST_F(PyreTests, SeparationEfficiencyThrowing) {
   int simdur = 2;
 
   // Check that single separations efficiency for a single nuclide of greater than one does not trigger an error.
   std::string config =
       "<streams>"
       "    <item>"
-      "        <commod>stream1</commod>"
+      "        <commod>volox</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -206,26 +244,9 @@ TEST(PyreTests, SeparationEfficiencyThrowing) {
   EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative sep efficiency > 1 should throw an error.";
 }
   
-TEST(PyreTests, SepMixElemAndNuclide) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>refine</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U</comp> <eff>0.6</eff></item>"
-      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>"
-     ;
+TEST_F(PyreTests, SepMixElemAndNuclide) {
+  int simdur = 2;
+  std::string config = src_facility->test_config;
 
   CompMap m;
   m[id("u235")] = 0.08;
@@ -234,7 +255,6 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   m[id("Pu240")] = .01;
   Composition::Ptr c = Composition::CreateFromMass(m);
 
-  int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
   sim.AddSink("refine").capacity(100).Finalize();
@@ -247,18 +267,18 @@ TEST(PyreTests, SepMixElemAndNuclide) {
   MatQuery mq (sim.GetMaterial(resid));
   // default_efficiency is the Electrorefiner's separation efficiency given Pyre's default
   // values for temperature, pressure, and rotation.
-  default_efficiency = 7156278629279868703;
+  double default_efficiency = 0.7156278629279868703;
   EXPECT_DOUBLE_EQ(m[922350000]*0.6*default_efficiency*100, mq.mass("U235"));
   EXPECT_DOUBLE_EQ(m[922380000]*0.6*default_efficiency*100, mq.mass("U238"));
   EXPECT_DOUBLE_EQ(m[942390000]*0.7*default_efficiency*100, mq.mass("Pu239"));
   EXPECT_DOUBLE_EQ(0, mq.mass("Pu240"));
 }
 
-TEST(PyreTests, Retire) {
-  std::string config =
+TEST_F(PyreTests, Retire) {
+  std::string config = 
       "<streams>"
       "    <item>"
-      "        <commod>volox_stream</commod>"
+      "        <commod>refine</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -271,9 +291,7 @@ TEST(PyreTests, Retire) {
       "<leftover_commod>waste</leftover_commod>"
       "<throughput>100</throughput>"
       "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>"
-     ;
-
+      "<feed_commods> <val>feed</val> </feed_commods>";
   CompMap m;
   m[id("u235")] = 0.1;
   m[id("u238")] = 0.9;
@@ -285,7 +303,7 @@ TEST(PyreTests, Retire) {
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"),
 		      config, simdur, life);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("volox_stream").capacity(100).Finalize();
+  sim.AddSink("refine").capacity(100).Finalize();
   sim.AddSink("waste").capacity(70).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
@@ -314,25 +332,9 @@ TEST(PyreTests, Retire) {
       << "failed to discharge all material before decomissioning";
  }
 
- TEST(PyreTests, PositionInitialize) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>volox_stream</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U</comp> <eff>0.6</eff></item>"
-      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>";
+ TEST_F(PyreTests, PositionInitialize) {
+  int simdur = 2;
+  std::string config = src_facility->test_config;
   CompMap m;
   m[id("u235")] = 0.08;
   m[id("u238")] = 0.9;
@@ -340,10 +342,9 @@ TEST(PyreTests, Retire) {
   m[id("Pu240")] = .01;
   Composition::Ptr c = Composition::CreateFromMass(m);
 
-  int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("volox_stream").capacity(100).Finalize();
+  sim.AddSink("refine").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
@@ -352,27 +353,11 @@ TEST(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 0.0);
  }
 
-  TEST(PyreTests, PositionInitialize2) {
-  std::string config =
-      "<streams>"
-      "    <item>"
-      "        <commod>volox_stream</commod>"
-      "        <info>"
-      "            <buf_size>-1</buf_size>"
-      "            <efficiencies>"
-      "                <item><comp>U</comp> <eff>0.6</eff></item>"
-      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
-      "            </efficiencies>"
-      "        </info>"
-      "    </item>"
-      "</streams>"
-      ""
-      "<leftover_commod>waste</leftover_commod>"
-      "<throughput>100</throughput>"
-      "<feedbuf_size>100</feedbuf_size>"
-      "<feed_commods> <val>feed</val> </feed_commods>"
-      "<latitude>10.0</latitude> "
-      "<longitude>15.0</longitude> ";
+  TEST_F(PyreTests, PositionInitialize2) {
+  std::string config = src_facility->test_config;
+  config.append("<latitude>10.0</latitude> ");
+  config.append("<longitude>15.0</longitude> ");
+
   CompMap m;
   m[id("u235")] = 0.08;
   m[id("u238")] = 0.9;
@@ -383,7 +368,7 @@ TEST(PyreTests, Retire) {
   int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("volox_stream").capacity(100).Finalize();
+  sim.AddSink("refine").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
@@ -391,4 +376,7 @@ TEST(PyreTests, Retire) {
   EXPECT_EQ(qr.GetVal<double>("Latitude"), 10.0);
   EXPECT_EQ(qr.GetVal<double>("Longitude"), 15.0);
  }
+
+//INSTANTIATE_TEST_CASE_P(SimpleConfig, ParamPyreTests, ::testing::Values(src_facility->test_config));
+
 } // namespace recycle
