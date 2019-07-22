@@ -34,7 +34,7 @@ bool Diversion::divert(double divert_prob, int divert_num,
 }
 
 double Diversion::rng_gen(double lower, double upper) {
-    double sample = lower + (rand()/(RAND_MAX+1.0))*upper;
+    double sample = lower + (rand()/(RAND_MAX + 1.0)) * upper;
     return sample;
 }
 
