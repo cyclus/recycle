@@ -75,8 +75,6 @@ void Refine::OpDivertMat(std::pair<std::string, std::string> location, double si
   double paramVal = subcomponents[param].back();
   double lower_bound = paramVal-(paramVal*0.1);
   double upper_bound = paramVal+(paramVal*0.1);
-  // Note to KDH: If I haven't removed this comment - I'm still not sure how I can remove 
-  // the strings from the if statements here.
   if (param == "temp"){
     double newEff = Thermal() * (1+siphon);
     ThermalFunc = boost::bind(&recycle::Refine::Thermal,this,_1,newEff);
@@ -85,7 +83,6 @@ void Refine::OpDivertMat(std::pair<std::string, std::string> location, double si
   } else if (param == "rotation") {
   } else if (param == "batch") {
   } else {
-    //time
   }
   subcomponents[param].push_back(newVal);
 }

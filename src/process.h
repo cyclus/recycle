@@ -35,32 +35,49 @@ public:
 
   std::map<std::string, std::vector<double>> subcomponents;
 
-  /// @param new_temp
-  void temp(double new_temp); // setter
-  double temp(); // getter
+  /// @param new_temp update temperature
+  void temp(double new_temp);
+  /// @return temperature
+  double temp();
 
+  /// @param new_current update current
   void current(double new_current);
+  /// @return current
   double current();
 
+  /// @param new_rotate updates rotation speed
   void rotation(double new_rotate);
+  /// @return rotation speed
   double rotation();
 
+  /// @param new_press update pressure
   void pressure(double new_press);
+  /// @return pressure
   double pressure();
 
+  /// @param new_lith update lithium oxide percent
   void lithium(double new_lith);
+  /// @return lithium oxide percentage
   double lithium();
 
+  /// @param new_time update how much time spent processing
   void Rtime(double new_time);
+  /// @return time spent in processing
   double Rtime();
 
+  /// @param new_flow update material flowrate
   void flowrate(double new_flow);
+  /// @return material flowrate
   double flowrate();
 
+  /// @param new_size update batch size
   void b_size(double new_size);
+  /// @return batch size
   double b_size();
 
+  /// @param new_vol update valume of the process
   void volume(double new_vol);
+  /// @return volume of the process
   double volume();
 
 };

@@ -31,19 +31,29 @@ Diverter();
 Diverter(std::pair<std::string,std::string> location, 
     int frequency, double quantity, int divert_number, std::string type);
 
+/// @param new_local new location for diversion
 void locate(std::pair<std::string,std::string> new_local);
+/// @return location for diversion
 std::pair<std::string,std::string> locate();
 
+/// @param new_freq new frequency of diversion
 void freq(int new_freq);
+/// @return frequency of diversion
 int freq();
 
+/// @param new_siphon update material siphoned on diversion
 void siphon(double new_siphon);
+/// @return percent of material to be siphoned
 double siphon();
 
+/// @param new_num set how many times diversion should take place
 void divert_num(int new_num);
+/// @return max number of diversions
 int divert_num();
 
+/// @param new_time update number of diversion taken place
 void divert_time(int new_time);
+/// @return how many diversion have taken place in the sim
 int divert_time();
 
 /// @brief Divert passes diversion information to the appropriate sub-process if it is

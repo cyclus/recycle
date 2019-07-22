@@ -42,7 +42,6 @@ cyclus::Inventories Pyre::SnapshotInv() {
   return invs;
 }
 
-// KDH : perhaps you could track other invs of interest in pyre?
 void Pyre::InitInv(cyclus::Inventories& inv) {
   leftover.Push(inv["leftover-inv-name"]);
   feed.Push(inv["feed-inv-name"]);
@@ -58,10 +57,6 @@ void Pyre::EnterNotify() {
   std::map<int, double> efficiency_;
   efficiency_ = AddEffs();
 
-  // KDH :maybe these are priority buffers... do they have anything to do with pyre?
-  // GTW :remembered wrong, this is going through the effs in each stream and adding it
-  // to eff_pb_. If eff_pb_ has any items then an error is thrown. Priority buffers are not
-  // handled in pyre
   std::map<int, double>::iterator effs;
   std::vector<int> eff_pb_;
   for (effs = efficiency_.begin(); effs != efficiency_.end(); effs++) {
@@ -174,8 +169,7 @@ void Pyre::SetObj() {
 std::map<std::string, Material::Ptr> Pyre::Separate(Material::Ptr mat) {
   StreamSet::iterator strm;
   std::map<std::string, Material::Ptr> separating;
-  // this func would need streams_, and output stagedsep
-  // this function would be called Separate
+
   for (strm = streams_.begin(); strm != streams_.end(); ++strm) {
     Stream info = strm->second;
     std::string name = strm->first;
