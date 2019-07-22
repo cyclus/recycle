@@ -23,7 +23,7 @@ void update_test(double newVal) {
     int count = count + 1;
 
     double newMean = mean + (newVal - mean) / count;
-    double variance = variance + (newVal - mean)*(newVal - newMean);
+    double variance = variance + (newVal - mean) * (newVal - newMean);
     double mean = newMean;
     double std = sqrt(variance);
 
