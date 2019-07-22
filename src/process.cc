@@ -23,6 +23,7 @@ Material::Ptr Process::SepMaterial(std::map<int, double> effs, Material::Ptr mat
   CompMap::iterator it;
   for (it = cm.begin(); it != cm.end(); ++it) {
     int nuc = it->first;
+    // integer division rounds to element number in its pyne ID
     int elem = (nuc / 10000000) * 10000000;
     double eff = 0;
     if (effs.count(nuc) > 0) {
