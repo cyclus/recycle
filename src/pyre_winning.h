@@ -2,34 +2,60 @@
 #define RECYCLE_SRC_PYRE_WINNING_H_
 
 #include "cyclus.h"
+#include "process.h"
 #include "recycle_version.h"
+
+class Process;
 
 namespace recycle {
 
-
-class Winning {
+/// The Winning class describes the Electrowinning sub-process. The class
+/// relies on the input current, flowrate, and time.
+/// Winning depends on the Process base class for SepMaterial and parameter data.
+/// Parameter corellations are found from a compilation of literature review.
+class Winning : public recycle::Process {
 
 public:
 
 Winning();
 
-Winning(double winning_current, double winning_time, double winning_flowrate, double winning_volume);
-/// @param feed feed yellowcake from voloxidation
-/// @param stream the separation efficiency for reduction streams
-/// @return composition composition of the separated material sent to fuel fabrication
-cyclus::Material::Ptr WinningSepMaterial(std::map<int, double> effs,
-	cyclus::Material::Ptr mat);
+Winning(double winning_current, double winning_time, 
+	double winning_flowrate, double winning_volume);
 
 private:
 
-double current;
-double reprocess_time;
-double flowrate;
-double volume;
+// Coulombic Efficiency coefficients
+double c0;
+double c1;
+double c2;
+double c3;
+double c4;
+// Temporal Efficiency coefficients
+double t0;
+double t1;
+// Flowrate Efficiency coefficients
+double r0;
+double r1;
 
-double Efficiency(double current, double reprocess_time, double flowrate);
+void set_coeff();
 
-double Throughput(double reprocess_time, double volume);
+/// @brief Calculates the overall efficiency of the process by combining coulombic, temporal and flowrate effs.
+/// @return a value between 0 and 1 to be multiplied with separation efficiencies
+double Efficiency();
+
+/// @brief A function for the relationship between current and process efficiency
+/// @return a value between 0 and 1 relating to separation efficiency
+double Coulombic(double c0, double c1, double c2, double c3, double c4);
+
+/// @brief This function describes how much material can be separated in the allotted time.
+/// @return a value between 0 and 1 relating to separation efficiency
+double Temporal(double c0, double c1);
+
+/// @brief Material separation as a function of flowrate
+/// @return a value between 0 and 1 relating to separation efficiency
+double RateEff(double c0, double c1);
+
+double Throughput();
 };
 }
 #endif // RECYCLE_SRC_PYRE_WINNING_H_

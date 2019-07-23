@@ -7,16 +7,15 @@
 #include "pyre_reduction.h"
 #include "pyre_refining.h"
 #include "pyre_winning.h"
+#include "diverter.h"
 
 namespace recycle {
 
-/// SepMaterial returns a material object that represents the composition and
-/// quantity resulting from the separation of material from mat using the given
-/// mass-based efficiencies.  Each key in effs represents a nuclide or element
-/// (canonical PyNE form), and each value is the corresponding mass-based
-/// separations efficiency for that nuclide or element.  Note that this returns
-/// an untracked material that should only be used for its composition and qty
-/// - not in any real inventories, etc.
+class Volox;
+class Reduct;
+class Refine;
+class Winning;
+class Diverter;
 
 /// Pyre processes feed material into multiple waste streams according to their
 /// respective sub-process. Separation uses mass-based efficiencies.
@@ -37,11 +36,6 @@ namespace recycle {
 /// reduce its stocks by trading and hits this limit for any of its output
 /// streams, further processing/separations of feed material will halt until
 /// room is again available in the output streams.
-class Volox;
-class Reduct;
-class Refine;
-class Winning;
-
 class Pyre 
   : public cyclus::Facility,
     public cyclus::toolkit::Position {
@@ -79,15 +73,40 @@ class Pyre
   virtual void Tock();
   virtual void EnterNotify();
 
+  /// @brief This function creates objects for the subprocesses and diverter
+  void SetObj();
+
   std::string test_config;
   inline void SetConfig(std::string name) {
     test_config = name;
   }
+
   typedef std::pair<double, std::map<int, double> > Stream;
   typedef std::map<std::string, Stream> StreamSet;
 
-  cyclus::Material::Ptr Separate(std::string name, Stream stream, 
+  /// @brief Iterates through streams and adds nucId efficiences to ensure effs <1
+  /// @return a map of nucIds and their cumulative separation efficiency
+  std::map<int, double> AddEffs();
+
+  /// @brief Iterates through input streams and passes info to ProcessSeparate
+  /// @param feed Input material stream
+  /// @return a stream map of separated materials, to be diverted or traded
+  std::map<std::string, Material::Ptr> Separate(Material::Ptr feed);
+
+  /// @brief Passes streams to appropriate subprocess for separation
+  /// @param name Name of the stream
+  /// @param stream Stream to be separated
+  /// @param feed Input material stream
+  /// @return New material object for the product of the separation process
+  cyclus::Material::Ptr ProcessSeparate(std::string name, Stream stream, 
     cyclus::Material::Ptr feed);
+
+  /// @brief Buffer allocates separated quantities to ResBuffers for trading
+  /// @param stagedsep A map of streams returned from ProcessSeparate
+  /// @param mat the feed material
+  /// @param maxfrac a ratio of free space in the buffer
+  double Buffer(std::map<std::string, Material::Ptr> stagedsep, 
+    Material::Ptr mat);
 
   virtual void AcceptMatlTrades(const std::vector<std::pair<
       cyclus::Trade<cyclus::Material>, cyclus::Material::Ptr> >& responses);
@@ -126,7 +145,47 @@ class Pyre
   Reduct rd;
   Refine rf;
   Winning w;
- 
+  Diverter d;
+
+  std::map<std::string, Process*> components_;
+
+  #pragma cyclus var { \
+    "doc": "The type of diversion that will occur inside the plant.", \
+    "uilabel": "Diversion Type", \
+  }
+  std::string type_;
+
+  #pragma cyclus var { \
+    "doc": "Sub-process location of diversion.", \
+    "uilabel": "Process Diversion Location", \
+    "default": "refine", \
+  }
+  std::string location_sub;
+
+  #pragma cyclus var { \
+    "doc": "What parameter will be used to divert.", \
+    "uilabel": "Parameter Diversion Location", \
+    "default": "temp", \
+  }
+  std::string location_par;
+
+  #pragma cyclus var { \
+    "doc": "The frequency of material diversion in the plant.", \
+    "uilabel": "Diversion Frequency", \
+    "units": "Time steps", \
+    "default": 10, \
+  }
+  int frequency_;
+
+  #pragma cyclus var { \
+    "doc": "The quantity material to be diverted at each diversion " \
+           "location.", \
+    "uilabel": "Diversion Quantity", \
+    "units": "kg or %", \
+    "default": 0.01, \
+  }
+  double siphon_;
+
   #pragma cyclus var { \
     "doc": "Ordered list of commodities on which to request feed material to " \
            "separate. Order only matters for matching up with feed commodity " \
@@ -154,6 +213,14 @@ class Pyre
     "default": "", \
   }
   std::string feed_recipe;
+
+  #pragma cyclus var { \
+    "default": 0, \
+    "doc": "How many times a diversion will take place in a simulation", \
+    "tooltip": "Number of Diversions", \
+    "uilabel": "Diversion Number", \
+  }
+  int divert_num_;
 
   #pragma cyclus var { \
   "default": 900, \
