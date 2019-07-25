@@ -31,7 +31,7 @@ void PyreTests::InitParameters() {
   simple_config = 
       "<streams>"
       "    <item>"
-      "        <commod>refine</commod>"
+      "        <commod>refine_test</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -54,12 +54,11 @@ void PyreTests::SetupPyre() {
 
 // Check that cumulative separations efficiency for a single nuclide of less than or equal to one does not trigger an error.
 TEST_F(PyreTests, SeparationEfficiency) {
-
   int simdur = 2;
   std::string config =
       "<streams>"
       "    <item>"
-      "        <commod>volox</commod>"
+      "        <commod>volox_test</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -68,7 +67,7 @@ TEST_F(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>reduct</commod>"
+      "        <commod>reduct_test</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -77,7 +76,7 @@ TEST_F(PyreTests, SeparationEfficiency) {
       "        </info>"
       "    </item>"
       "    <item>"
-      "        <commod>refine</commod>"
+      "        <commod>refine_test</commod>"
       "        <info>"
       "            <buf_size>-1</buf_size>"
       "            <efficiencies>"
@@ -95,7 +94,6 @@ TEST_F(PyreTests, SeparationEfficiency) {
   
   
   cyclus::MockSim sim1(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
-  
   EXPECT_NO_THROW(sim1.Run()) << "Cumulative separation efficiency < 1 should not throw an error.";
   
   
@@ -243,9 +241,8 @@ TEST_F(PyreTests, SeparationEfficiencyThrowing) {
   
   EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative sep efficiency > 1 should throw an error.";
 }
-  
+
 TEST_F(PyreTests, SepMixElemAndNuclide) {
-  int simdur = 2;
   std::string config = src_facility->test_config;
 
   CompMap m;
@@ -255,9 +252,10 @@ TEST_F(PyreTests, SepMixElemAndNuclide) {
   m[id("Pu240")] = .01;
   Composition::Ptr c = Composition::CreateFromMass(m);
 
+  int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("refine").capacity(100).Finalize();
+  sim.AddSink("refine_test").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
@@ -267,7 +265,7 @@ TEST_F(PyreTests, SepMixElemAndNuclide) {
   MatQuery mq (sim.GetMaterial(resid));
   // default_efficiency is the Electrorefiner's separation efficiency given Pyre's default
   // values for temperature, pressure, and rotation.
-  double default_efficiency = 0.7156278629279868703;
+  double default_efficiency = 0.6778044172175635;
   EXPECT_DOUBLE_EQ(m[922350000]*0.6*default_efficiency*100, mq.mass("U235"));
   EXPECT_DOUBLE_EQ(m[922380000]*0.6*default_efficiency*100, mq.mass("U238"));
   EXPECT_DOUBLE_EQ(m[942390000]*0.7*default_efficiency*100, mq.mass("Pu239"));
@@ -344,7 +342,7 @@ TEST_F(PyreTests, Retire) {
 
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("refine").capacity(100).Finalize();
+  sim.AddSink("refine_test").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
@@ -368,7 +366,7 @@ TEST_F(PyreTests, Retire) {
   int simdur = 2;
   cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
   sim.AddSource("feed").recipe("recipe1").Finalize();
-  sim.AddSink("refine").capacity(100).Finalize();
+  sim.AddSink("refine_test").capacity(100).Finalize();
   sim.AddRecipe("recipe1", c);
   int id = sim.Run();
 
