@@ -9,19 +9,19 @@
 
   <archetypes>
     <spec>
-      <lib>recyle</lib>
+      <lib>cycamore</lib>
       <name>Source</name>
     </spec>
     <spec>
-      <lib>recyle</lib>
+      <lib>cycamore</lib>
       <name>Sink</name>
     </spec>
     <spec>
-      <lib>recyle</lib>
+      <lib>cycamore</lib>
       <name>GrowthRegion</name>
     </spec>
     <spec>
-      <lib>recyle</lib>
+      <lib>cycamore</lib>
       <name>ManagerInst</name>
     </spec>
   </archetypes>
