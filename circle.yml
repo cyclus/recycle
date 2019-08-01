@@ -4,7 +4,7 @@ jobs:
     # Build Cyclus
     build:
         docker:
-            - image: cyclus/cyclus:latest
+            - image: cyclus/cycamore:latest
         working_directory: ~/recycle
         steps:
             # Ensure your image has git (required by git to clone via SSH) so that CircleCI can clone your repo
@@ -29,7 +29,7 @@ jobs:
     # Test
     unit_test:
         docker:
-            - image: cyclus/cyclus:latest
+            - image: cyclus/cycamore:latest
         working_directory: ~/root
         steps:
             - run:
@@ -43,7 +43,7 @@ jobs:
                 command: /root/.local/bin/recycle_unit_tests; exit $?
     nosetest:
         docker:
-            - image: cyclus/cyclus:latest
+            - image: cyclus/cycamore:latest
         working_directory: ~/root
         steps:
             - run:
