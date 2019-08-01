@@ -152,6 +152,7 @@ class Pyre
   #pragma cyclus var { \
     "doc": "The type of diversion that will occur inside the plant.", \
     "uilabel": "Diversion Type", \
+    "default": "operator", \
   }
   std::string type_;
 
@@ -311,7 +312,7 @@ class Pyre
   double reduct_time;
 
   #pragma cyclus var { \
-  "default": 700, \
+  "default": 900, \
   "doc": "Temperature of the Electrorefining process", \
   "tooltip": "Electrorefining Temperature", \
   "units": "C", \
@@ -322,7 +323,7 @@ class Pyre
   double refine_temp;
 
   #pragma cyclus var { \
-  "default": 760, \
+  "default": 500, \
   "doc": "Pressure of the Electrorefining process", \
   "tooltip": "Electrorefining Pressure", \
   "units": "mTorr", \
