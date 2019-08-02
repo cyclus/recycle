@@ -11,7 +11,7 @@ jobs:
             - run: apt-get -qq update; apt-get -y install git openssh-client
             - checkout
             - run:
-                name: Build Cyclus
+                name: Build Recycle
                 command: |
                     python install.py -j 2 --build-type=Release \
                     -DBLAS_LIBRARIES="/opt/conda/lib/libblas.so" \
