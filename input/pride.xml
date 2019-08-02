@@ -8,9 +8,8 @@
   <archetypes>
     <spec><lib>agents</lib><name>NullRegion</name></spec>
     <spec><lib>agents</lib><name>NullInst</name></spec>
-    <spec><lib>cycamore</lib><name>Source</name></spec>
-    <spec><lib>cycamore</lib><name>Sink</name></spec>
-    <spec><lib>cycamore</lib><name>DeployInst</name></spec>
+    <spec><lib>agents</lib><name>Source</name></spec>
+    <spec><lib>agents</lib><name>Sink</name></spec>
     <spec><lib>recycle</lib><name>Pyre</name></spec>
   </archetypes>
 
@@ -18,9 +17,9 @@
    <name>lwr_waste_source</name>
      <config>
        <Source>
-         <outcommod>leu</outcommod>
-         <throughput>1e299</throughput>
-         <outrecipe>lwr_waste</outrecipe>
+         <commod>leu</commod>
+         <capacity>1e299</capacity>
+         <recipe_name>lwr_waste</recipe_name>
        </Source>
      </config>
   </facility>
