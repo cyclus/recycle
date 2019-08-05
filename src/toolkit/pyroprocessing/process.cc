@@ -1,4 +1,3 @@
-#include "cyclus.h"
 #include "process.h"
 
 using cyclus::Material;
