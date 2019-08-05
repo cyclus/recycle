@@ -1,5 +1,3 @@
-#include "pyre.h"
-#include "process.h"
 #include "pyre_reduction.h"
 
 using cyclus::Material;

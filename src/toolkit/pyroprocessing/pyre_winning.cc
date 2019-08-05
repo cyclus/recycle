@@ -1,5 +1,3 @@
-#include "pyre.h"
-#include "process.h"
 #include "pyre_winning.h"
 
 using cyclus::Material;

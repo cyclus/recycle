@@ -2,9 +2,7 @@
 #define RECYCLE_SRC_PYRE_VOLOX_H_
 
 #include "process.h"
-#include "pyre.h"
 #include "cyclus.h"
-#include "recycle_version.h"
 
 class Process;
 

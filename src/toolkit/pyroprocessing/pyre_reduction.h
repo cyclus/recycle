@@ -3,7 +3,6 @@
 
 #include "cyclus.h"
 #include "process.h"
-#include "recycle_version.h"
 
 class Process;
 

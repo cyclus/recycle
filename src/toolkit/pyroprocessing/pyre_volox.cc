@@ -1,5 +1,3 @@
-#include "pyre.h"
-#include "process.h"
 #include "pyre_volox.h"
 
 using cyclus::Material;
