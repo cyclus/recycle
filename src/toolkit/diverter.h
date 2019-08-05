@@ -1,7 +1,7 @@
 #ifndef RECYCLE_SRC_DIVERTER_H_
 #define RECYCLE_SRC_DIVERTER_H_
 
-#include "pyroprocessing/process.h"
+#include "process.h"
 #include "cyclus.h"
 
 namespace recycle {
