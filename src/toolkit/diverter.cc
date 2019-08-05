@@ -1,6 +1,3 @@
-#include "cyclus.h"
-#include "pyre.h"
-#include "process.h"
 #include "diverter.h"
 
 using cyclus::Material;

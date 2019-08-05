@@ -2,7 +2,7 @@
 #define RECYCLE_SRC_DIVERTER_H_
 
 #include "cyclus.h"
-#include "process.h"
+#include "pyroprocessing/process.h"
 
 namespace recycle {
 

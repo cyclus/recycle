@@ -1,5 +1,3 @@
-#include "pyre.h"
-#include "process.h"
 #include "pyre_refining.h"
 #include "boost/bind.hpp"
 #include <boost/math/tools/roots.hpp>
