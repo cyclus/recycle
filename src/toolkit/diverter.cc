@@ -1,8 +1,5 @@
 #include "diverter.h"
 
-using cyclus::Material;
-using cyclus::Composition;
-using cyclus::CompMap;
 using cyclus::Context;
 
 namespace recycle {

@@ -6,32 +6,40 @@
 
 namespace recycle {
 
+/// The Cusum class handles diversion detection using the Cumulative Sum method. 
+/// The class also holds nonproliferation data such as
+/// variance, threshold for diversion, and magnitude of diversion.
 class Cusum {
 
-private:
-double oldCusum = 0;
-double cusum_val;
-double mean;
-double newMean;
-double newVal;
-double variance;
-double magnitude;
-double threshold;
-
-int startup;
-int count;
-
-bool divert;
-
 public:
-// default constructor
+/// @brief default constructor
 Cusum();
 
-// overloaded constructor
+/// @brief Overloaded constructor
 Cusum(double magnitude, double threshold, int startup);
 
+private:
+/// @param oldCusum the starting value for the Cusum method
+double oldCusum;
+/// @param cusum_val the updated Cusum value
+double cusum_val; 
+double magnitude;
+/// @param threshold number of standard deviations before flag is raised
+double threshold;
+/// @param startup number of datapoints required before acceptable error
+int startup;
+/// @param count the number of data points collected
+int count;
+/// @param divert true if diversion is detected
+bool divert;
+
+/// @brief This function runs the Cusum algorithm with an updated data point
+/// @param newVal Next data point for the parameter of interest
+/// @return cusum_val the updated cusum value
 void update_test(double newVal);
 
+/// @brief alarms if diversion has taken place
 bool flag();
+};
 }
-}
+#endif // RECYCLE_SRC_CUSUM_H_
