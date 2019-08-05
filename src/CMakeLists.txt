@@ -10,8 +10,7 @@ SET(CYCLUS_CUSTOM_HEADERS "recycle_version.h")
 USE_CYCLUS("recycle" "pyre")
 
 INSTALL_CYCLUS_MODULE("recycle" "" "NONE")
-TARGET_LINK_LIBRARIES(recycle toolkit)
-TARGET_LINK_LIBRARIES(recycle pyro)
+TARGET_LINK_LIBRARIES("recycle" "toolkit")
 
 SET(TestSource ${recycle_TEST_CC} PARENT_SCOPE)
 

@@ -257,6 +257,7 @@ IF(NOT CYCLUS_DOC_ONLY)
 
     # include all the directories we just found
     INCLUDE_DIRECTORIES(${RECYCLE_INCLUDE_DIRS})
+    INCLUDE_DIRECTORIES(src src/toolkit src/toolkit/pyroprocessing)
 
     # ------------------------- Add the Agents -----------------------------------
     ADD_SUBDIRECTORY(src)
