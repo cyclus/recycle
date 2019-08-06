@@ -35,15 +35,15 @@ class Volox : public pyro::Process {
 
   /// @brief Efficiency as a function of process temperature.
   /// @return a value between 0 and 1 relating to separation efficiency
-  double Thermal(double c0, double c1, double c2, double c3);
+  double Thermal();
 
   /// @brief This function describes how much material can be separated in the allotted time.
   /// @return a value between 0 and 1 relating to separation efficiency
-  double Temporal(double c0, double c1);
+  double Temporal();
 
   /// @brief Material separation as a function of flowrate
   /// @return a value between 0 and 1 relating to separation efficiency
-  double RateEff(double c0, double c1);
+  double RateEff();
 
   /// @return throughput material throughput of voloxidation
   double Throughput();

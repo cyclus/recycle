@@ -40,29 +40,20 @@ void Winning::SetCoeff() {
 }
 
 double Winning::Efficiency() {
-  return Coulombic(coul[0],coul[1],coul[2],coul[3],coul[4]) * Temporal(ti[0],ti[1]) * RateEff(r[0],r[1]);
+  return Coulombic() * Temporal() * RateEff();
 }
 
-double Winning::Coulombic(double c0,
-                          double c1,
-                          double c2,
-                          double c3,
-                          double c4
-) {
-  return c0*pow(current(), 4) + c1*pow(current(), 3) + c2*pow(current(), 2)
-          + c3*current() + c4;
+double Winning::Coulombic() {
+  return coul[0]*pow(current(), 4) + coul[1]*pow(current(), 3) + coul[2]*pow(current(), 2)
+          + coul[3]*current() + coul[4];
 }
 
-double Winning::Temporal(double c0,
-                         double c1
-) {
-  return c0 * log(Rtime()*3600) + c1;
+double Winning::Temporal() {
+  return ti[0] * log(Rtime()*3600) + ti[1];
 }
 
-double Winning::RateEff(double c0,
-                        double c1
-) {
-  return c0*log(flowrate()) + c1;
+double Winning::RateEff() {
+  return r[0]*log(flowrate()) + r[1];
 }
 
 double Winning::Throughput() {

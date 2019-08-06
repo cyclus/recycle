@@ -38,23 +38,16 @@ void Reduct::SetCoeff() {
 }
 
 double Reduct::Efficiency() { 
-  return Coulombic(coul[0],coul[1],coul[2],coul[3],coul[4]) * Catalyst(lith[0],lith[1]);
+  return Coulombic() * Catalyst();
 }
 
-double Reduct::Coulombic(double c0,
-                         double c1,
-                         double c2,
-                         double c3,
-                         double c4
-) {
-  return c0*pow(current(), 4) + c1*pow(current(), 3) + c2*pow(current(), 2)
-          + c3*current() + c4;
+double Reduct::Coulombic() {
+  return coul[0]*pow(current(), 4) + coul[1]*pow(current(), 3) + coul[2]*pow(current(), 2)
+          + coul[3]*current() + coul[4];
 }
 
-double Reduct::Catalyst(double c0,
-                        double c1
-) {
-  return c0*lithium() + c1;
+double Reduct::Catalyst() {
+  return lith[0]*lithium() + lith[1];
 }
 
 double Reduct::Throughput() {

@@ -39,27 +39,19 @@ void Volox::SetCoeff() {
 }
 
 double Volox::Efficiency() {
-  return Thermal(th[0],th[1],th[2],th[3])*Temporal(ti[0],ti[1])*RateEff(r[0],r[1]);
+  return Thermal()*Temporal()*RateEff();
 }
 
-double Volox::Thermal(double c0,
-                      double c1, 
-                      double c2,
-                      double c3
-) {
-  return c0*pow(temp(), 3) + c1*pow(temp(),2) + c2*temp() + c3;
+double Volox::Thermal() {
+  return th[0]*pow(temp(), 3) + th[1]*pow(temp(),2) + th[2]*temp() + th[3];
 }
 
-double Volox::Temporal(double c0,
-                       double c1
-) {
-  return c0 * log(Rtime()*3600) + c1;
+double Volox::Temporal() {
+  return ti[0] * log(Rtime()*3600) + ti[1];
 }
 
-double Volox::RateEff(double c0,
-                      double c1
-) {
-  return c0*log(flowrate()) + c1;
+double Volox::RateEff() {
+  return r[0]*log(flowrate()) + r[1];
 }
 
 double Volox::Throughput() {
