@@ -2,14 +2,11 @@
 #include "boost/bind.hpp"
 #include <boost/math/tools/roots.hpp>
 
+
 using cyclus::Material;
 using cyclus::Composition;
-using cyclus::toolkit::ResBuf;
-using cyclus::toolkit::MatVec;
-using cyclus::KeyError;
-using cyclus::ValueError;
-using cyclus::Request;
 using cyclus::CompMap;
+using cyclus::ValueError;
 
 using boost::math::tools::bisect;
 
