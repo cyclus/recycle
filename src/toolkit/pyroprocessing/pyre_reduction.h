@@ -36,11 +36,11 @@ class Reduct : public pyro::Process {
 
   /// @brief A function for the relationship between current and process efficiency
   /// @return a value between 0 and 1 relating to separation efficiency
-  double Coulombic(double c0, double c1, double c2, double c3, double c4);
+  double Coulombic();
 
   /// @brief Relates the efficiency with respect to lithium oxide quantity
   /// @return a value between 0 and 1 relating to separation efficiency
-  double Catalyst(double c0, double c1);
+  double Catalyst();
 
   double Throughput();
 };
