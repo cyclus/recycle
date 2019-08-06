@@ -7,13 +7,13 @@
 
 class Process;
 
-namespace recycle {
+namespace pyro {
 
 /// The Refine class describes the Electrorefiner sub-process. The class
 /// relies on the input temperature, pressure, rotation, batch size, and time.
 /// Refine depends on the Process base class for SepMaterial and parameter data.
 /// Parameter corellations are found from a compilation of literature review.
-class Refine : public Process {
+class Refine : public pyro::Process {
 
 public:
 
@@ -140,6 +140,6 @@ private:
   /// @return the value for rotation efficiency coefficient 3
   double a3();
 };
-}
+} // namespace pyro
 #endif // RECYCLE_SRC_PYRE_REFINING_H_
 

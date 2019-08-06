@@ -1,19 +1,19 @@
 #ifndef RECYCLE_SRC_PROCESS_H_
 #define RECYCLE_SRC_PROCESS_H_
 
-#include "cyclus.h"
 #include <vector>
+#include "cyclus.h"
 
 using cyclus::Material;
 
-namespace recycle {
+namespace pyro {
 
 /// The Process class is the base class for all sub-processes in PyRe.
 /// The class is responsible for getting and storing process parameters, 
 /// separating streams and setting diversion type.
 class Process {
 
-public:
+ public:
 
   Process();
 
@@ -81,5 +81,5 @@ public:
   double volume();
 
 };
-}
+} // namespace recycle
 #endif // RECYCLE_SRC_PROCESS_H_
