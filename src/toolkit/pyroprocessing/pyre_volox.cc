@@ -2,16 +2,12 @@
 
 using cyclus::Material;
 using cyclus::Composition;
-using cyclus::toolkit::ResBuf;
-using cyclus::toolkit::MatVec;
-using cyclus::KeyError;
-using cyclus::ValueError;
-using cyclus::Request;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Volox::Volox() {
+  SetCoeff();
   temp(0);
   Rtime(0);
   flowrate(0);
@@ -24,44 +20,44 @@ Volox::Volox(double new_temp,
              double new_volume
         ) 
         {
-          set_coeff();
+          SetCoeff();
           temp(new_temp);
           Rtime(new_Rtime);
           flowrate(new_flowrate);
           volume(new_volume); 
 }
 
-void Volox::set_coeff() {
-  th0 = 4.369E-9;
-  th1 = -1.0833E-5;
-  th2 = 0.008069;
-  th3 = -0.9726;
-  t0 = 0.2903;
-  t1 = -1.696;
-  r0 = 0.12435;
-  r1 = 0.7985;
+void Volox::SetCoeff() {
+  th.push_back(4.369E-9);
+  th.push_back(-1.0833E-5);
+  th.push_back(0.008069);
+  th.push_back(-0.9726);
+  ti.push_back(0.2903);
+  ti.push_back(-1.696);
+  r.push_back(0.12435);
+  r.push_back(0.7985);
 }
 
 double Volox::Efficiency() {
-  return Thermal(th0,th1,th2,th3)*Temporal(t0,t1)*RateEff(r0,r1);
+  return Thermal(th[0],th[1],th[2],th[3])*Temporal(ti[0],ti[1])*RateEff(r[0],r[1]);
 }
 
-double Volox::Thermal(double c0 = 4.369E-9,
-                      double c1 = -1.0833E-5, 
-                      double c2 = 0.008069,
-                      double c3 = -0.9726
+double Volox::Thermal(double c0,
+                      double c1, 
+                      double c2,
+                      double c3
 ) {
   return c0*pow(temp(), 3) + c1*pow(temp(),2) + c2*temp() + c3;
 }
 
-double Volox::Temporal(double c0 = 0.2903,
-                       double c1 = -1.696
+double Volox::Temporal(double c0,
+                       double c1
 ) {
   return c0 * log(Rtime()*3600) + c1;
 }
 
-double Volox::RateEff(double c0 = 0.12435,
-                      double c1 = 0.7985
+double Volox::RateEff(double c0,
+                      double c1
 ) {
   return c0*log(flowrate()) + c1;
 }
@@ -69,4 +65,4 @@ double Volox::RateEff(double c0 = 0.12435,
 double Volox::Throughput() {
   return volume() / flowrate()*Rtime();
 }
-}
+} // namespace pyro

@@ -2,14 +2,9 @@
 
 using cyclus::Material;
 using cyclus::Composition;
-using cyclus::toolkit::ResBuf;
-using cyclus::toolkit::MatVec;
-using cyclus::KeyError;
-using cyclus::ValueError;
-using cyclus::Request;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Process::Process() {}
 
@@ -122,4 +117,4 @@ double Process::b_size() {
 double Process::volume() {
     return subcomponents["volume"].back();
 };
-}
+} //namespace pyro

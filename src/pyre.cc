@@ -1,5 +1,4 @@
 #include "pyre.h"
-#include "cyclus.h"
 
 using cyclus::Material;
 using cyclus::Composition;
@@ -145,19 +144,19 @@ void Pyre::Tick() {
 
 void Pyre::SetObj() {
   if(context()->time() == 0) {
-    v = Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
+    v = pyro::Volox(this->volox_temp, this->volox_time, this->volox_flowrate, 
       this->volox_volume);
     components_["volox"] = &v;
 
-    rd = Reduct(this->reduct_current, this->reduct_lithium_oxide, 
+    rd = pyro::Reduct(this->reduct_current, this->reduct_lithium_oxide, 
       this->reduct_volume, this->reduct_time);
     components_["reduct"] = &rd;
 
-    rf = Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
+    rf = pyro::Refine(this->refine_temp, this->refine_press, this->refine_rotation, 
       this->refine_batch_size, this->refine_time);
     components_["refine"] = &rf;
 
-    w = Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
+    w = pyro::Winning(this->winning_current, this->winning_time, this->winning_flowrate, 
       this->winning_volume);
     components_["winning"] = &w;
 
@@ -187,7 +186,7 @@ Material::Ptr Pyre::ProcessSeparate(std::string name, Stream stream,
   std::istringstream stream_name(name);
   std::getline(stream_name,short_name,'_');
 
-  Process * subprocess = components_[short_name];
+  pyro::Process * subprocess = components_[short_name];
   return subprocess->SepMaterial(stream.second, mat);
 }
 

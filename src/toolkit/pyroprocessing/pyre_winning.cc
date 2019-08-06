@@ -2,16 +2,12 @@
 
 using cyclus::Material;
 using cyclus::Composition;
-using cyclus::toolkit::ResBuf;
-using cyclus::toolkit::MatVec;
-using cyclus::KeyError;
-using cyclus::ValueError;
-using cyclus::Request;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Winning::Winning() {
+  SetCoeff();
   current(0);
   Rtime(0);
   flowrate(0);
@@ -24,47 +20,47 @@ Winning::Winning(double new_current = 8,
                  double new_volume = 1
             ) 
             {
-  set_coeff();
+  SetCoeff();
   current(new_current);
   Rtime(new_time);
   flowrate(new_flowrate);
   volume(new_volume);
 }
 
-void Winning::set_coeff() {
-  c0 = -0.00685;
-  c1 = 0.20413;
-  c2 = -2.273;
-  c3 = 11.2046;
-  c4 = -19.7493;
-  t0 = 0.2903;
-  t1 = -1.696;
-  r0 = 0.12435;
-  r1 = 0.7985;
+void Winning::SetCoeff() {
+  coul.push_back(-0.00685);
+  coul.push_back(0.20413);
+  coul.push_back(-2.273);
+  coul.push_back(11.2046);
+  coul.push_back(-19.7493);
+  ti.push_back(0.2903);
+  ti.push_back(-1.696);
+  r.push_back(0.12435);
+  r.push_back(0.7985);
 }
 
 double Winning::Efficiency() {
-  return Coulombic(c0,c1,c2,c3,c4) * Temporal(t0,t1) * RateEff(r0,r1);
+  return Coulombic(coul[0],coul[1],coul[2],coul[3],coul[4]) * Temporal(ti[0],ti[1]) * RateEff(r[0],r[1]);
 }
 
-double Winning::Coulombic(double c0 = -0.00685,
-                          double c1 = 0.20413,
-                          double c2 = -2.273,
-                          double c3 = 11.2046,
-                          double c4 = -19.7493
+double Winning::Coulombic(double c0,
+                          double c1,
+                          double c2,
+                          double c3,
+                          double c4
 ) {
   return c0*pow(current(), 4) + c1*pow(current(), 3) + c2*pow(current(), 2)
           + c3*current() + c4;
 }
 
-double Winning::Temporal(double c0 = 0.2903,
-                         double c1 = -1.696
+double Winning::Temporal(double c0,
+                         double c1
 ) {
   return c0 * log(Rtime()*3600) + c1;
 }
 
-double Winning::RateEff(double c0 = 0.12435,
-                        double c1 = 0.7985
+double Winning::RateEff(double c0,
+                        double c1
 ) {
   return c0*log(flowrate()) + c1;
 }
@@ -72,4 +68,4 @@ double Winning::RateEff(double c0 = 0.12435,
 double Winning::Throughput() {
   return volume() / Rtime();
 };
-}
+} // namespace pyro

@@ -141,13 +141,13 @@ class Pyre
   virtual void InitInv(cyclus::Inventories& inv);
 
  private:
-  Volox v;
-  Reduct rd;
-  Refine rf;
-  Winning w;
+  pyro::Volox v;
+  pyro::Reduct rd;
+  pyro::Refine rf;
+  pyro::Winning w;
   Diverter d;
 
-  std::map<std::string, Process*> components_;
+  std::map<std::string, pyro::Process*> components_;
 
   #pragma cyclus var { \
     "doc": "The type of diversion that will occur inside the plant.", \

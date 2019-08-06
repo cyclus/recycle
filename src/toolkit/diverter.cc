@@ -56,11 +56,11 @@ int Diverter::divert_time() {
     return divert_times;
 }
 
-bool Diverter::Divert(int t, std::map<std::string, Process*> components) {
+bool Diverter::Divert(int t, std::map<std::string, pyro::Process*> components) {
     if (t % freq() == 0) {
         if (divert_time() < divert_num()) {
             divert_time(divert_time()+1);
-            Process* x = components[locate().first];
+            pyro::Process* x = components[locate().first];
             x->DivertMat(type, locate(), siphon());
             return true;
         } else {
