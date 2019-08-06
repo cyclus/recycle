@@ -2,7 +2,7 @@
 
 EXECUTE_PROCESS(COMMAND git describe --tags OUTPUT_VARIABLE recycle_version OUTPUT_STRIP_TRAILING_WHITESPACE)
 CONFIGURE_FILE(recycle_version.h.in "${CMAKE_CURRENT_SOURCE_DIR}/recycle_version.h" @ONLY)
-
+INCLUDE_DIRECTORIES(toolkit)
 ADD_SUBDIRECTORY(toolkit)
 
 SET(CYCLUS_CUSTOM_HEADERS "recycle_version.h")

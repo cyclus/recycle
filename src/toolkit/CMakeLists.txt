@@ -1,3 +1,4 @@
+INCLUDE_DIRECTORIES(pyroprocessing)
 ADD_SUBDIRECTORY(pyroprocessing)
 
 USE_CYCLUS("toolkit" "diverter")
