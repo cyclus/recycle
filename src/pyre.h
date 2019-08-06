@@ -3,11 +3,11 @@
 
 #include "cyclus.h"
 #include "recycle_version.h"
-#include "pyre_volox.h"
-#include "pyre_reduction.h"
-#include "pyre_refining.h"
-#include "pyre_winning.h"
-#include "diverter.h"
+#include "toolkit/pyroprocessing/pyre_volox.h"
+#include "toolkit/pyroprocessing/pyre_reduction.h"
+#include "toolkit/pyroprocessing/pyre_refining.h"
+#include "toolkit/pyroprocessing/pyre_winning.h"
+#include "toolkit/diverter.h"
 
 namespace recycle {
 
