@@ -1,8 +1,8 @@
 #ifndef RECYCLE_SRC_PROCESS_H_
 #define RECYCLE_SRC_PROCESS_H_
 
-#include "cyclus.h"
 #include <vector>
+#include "cyclus.h"
 
 using cyclus::Material;
 
