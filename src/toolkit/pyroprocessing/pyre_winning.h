@@ -6,13 +6,13 @@
 
 class Process;
 
-namespace recycle {
+namespace pyro {
 
 /// The Winning class describes the Electrowinning sub-process. The class
 /// relies on the input current, flowrate, and time.
 /// Winning depends on the Process base class for SepMaterial and parameter data.
 /// Parameter corellations are found from a compilation of literature review.
-class Winning : public recycle::Process {
+class Winning : public pyro::Process {
 
  public:
 

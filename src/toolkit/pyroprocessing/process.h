@@ -6,7 +6,7 @@
 
 using cyclus::Material;
 
-namespace recycle {
+namespace pyro {
 
 /// The Process class is the base class for all sub-processes in PyRe.
 /// The class is responsible for getting and storing process parameters, 

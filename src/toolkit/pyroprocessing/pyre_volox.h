@@ -6,9 +6,9 @@
 
 class Process;
 
-namespace recycle {
+namespace pyro {
 
-class Volox : public recycle::Process {
+class Volox : public pyro::Process {
 
  public:
 

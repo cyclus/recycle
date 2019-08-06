@@ -9,7 +9,7 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Reduct::Reduct() {
   SetCoeff();
@@ -65,5 +65,5 @@ double Reduct::Catalyst(double c0,
 double Reduct::Throughput() {
   return volume() / Rtime();
 };
-} // namespace recycle
+} // namespace pyro
 

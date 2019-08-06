@@ -9,7 +9,7 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Volox::Volox() {
   SetCoeff();
@@ -70,4 +70,4 @@ double Volox::RateEff(double c0,
 double Volox::Throughput() {
   return volume() / flowrate()*Rtime();
 }
-} // namespace recycle
+} // namespace pyro

@@ -13,7 +13,7 @@ using cyclus::CompMap;
 
 using boost::math::tools::bisect;
 
-namespace recycle {
+namespace pyro {
 
 Refine::Refine() {
   temp(0);
@@ -75,7 +75,7 @@ void Refine::OpDivertMat(std::pair<std::string, std::string> location, double si
   double upper_bound = paramVal+(paramVal*0.1);
   if (param == "temp"){
     double new_eff = Thermal() * (1+siphon);
-    ThermalFunc = boost::bind(&recycle::Refine::Thermal,this,_1,new_eff);
+    ThermalFunc = boost::bind(&pyro::Refine::Thermal,this,_1,new_eff);
     new_val = Bisector(ThermalFunc, lower_bound, upper_bound);
   } else if (param == "pressure") {
   } else if (param == "rotation") {
@@ -185,4 +185,4 @@ double Refine::a2() {
 double Refine::a3() {
   return a3_;
 };
-} // namespace recycle
+} // namespace pyro

@@ -6,13 +6,13 @@
 
 class Process;
 
-namespace recycle {
+namespace pyro {
 
 /// The Reduct class describes the Electroreduction sub-process. The class
 /// relies on the input current, lithium oxide weight percent, volume, and time.
 /// Reduct depends on the Process base class for SepMaterial and parameter data.
 /// Parameter corellations are found from a compilation of literature review.
-class Reduct : public recycle::Process {
+class Reduct : public pyro::Process {
 
  public:
   /// @brief defaul constructor

@@ -4,7 +4,7 @@ using cyclus::Material;
 using cyclus::Composition;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Process::Process() {}
 
@@ -117,4 +117,4 @@ double Process::b_size() {
 double Process::volume() {
     return subcomponents["volume"].back();
 };
-} //namespace recycle
+} //namespace pyro

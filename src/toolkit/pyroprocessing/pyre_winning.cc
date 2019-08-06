@@ -9,7 +9,7 @@ using cyclus::ValueError;
 using cyclus::Request;
 using cyclus::CompMap;
 
-namespace recycle {
+namespace pyro {
 
 Winning::Winning() {
   SetCoeff();
@@ -73,4 +73,4 @@ double Winning::RateEff(double c0,
 double Winning::Throughput() {
   return volume() / Rtime();
 };
-} // namespace recycle
+} // namespace pyro
