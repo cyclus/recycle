@@ -13,7 +13,7 @@ namespace recycle {
 /// separating streams and setting diversion type.
 class Process {
 
-public:
+ public:
 
   Process();
 
@@ -81,5 +81,5 @@ public:
   double volume();
 
 };
-}
+} // namespace recycle
 #endif // RECYCLE_SRC_PROCESS_H_

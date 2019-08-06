@@ -122,4 +122,4 @@ double Process::b_size() {
 double Process::volume() {
     return subcomponents["volume"].back();
 };
-}
+} //namespace recycle

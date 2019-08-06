@@ -68,21 +68,21 @@ void Refine::DivertMat(std::string type, std::pair<std::string, std::string> loc
 
 void Refine::OpDivertMat(std::pair<std::string, std::string> location, double siphon) {
   std::string param = location.second;
-  double newVal;
+  double new_val;
 
   double paramVal = subcomponents[param].back();
   double lower_bound = paramVal-(paramVal*0.1);
   double upper_bound = paramVal+(paramVal*0.1);
   if (param == "temp"){
-    double newEff = Thermal() * (1+siphon);
-    ThermalFunc = boost::bind(&recycle::Refine::Thermal,this,_1,newEff);
-    newVal = Bisector(ThermalFunc, lower_bound, upper_bound);
+    double new_eff = Thermal() * (1+siphon);
+    ThermalFunc = boost::bind(&recycle::Refine::Thermal,this,_1,new_eff);
+    new_val = Bisector(ThermalFunc, lower_bound, upper_bound);
   } else if (param == "pressure") {
   } else if (param == "rotation") {
   } else if (param == "batch") {
   } else {
   }
-  subcomponents[param].push_back(newVal);
+  subcomponents[param].push_back(new_val);
 }
 
 double Refine::Bisector(boost::function<double(double)> SolveFunc, double lower, double upper) {
@@ -96,46 +96,37 @@ double Refine::Efficiency() {
 }
 
 double Refine::Thermal() {
-  return t0()*pow(temp(),3) + t1()*pow(temp(),2) + t2()*temp() + t3();
+  return Thermal(temp(),0);
 }
 
 double Refine::Thermal(double tmp,
-                       double newEff = 0
+                       double new_eff
 ) {
-  return t0()*pow(tmp,3) + t1()*pow(tmp,2) + t2()*tmp + t3() - newEff;
+  return t0()*pow(tmp,3) + t1()*pow(tmp,2) + t2()*tmp + t3() - new_eff;
 }
 
 double Refine::PressureEff() {
-  return p0()*pow(pressure(), 3) + p1()*pow(pressure(), 2) + p2()*pressure() + p3();
+  return PressureEff(pressure(),0);
 }
 
 double Refine::PressureEff(double prs,
-                           double newEff = 0
+                           double new_eff
 ) {
-  return p0()*pow(prs, 3) + p1()*pow(prs, 2) + p2()*prs + p3() - newEff;
-}
-
-double Refine::Agitation(double rot,
-                         double newEff = 0
-) {
-  double agi;
-  if (rot <= 1) {
-    agi = a0()*rot + a1() - newEff;
-  } else {
-    agi = a2()*log(rot) + a3() - newEff;
-    if (agi > 1) {
-      throw ValueError("Rotation efficiency cannot exceed 1");
-    }
-  }
-  return agi;
+  return p0()*pow(prs, 3) + p1()*pow(prs, 2) + p2()*prs + p3() - new_eff;
 }
 
 double Refine::Agitation() {
+  return Agitation(rotation(),0);
+}
+
+double Refine::Agitation(double rot,
+                         double new_eff
+) {
   double agi;
-  if (rotation() <= 1) {
-    agi = a0()*rotation() + a1();
+  if (rot <= 1) {
+    agi = a0()*rot + a1() - new_eff;
   } else {
-    agi = a2()*log(rotation()) + a3();
+    agi = a2()*log(rot) + a3() - new_eff;
     if (agi > 1) {
       throw ValueError("Rotation efficiency cannot exceed 1");
     }
@@ -194,4 +185,4 @@ double Refine::a2() {
 double Refine::a3() {
   return a3_;
 };
-}
+} // namespace recycle

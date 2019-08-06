@@ -14,41 +14,36 @@ namespace recycle {
 /// Parameter corellations are found from a compilation of literature review.
 class Reduct : public recycle::Process {
 
-public:
-
-Reduct();
-
-Reduct(double reduct_current, double reduct_li2o, 
+ public:
+  /// @brief defaul constructor
+  Reduct();
+  /// @brief overloaded constructor
+  Reduct(double reduct_current, double reduct_li2o, 
 	double reduct_volume, double reduct_time);
 
-private:
+ private:
 
-/// Coulombic efficiency coefficients
-double c0;
-double c1;
-double c2;
-double c3;
-double c4;
-/// Lithium oxide catalyst coefficients
-double ca0;
-double ca1;
+  /// Coulombic efficiency coefficients
+  std::vector<double> coul;
+  /// Lithium oxide catalyst coefficients
+  std::vector<double> lith;
 
-void set_coeff();
+  void SetCoeff();
 
-/// @brief Calculates the overall efficiency of the process by combining coulombic and catalyst effs.
-/// @return a value between 0 and 1 to be multiplied with separation efficiencies
-double Efficiency();
+  /// @brief Calculates the overall efficiency of the process by combining coulombic and catalyst effs.
+  /// @return a value between 0 and 1 to be multiplied with separation efficiencies
+  double Efficiency();
 
-/// @brief A function for the relationship between current and process efficiency
-/// @return a value between 0 and 1 relating to separation efficiency
-double Coulombic(double c0, double c1, double c2, double c3, double c4);
+  /// @brief A function for the relationship between current and process efficiency
+  /// @return a value between 0 and 1 relating to separation efficiency
+  double Coulombic(double c0, double c1, double c2, double c3, double c4);
 
-/// @brief Relates the efficiency with respect to lithium oxide quantity
-/// @return a value between 0 and 1 relating to separation efficiency
-double Catalyst(double c0, double c1);
+  /// @brief Relates the efficiency with respect to lithium oxide quantity
+  /// @return a value between 0 and 1 relating to separation efficiency
+  double Catalyst(double c0, double c1);
 
-double Throughput();
+  double Throughput();
 };
-}
+} // namespace recycle
 #endif // RECYCLE_SRC_PYRE_REDUCTION_H_
 

@@ -12,7 +12,7 @@ using cyclus::CompMap;
 namespace recycle {
 
 Reduct::Reduct() {
-  set_coeff();
+  SetCoeff();
   current(0);
   lithium(0);
   volume(0);
@@ -25,39 +25,39 @@ Reduct::Reduct(double new_current = 5,
                double new_Rtime = 1
             ) 
             {
-              set_coeff();
+              SetCoeff();
               current(new_current);
               lithium(new_lithium);
               volume(new_volume);
               Rtime(new_Rtime);
 }
 
-void Reduct::set_coeff() {
-  c0 = -0.00685;
-  c1 = 0.20413;
-  c2 = -2.273;
-  c3 = 11.2046;
-  c4 = -19.7493;
-  ca0 = 0.075;
-  ca1 = 0.775;
+void Reduct::SetCoeff() {
+  coul.push_back(-0.00685);
+  coul.push_back(0.20413);
+  coul.push_back(-2.273);
+  coul.push_back(11.2046);
+  coul.push_back(-19.7493);
+  lith.push_back(0.075);
+  lith.push_back(0.775);
 }
 
 double Reduct::Efficiency() { 
-  return Coulombic(c0,c1,c2,c3,c4) * Catalyst(ca0,ca1);
+  return Coulombic(coul[0],coul[1],coul[2],coul[3],coul[4]) * Catalyst(lith[0],lith[1]);
 }
 
-double Reduct::Coulombic(double c0 = -0.00685,
-                         double c1 = 0.20413,
-                         double c2 = -2.273,
-                         double c3 = 11.2046,
-                         double c4 = -19.7493
+double Reduct::Coulombic(double c0,
+                         double c1,
+                         double c2,
+                         double c3,
+                         double c4
 ) {
   return c0*pow(current(), 4) + c1*pow(current(), 3) + c2*pow(current(), 2)
           + c3*current() + c4;
 }
 
-double Reduct::Catalyst(double c0 = 0.075,
-                        double c1 = 0.775
+double Reduct::Catalyst(double c0,
+                        double c1
 ) {
   return c0*lithium() + c1;
 }
@@ -65,5 +65,5 @@ double Reduct::Catalyst(double c0 = 0.075,
 double Reduct::Throughput() {
   return volume() / Rtime();
 };
-}
+} // namespace recycle
 

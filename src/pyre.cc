@@ -1,5 +1,4 @@
 #include "pyre.h"
-#include "cyclus.h"
 
 using cyclus::Material;
 using cyclus::Composition;

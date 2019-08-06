@@ -140,6 +140,6 @@ private:
   /// @return the value for rotation efficiency coefficient 3
   double a3();
 };
-}
+} // namespace recycle
 #endif // RECYCLE_SRC_PYRE_REFINING_H_
 
