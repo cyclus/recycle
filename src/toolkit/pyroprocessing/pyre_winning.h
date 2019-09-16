@@ -16,8 +16,10 @@ class Winning : public pyro::Process {
 
  public:
 
+  /// @brief default constructor
   Winning();
 
+  /// @brief overloaded constructor
   Winning(double winning_current, double winning_time, 
 	double winning_flowrate, double winning_volume);
 
@@ -50,5 +52,5 @@ class Winning : public pyro::Process {
 
   double Throughput();
 };
-} // namespace recycle
+} // namespace pyro
 #endif // RECYCLE_SRC_PYRE_WINNING_H_

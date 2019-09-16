@@ -13,18 +13,18 @@ using boost::math::tools::bisect;
 namespace pyro {
 
 Refine::Refine() {
-  temp(0);
-  pressure(0);
+  temp(900);
+  pressure(760);
   rotation(0);
-  b_size(0);
-  Rtime(0);
+  b_size(20);
+  Rtime(1);
 }
 
-Refine::Refine(double new_temp = 900, 
-               double new_press = 760, 
-               double new_rotation = 0, 
-               double new_batch_size = 20,
-               double new_rtime = 1
+Refine::Refine(double new_temp, 
+               double new_press, 
+               double new_rotation, 
+               double new_batch_size,
+               double new_rtime
             ) 
             {
   SetCoeff();

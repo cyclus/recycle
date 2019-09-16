@@ -49,5 +49,5 @@ class Volox : public pyro::Process {
   double Throughput();
 
 };
-} // namespace recycle
+} // namespace pyro
 #endif // RECYCLE_SRC_PYRE_VOLOX_H_

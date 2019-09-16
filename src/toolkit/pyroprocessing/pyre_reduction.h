@@ -44,6 +44,6 @@ class Reduct : public pyro::Process {
 
   double Throughput();
 };
-} // namespace recycle
+} // namespace pyro
 #endif // RECYCLE_SRC_PYRE_REDUCTION_H_
 

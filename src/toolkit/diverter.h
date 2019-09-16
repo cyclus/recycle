@@ -17,14 +17,15 @@ class Diverter {
   /// @param location where diversion will take place given by sub-process and parameter
   std::pair<std::string, std::string> location;
   /// @param frequency how many time steps take place between diversions 1e299 means no diversion
-  int frequency;
+  int frequency = 1E299;
   /// @param divert_number how many times diversion should take place within a scenario
-  int divert_number;
+  int divert_number = 1;
   /// @param divert_times keeps track how many times diversion has taken place
   int divert_times;
   /// @param quantity how much material will be siphoned off at diversion
-  double quantity;
-  std::string type;
+  double quantity = 0.01;
+  /// @param type The type of diversion occuring: Operator or Nefarious
+  std::string type = "operator";
 
   Diverter();
 

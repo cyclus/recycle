@@ -142,4 +142,3 @@ private:
 };
 } // namespace pyro
 #endif // RECYCLE_SRC_PYRE_REFINING_H_
-

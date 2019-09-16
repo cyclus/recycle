@@ -7,7 +7,7 @@ namespace recycle {
 Diverter::Diverter() {}
 
 Diverter::Diverter(std::pair<std::string,std::string> location, 
-    int frequency = 1E299, double quantity = 0.01, int divert_number = 1, std::string type_ = "operator") {
+    int frequency, double quantity, int divert_number, std::string type_) {
     locate(location);
     freq(frequency);
     siphon(quantity);
