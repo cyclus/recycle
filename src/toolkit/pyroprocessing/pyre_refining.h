@@ -29,20 +29,11 @@ public:
 private:
 
   /// Thermal Efficiency coefficients - Lee et al.
-  double t0_;
-  double t1_;
-  double t2_;
-  double t3_;
+  std::vector<double> therm;
   /// Pressure Efficiency coefficients
-  double p0_;
-  double p1_;
-  double p2_;
-  double p3_;
+  std::vector<double> pres;
   /// Stirrer Efficiency coefficient
-  double a0_;
-  double a1_;
-  double a2_;
-  double a3_;
+  std::vector<double> agit;
 
   /// @brief sets all coefficients to their defaults
   void SetCoeff();

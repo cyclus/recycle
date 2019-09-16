@@ -32,6 +32,7 @@ class Winning : public pyro::Process {
   /// @brief Flowrate Efficiency coefficients
   std::vector<double> r;
 
+  /// @brief Sets coefficients for efficiency relationships according to literature review
   void SetCoeff();
 
   /// @brief Calculates the overall efficiency of the process by combining coulombic, temporal and flowrate effs.
@@ -50,6 +51,7 @@ class Winning : public pyro::Process {
   /// @return a value between 0 and 1 relating to separation efficiency
   double RateEff();
 
+  /// @brief This function determines the throughput of the given subprocess
   double Throughput();
 };
 } // namespace pyro
