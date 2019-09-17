@@ -28,7 +28,11 @@ public:
 
 private:
 
-  /// Thermal Efficiency coefficients - Lee et al.
+  /// Coefficients derived from the following:
+  /// [1]H. Lee, J. H. Lee, S. B. Park, Y. S. Lee, E. H. Kim, and S. W. Park, 
+  ///   “Advanced Electrorefining Process at KAERI,” ATALANTE 2008, May 2008.
+  
+  /// Thermal Efficiency coefficients
   std::vector<double> therm;
   /// Pressure Efficiency coefficients
   std::vector<double> pres;

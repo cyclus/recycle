@@ -22,6 +22,15 @@ class Reduct : public pyro::Process {
 	double reduct_volume, double reduct_time);
 
  private:
+  /// The coefficients are derived from the following:
+  /// [1]E.-Y. Choi and S. M. Jeong, “Electrochemical processing of spent nuclear fuels: 
+  ///   An overview of oxide reduction in pyroprocessing technology,” Progress in Natural Science: 
+  ///   Materials International, vol. 25, no. 6, pp. 572–582, Dec. 2015.
+  /// [2]T.-J. Kim, G.-Y. Kim, D. Yoon, D.-H. Ahn, and S. Paek, “Development of an anode structure 
+  ///   consisting of graphite tubes and a SiC shroud for the electrowinning process in 
+  ///   molten salt,” Journal of Radioanalytical and Nuclear Chemistry, vol. 295, no. 3, 
+  ///   pp. 1855–1859, Mar. 2013.
+
 
   /// Coulombic efficiency coefficients
   std::vector<double> coul;
