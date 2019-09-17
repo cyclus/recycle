@@ -24,6 +24,7 @@ class Winning : public pyro::Process {
 	double winning_flowrate, double winning_volume);
 
  private:
+
   // The coefficients are derived from the following:
   // [1]M. M. Saleh, J. W. Weidner, B. E. El‐Anadouli, and B. G. Ateya, “Electrowinning of Nonnoble Metals 
   //   with Simultaneous Hydrogen Evolution at Flow‐Through Porous Electrodes III. Time Effects,” 
@@ -32,7 +33,6 @@ class Winning : public pyro::Process {
   //   consisting of graphite tubes and a SiC shroud for the electrowinning process in 
   //   molten salt,” Journal of Radioanalytical and Nuclear Chemistry, vol. 295, no. 3, 
   //   pp. 1855–1859, Mar. 2013.
-
 
   /// @brief Coulombic Efficiency coefficients
   std::vector<double> coul;
