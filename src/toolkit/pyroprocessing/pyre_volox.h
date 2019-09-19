@@ -18,9 +18,8 @@ class Volox : public pyro::Process {
 	double volox_flowrate, double volox_volume);
 
  private:
- 
   // The coefficients are derived from the following:
-  // [1]R. Jubin, “Spent Fuel Reprocessing,” Oak Ridge National Lab. (ORNL), Oak Ridge, TN (United States), 2009.
+  // 1 R. Jubin, “Spent Fuel Reprocessing,” Oak Ridge National Lab. (ORNL), Oak Ridge, TN (United States), 2009.
 
   /// @brief Temperature Coefficients
   std::vector<double> th;
