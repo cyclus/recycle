@@ -8,16 +8,16 @@ namespace pyro {
 
 Winning::Winning() {
   SetCoeff();
-  current(0);
-  Rtime(0);
-  flowrate(0);
-  volume(0);
+  current(8);
+  Rtime(1);
+  flowrate(3);
+  volume(1);
 }
 
-Winning::Winning(double new_current = 8, 
-                 double new_time = 1, 
-                 double new_flowrate = 3, 
-                 double new_volume = 1
+Winning::Winning(double new_current, 
+                 double new_time, 
+                 double new_flowrate, 
+                 double new_volume
             ) 
             {
   SetCoeff();

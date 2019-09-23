@@ -8,16 +8,16 @@ namespace pyro {
 
 Reduct::Reduct() {
   SetCoeff();
-  current(0);
-  lithium(0);
-  volume(0);
-  Rtime(0);
+  current(5);
+  lithium(2);
+  volume(10);
+  Rtime(1);
 }
 
-Reduct::Reduct(double new_current = 5, 
-               double new_lithium = 2, 
-               double new_volume = 10, 
-               double new_Rtime = 1
+Reduct::Reduct(double new_current, 
+               double new_lithium, 
+               double new_volume, 
+               double new_Rtime
             ) 
             {
               SetCoeff();
@@ -54,4 +54,3 @@ double Reduct::Throughput() {
   return volume() / Rtime();
 };
 } // namespace pyro
-

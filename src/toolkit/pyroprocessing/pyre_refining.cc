@@ -13,18 +13,18 @@ using boost::math::tools::bisect;
 namespace pyro {
 
 Refine::Refine() {
-  temp(0);
-  pressure(0);
+  temp(900);
+  pressure(760);
   rotation(0);
-  b_size(0);
-  Rtime(0);
+  b_size(20);
+  Rtime(1);
 }
 
-Refine::Refine(double new_temp = 900, 
-               double new_press = 760, 
-               double new_rotation = 0, 
-               double new_batch_size = 20,
-               double new_rtime = 1
+Refine::Refine(double new_temp, 
+               double new_press, 
+               double new_rotation, 
+               double new_batch_size,
+               double new_rtime
             ) 
             {
   SetCoeff();
@@ -36,23 +36,23 @@ Refine::Refine(double new_temp = 900,
 }
 
 void Refine::SetCoeff() {
-  t0_ = 4.7369E-9;
-  t1_ = -1.08337E-5;
-  t2_ = 0.008069;
-  t3_ = -0.9726;
-  p0_ = -7.17631E-10;
-  p1_ = 4.04545E-07;
-  p2_ = -8.06336E-05;
-  p3_ = 1.002;
-  a0_ = 0.032;
-  a1_ = 0.72;
-  a2_ = 0.0338396;
-  a3_ = 0.83667;
+  therm.push_back(4.7369E-9);
+  therm.push_back(-1.08337E-5);
+  therm.push_back(0.008069);
+  therm.push_back(-0.9726);
+  pres.push_back(-7.17631E-10);
+  pres.push_back(4.04545E-07);
+  pres.push_back(-8.06336E-05);
+  pres.push_back(1.002);
+  agit.push_back(0.032);
+  agit.push_back(0.72);
+  agit.push_back(0.0338396);
+  agit.push_back(0.83667);
 }
 
 struct Refine::TerminationCondition {
     bool operator() (double min, double max)  {
-        return abs(min - max) <= 0.000001;
+        return abs(min - max) <= 1e-5;
     }
 };
 
@@ -99,7 +99,7 @@ double Refine::Thermal() {
 double Refine::Thermal(double tmp,
                        double new_eff
 ) {
-  return t0()*pow(tmp,3) + t1()*pow(tmp,2) + t2()*tmp + t3() - new_eff;
+  return therm[0]*pow(tmp,3) + therm[1]*pow(tmp,2) + therm[2]*tmp + therm[3] - new_eff;
 }
 
 double Refine::PressureEff() {
@@ -109,7 +109,7 @@ double Refine::PressureEff() {
 double Refine::PressureEff(double prs,
                            double new_eff
 ) {
-  return p0()*pow(prs, 3) + p1()*pow(prs, 2) + p2()*prs + p3() - new_eff;
+  return pres[0]*pow(prs, 3) + pres[1]*pow(prs, 2) + pres[2]*prs + pres[3] - new_eff;
 }
 
 double Refine::Agitation() {
@@ -121,9 +121,9 @@ double Refine::Agitation(double rot,
 ) {
   double agi;
   if (rot <= 1) {
-    agi = a0()*rot + a1() - new_eff;
+    agi = agit[0]*rot + agit[1] - new_eff;
   } else {
-    agi = a2()*log(rot) + a3() - new_eff;
+    agi = agit[2]*log(rot) + agit[3] - new_eff;
     if (agi > 1) {
       throw ValueError("Rotation efficiency cannot exceed 1");
     }
@@ -133,53 +133,5 @@ double Refine::Agitation(double rot,
 
 double Refine::Throughput() {
   return b_size() / Rtime();
-}
-
-double Refine::t0() {
-  return t0_;
-}
-
-double Refine::t1() {
-  return t1_;
-}
-
-double Refine::t2() {
-  return t2_;
-}
-
-double Refine::t3() {
-  return t3_;
-}
-
-double Refine::p0() {
-  return p0_;
-}
-
-double Refine::p1() {
-  return p1_;
-}
-
-double Refine::p2() {
-  return p2_;
-}
-
-double Refine::p3() {
-  return p3_;
-}
-
-double Refine::a0() {
-  return a0_;
-}
-
-double Refine::a1() {
-  return a1_;
-}
-
-double Refine::a2() {
-  return a2_;
-}
-
-double Refine::a3() {
-  return a3_;
 };
 } // namespace pyro

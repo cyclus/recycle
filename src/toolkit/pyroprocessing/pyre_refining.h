@@ -28,21 +28,16 @@ public:
 
 private:
 
-  /// Thermal Efficiency coefficients - Lee et al.
-  double t0_;
-  double t1_;
-  double t2_;
-  double t3_;
+  /// Coefficients derived from the following:
+  /// H. Lee, J. H. Lee, S. B. Park, Y. S. Lee, E. H. Kim, and S. W. Park, 
+  ///   "Advanced Electrorefining Process at KAERI," ATALANTE 2008, May 2008.
+
+  /// Thermal Efficiency coefficients
+  std::vector<double> therm;
   /// Pressure Efficiency coefficients
-  double p0_;
-  double p1_;
-  double p2_;
-  double p3_;
+  std::vector<double> pres;
   /// Stirrer Efficiency coefficient
-  double a0_;
-  double a1_;
-  double a2_;
-  double a3_;
+  std::vector<double> agit;
 
   /// @brief sets all coefficients to their defaults
   void SetCoeff();
@@ -142,4 +137,3 @@ private:
 };
 } // namespace pyro
 #endif // RECYCLE_SRC_PYRE_REFINING_H_
-
