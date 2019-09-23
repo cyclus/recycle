@@ -29,7 +29,7 @@ class Reduct : public pyro::Process {
   /// 2 T.-J. Kim, G.-Y. Kim, D. Yoon, D.-H. Ahn, and S. Paek, "Development of an anode structure 
   ///   consisting of graphite tubes and a SiC shroud for the electrowinning process in 
   ///   molten salt," Journal of Radioanalytical and Nuclear Chemistry, vol. 295, no. 3, 
-  ///   pp. 1855–1859, Mar. 2013.
+  ///   pp. 1855-1859, Mar. 2013.
 
 
   /// Coulombic efficiency coefficients
