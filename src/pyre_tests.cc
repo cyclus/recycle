@@ -242,6 +242,248 @@ TEST_F(PyreTests, SeparationEfficiencyThrowing) {
   EXPECT_THROW(sim3.Run(), cyclus::ValueError) << "Multiple cumulative sep efficiency > 1 should throw an error.";
 }
 
+TEST_F(PyreTests, VoloxMax) {
+  int simdur = 2;
+  std::string config = 
+      "<streams>"
+      "    <item>"
+      "        <commod>volox_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<volox_temp>1000</volox_temp>"
+      "<volox_time>4</volox_time>"
+      "<volox_flowrate>4.5</volox_flowrate>"
+      "<volox_volume>10</volox_volume>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Voloxidation max edge case should run.";      
+}
+
+TEST_F(PyreTests, VoloxMin) {
+  int simdur = 2;
+  std::string config = 
+    "<streams>"
+      "    <item>"
+      "        <commod>volox_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<volox_temp>500</volox_temp>"
+      "<volox_time>1</volox_time>"
+      "<volox_flowrate>0.5</volox_flowrate>"
+      "<volox_volume>1</volox_volume>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Voloxidation min edge case should run.";      
+}
+
+TEST_F(PyreTests, ReductMax) {
+  int simdur = 2;
+  std::string config = 
+      "<streams>"
+      "    <item>"
+      "        <commod>reduct_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<reduct_current>10</reduct_current>"
+      "<reduct_lithium_oxide>3</reduct_lithium_oxide>"
+      "<reduct_volume>10</reduct_volume>"
+      "<reduct_time>4</reduct_time>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Reduction max edge case should run.";      
+}
+
+TEST_F(PyreTests, ReductMin) {
+  int simdur = 2;
+  std::string config = 
+    "<streams>"
+      "    <item>"
+      "        <commod>reduct_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<reduct_current>1</reduct_current>"
+      "<reduct_lithium_oxide>1</reduct_lithium_oxide>"
+      "<reduct_volume>1</reduct_volume>"
+      "<reduct_time>1</reduct_time>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Reduction min edge case should run.";      
+}
+
+TEST_F(PyreTests, RefineMax) {
+  int simdur = 2;
+  std::string config = 
+      "<streams>"
+      "    <item>"
+      "        <commod>refine_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<refine_temp>1000</refine_temp>"
+      "<refine_press>760</refine_press>"
+      "<refine_rotation>100</refine_rotation>"
+      "<refine_batch_size>40</refine_batch_size>"
+      "<refine_time>4</refine_time>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Refiner max edge case should run.";      
+}
+
+TEST_F(PyreTests, RefineMin) {
+  int simdur = 2;
+  std::string config = 
+    "<streams>"
+      "    <item>"
+      "        <commod>refine_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<refine_temp>500</refine_temp>"
+      "<refine_press>100</refine_press>"
+      "<refine_rotation>0</refine_rotation>"
+      "<refine_batch_size>10</refine_batch_size>"
+      "<refine_time>1</refine_time>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Refiner min edge case should run.";      
+}
+
+TEST_F(PyreTests, WinningMax) {
+  int simdur = 2;
+  std::string config = 
+      "<streams>"
+      "    <item>"
+      "        <commod>winning_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<winning_current>10</winning_current>"
+      "<winning_time>4</winning_time>"
+      "<winning_flowrate>4.5</winning_flowrate>"
+      "<winning_volume>10</winning_volume>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Winner max edge case should run.";      
+}
+
+TEST_F(PyreTests, WinningMin) {
+  int simdur = 2;
+  std::string config = 
+    "<streams>"
+      "    <item>"
+      "        <commod>winning_waste</commod>"
+      "        <info>"
+      "            <buf_size>-1</buf_size>"
+      "            <efficiencies>"
+      "                <item><comp>U</comp> <eff>0.6</eff></item>"
+      "                <item><comp>Pu239</comp> <eff>.7</eff></item>"
+      "            </efficiencies>"
+      "        </info>"
+      "    </item>"
+      "</streams>"
+      ""
+      "<winning_current>1</winning_current>"
+      "<winning_time>1</winning_time>"
+      "<winning_flowrate>0.5</winning_flowrate>"
+      "<winning_volume>1</winning_volume>"
+      "<leftover_commod>waste</leftover_commod>"
+      "<throughput>100</throughput>"
+      "<feedbuf_size>100</feedbuf_size>"
+      "<feed_commods> <val>feed</val> </feed_commods>"
+      ;
+
+  cyclus::MockSim sim(cyclus::AgentSpec(":recycle:Pyre"), config, simdur);
+  EXPECT_NO_THROW(sim.Run()) << "Winner min edge case should run.";      
+}
+
 TEST_F(PyreTests, SepMixElemAndNuclide) {
   std::string config = src_facility->test_config;
 
