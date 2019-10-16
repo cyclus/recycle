@@ -7,7 +7,6 @@ using cyclus::CompMap;
 namespace pyro {
 
 Reduct::Reduct() {
-  SetCoeff();
   current(5);
   lithium(2);
   volume(10);
@@ -20,21 +19,10 @@ Reduct::Reduct(double new_current,
                double new_Rtime
             ) 
             {
-              SetCoeff();
               current(new_current);
               lithium(new_lithium);
               volume(new_volume);
               Rtime(new_Rtime);
-}
-
-void Reduct::SetCoeff() {
-  coul.push_back(-0.00685);
-  coul.push_back(0.20413);
-  coul.push_back(-2.273);
-  coul.push_back(11.2046);
-  coul.push_back(-19.7493);
-  lith.push_back(0.075);
-  lith.push_back(0.775);
 }
 
 double Reduct::Efficiency() { 

@@ -27,27 +27,11 @@ Refine::Refine(double new_temp,
                double new_rtime
             ) 
             {
-  SetCoeff();
   temp(new_temp);
   pressure(new_press);
   rotation(new_rotation);
   b_size(new_batch_size);
   Rtime(new_rtime);
-}
-
-void Refine::SetCoeff() {
-  therm.push_back(4.7369E-9);
-  therm.push_back(-1.08337E-5);
-  therm.push_back(0.008069);
-  therm.push_back(-0.9726);
-  pres.push_back(-7.17631E-10);
-  pres.push_back(4.04545E-07);
-  pres.push_back(-8.06336E-05);
-  pres.push_back(1.002);
-  agit.push_back(0.032);
-  agit.push_back(0.72);
-  agit.push_back(0.0338396);
-  agit.push_back(0.83667);
 }
 
 struct Refine::TerminationCondition {

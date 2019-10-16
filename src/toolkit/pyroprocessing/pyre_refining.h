@@ -33,14 +33,11 @@ private:
   ///   "Advanced Electrorefining Process at KAERI," ATALANTE 2008, May 2008.
 
   /// Thermal Efficiency coefficients
-  std::vector<double> therm;
+  std::vector<double> therm = {4.7369E-9,-1.08337E-5,0.008069,-0.9726};
   /// Pressure Efficiency coefficients
-  std::vector<double> pres;
+  std::vector<double> pres = {-7.17631E-10, 4.04545E-07,-8.06336E-05,1.002};
   /// Stirrer Efficiency coefficient
-  std::vector<double> agit;
-
-  /// @brief sets all coefficients to their defaults
-  void SetCoeff();
+  std::vector<double> agit = {0.032,0.72,0.0338396,0.83667};
 
   /// @brief If type is operator, function passes location and siphon to OpDivertMat
   /// @param type Type of diversion to take place - Operator or Nefarious
@@ -98,42 +95,6 @@ private:
   /// @brief Determines the throughput of the process based on facility parameters
   /// @return material throughput kg / day
   double Throughput();
-
-  /// @return the value for thermal efficiency coefficient 0
-  double t0();
-
-  /// @return the value for thermal efficiency coefficient 1
-  double t1();
-
-  /// @return the value for thermal efficiency coefficient 2
-  double t2();
-
-  /// @return the value for thermal efficiency coefficient 3
-  double t3();
-
-  /// @return the value for pressure efficiency coefficient 0
-  double p0();
-
-  /// @return the value for pressure efficiency coefficient 1
-  double p1();
-
-  /// @return the value for pressure efficiency coefficient 2
-  double p2();
-
-  /// @return the value for pressure efficiency coefficient 3
-  double p3();
-
-  /// @return the value for rotation efficiency coefficient 0
-  double a0();
-
-  /// @return the value for rotation efficiency coefficient 1
-  double a1();
-
-  /// @return the value for rotation efficiency coefficient 2
-  double a2();
-
-  /// @return the value for rotation efficiency coefficient 3
-  double a3();
 };
 } // namespace pyro
 #endif // RECYCLE_SRC_PYRE_REFINING_H_

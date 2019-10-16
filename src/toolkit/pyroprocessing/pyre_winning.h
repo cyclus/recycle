@@ -35,14 +35,11 @@ class Winning : public pyro::Process {
 
 
   /// @brief Coulombic Efficiency coefficients
-  std::vector<double> coul;
+  std::vector<double> coul = {-0.00685,0.20413,-2.273,11.2046,-19.7493};
   /// @brief Temporal Efficiency coefficients
-  std::vector<double> ti;
+  std::vector<double> ti = {0.2903, -1.696};
   /// @brief Flowrate Efficiency coefficients
-  std::vector<double> r;
-
-  /// @brief Sets coefficients for efficiency relationships according to literature review
-  void SetCoeff();
+  std::vector<double> r = {0.12435,0.7985};
 
   /// @brief Calculates the overall efficiency of the process by combining coulombic, temporal and flowrate effs.
   /// @return a value between 0 and 1 to be multiplied with separation efficiencies
