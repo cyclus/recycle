@@ -7,7 +7,6 @@ using cyclus::CompMap;
 namespace pyro {
 
 Winning::Winning() {
-  SetCoeff();
   current(8);
   Rtime(1);
   flowrate(3);
@@ -20,23 +19,10 @@ Winning::Winning(double new_current,
                  double new_volume
             ) 
             {
-  SetCoeff();
   current(new_current);
   Rtime(new_time);
   flowrate(new_flowrate);
   volume(new_volume);
-}
-
-void Winning::SetCoeff() {
-  coul.push_back(-0.00685);
-  coul.push_back(0.20413);
-  coul.push_back(-2.273);
-  coul.push_back(11.2046);
-  coul.push_back(-19.7493);
-  ti.push_back(0.2903);
-  ti.push_back(-1.696);
-  r.push_back(0.12435);
-  r.push_back(0.7985);
 }
 
 double Winning::Efficiency() {

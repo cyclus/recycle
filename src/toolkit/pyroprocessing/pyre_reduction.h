@@ -33,11 +33,9 @@ class Reduct : public pyro::Process {
 
 
   /// Coulombic efficiency coefficients
-  std::vector<double> coul;
+  std::vector<double> coul = {-0.00685,0.20413,-2.273,11.2046,-19.7493};
   /// Lithium oxide catalyst coefficients
-  std::vector<double> lith;
-
-  void SetCoeff();
+  std::vector<double> lith = {0.075,0.775};
 
   /// @brief Calculates the overall efficiency of the process by combining coulombic and catalyst effs.
   /// @return a value between 0 and 1 to be multiplied with separation efficiencies

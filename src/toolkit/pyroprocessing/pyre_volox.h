@@ -22,11 +22,11 @@ class Volox : public pyro::Process {
   /// R. Jubin, "Spent Fuel Reprocessing," Oak Ridge National Lab. (ORNL), Oak Ridge, TN (United States), 2009.
 
   /// @brief Temperature Coefficients
-  std::vector<double> th;
+  std::vector<double> th = {4.369E-9,-1.0833E-5,0.008069,-0.9726};
   /// @brief Time Coefficients
-  std::vector<double> ti;
+  std::vector<double> ti = {0.2903,-1.696};
   /// @brief Flowrate Coefficients
-  std::vector<double> r;
+  std::vector<double> r = {0.12435,0.7985};
 
   /// @brief sets the coefficients for each relationship
   void SetCoeff();

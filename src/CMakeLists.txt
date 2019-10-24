@@ -12,7 +12,9 @@ USE_CYCLUS("recycle" "pyre")
 INSTALL_CYCLUS_MODULE("recycle" "" "NONE")
 TARGET_LINK_LIBRARIES("recycle" "toolkit")
 
-SET(TestSource ${recycle_TEST_CC} PARENT_SCOPE)
+FILE(GLOB cc_files "${CMAKE_CURRENT_SOURCE_DIR}/process_tests.cc")
+
+SET(TestSource "${recycle_TEST_CC}" "${cc_files}" PARENT_SCOPE)
 
 # install header files
 FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
