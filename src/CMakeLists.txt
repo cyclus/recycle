@@ -12,7 +12,7 @@ USE_CYCLUS("recycle" "pyre")
 INSTALL_CYCLUS_MODULE("recycle" "" "NONE")
 TARGET_LINK_LIBRARIES("recycle" "toolkit")
 
-FILE(GLOB cc_files "${CMAKE_CURRENT_SOURCE_DIR}/process_tests.cc")
+FILE(GLOB cc_files "${CMAKE_CURRENT_SOURCE_DIR}/toolkit/pyroprocessing/process_tests.cc")
 
 SET(TestSource "${recycle_TEST_CC}" "${cc_files}" PARENT_SCOPE)
 
