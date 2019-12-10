@@ -255,6 +255,9 @@ IF(NOT CYCLUS_DOC_ONLY)
         set(LIBS ${LIBS} ${PYTHON_LIBRARIES})
     ENDIF(PYTHON_LIBRARIES)
 
+    # Source Directory
+    set(RECYCLE_INCLUDE_DIRS ${RECYCLE_INCLUDE_DIRS} src)
+
     # include all the directories we just found
     INCLUDE_DIRECTORIES(${RECYCLE_INCLUDE_DIRS})
 
